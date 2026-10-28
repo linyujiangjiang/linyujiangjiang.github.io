@@ -1,0 +1,2875 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#d6d6db" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="阴阳" />
+  <meta name="format-detection" content="telephone=no" />
+  <link rel="apple-touch-icon" href="data:image/png;base64,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" />
+  <link rel="icon" type="image/png" href="data:image/png;base64,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" />
+  <title>阴阳 · 黑白粒子 1.12</title>
+  <style>
+﻿/* ---------------------------------------------------------------
+   黑白粒子 · 场景
+   舞台用中性灰，让黑色和白色粒子都能被看清
+--------------------------------------------------------------- */
+
+:root {
+  --ink: #17171d;
+  --panel: rgba(255, 255, 255, 0.16);
+  --panel-line: rgba(255, 255, 255, 0.38);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  background:
+    radial-gradient(circle at 30% 26%, #bcbcc5 0%, #9b9ba6 42%, #6d6d78 100%);
+}
+
+#stage {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ------------------------------ HUD ------------------------------ */
+
+.hud {
+  position: fixed;
+  top: calc(22px + env(safe-area-inset-top, 0px));
+  left: calc(22px + env(safe-area-inset-left, 0px));
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--panel-line);
+  background: var(--panel);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(20, 20, 32, 0.14);
+  user-select: none;
+  pointer-events: none;
+}
+
+.hud__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.hud__item .label {
+  opacity: 0.72;
+}
+
+.hud__item .value {
+  min-width: 2.2ch;
+  font-size: 17px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.hud__item--black .dot {
+  background: linear-gradient(145deg, #4a4a56, #08080c 55%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+
+.hud__item--white .dot {
+  background: linear-gradient(145deg, #ffffff, #d3d3de 80%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.16);
+}
+
+.hud__meta {
+  padding-left: 16px;
+  border-left: 1px solid rgba(23, 23, 29, 0.16);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.hud__meta #total-count {
+  opacity: 0.55;
+}
+
+.hud__meta .sep {
+  margin: 0 6px;
+  opacity: 0.5;
+}
+
+/* 阴阳状态：平衡时用一点暖金色点亮 */
+#balance {
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #4a4a55;
+  transition: color 0.7s ease;
+}
+
+#balance.is-balanced {
+  color: #8a6410;
+}
+
+#balance.is-over {
+  color: #8a3a2c;
+}
+
+#balance.is-separated {
+  color: #b04a3a;
+  letter-spacing: 0.14em;
+}
+
+#balance.is-deficiency {
+  color: #5b4a70;
+  letter-spacing: 0.08em;
+}
+
+/* ---------------------- 阴阳离决 ---------------------- */
+
+.ending {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: radial-gradient(circle at 50% 42%, rgba(10, 10, 16, 0.5), rgba(10, 10, 16, 0.84));
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.9s ease, visibility 0s linear 0.9s;
+}
+
+.ending.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.9s ease;
+}
+
+.ending__card {
+  width: min(420px, 100%);
+  padding: 40px 36px 34px;
+  text-align: center;
+  border-radius: 22px;
+  border: 1px solid rgba(233, 197, 106, 0.26);
+  background: rgba(22, 22, 30, 0.74);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5);
+  transform: translateY(10px);
+  transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ending.is-visible .ending__card {
+  transform: translateY(0);
+}
+
+.ending__mark {
+  font-size: 26px;
+  line-height: 1;
+  color: #e9c56a;
+  opacity: 0.55;
+}
+
+.ending__title {
+  margin: 14px 0 8px;
+  font-family: "Songti SC", "Noto Serif SC", "STSong", "SimSun", serif;
+  font-size: 44px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: #e9c56a;
+}
+
+.ending__counts {
+  margin: 0 0 18px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: rgba(240, 233, 218, 0.45);
+  font-variant-numeric: tabular-nums;
+}
+
+.ending__text {
+  margin: 0 0 30px;
+  font-size: 13px;
+  line-height: 1.95;
+  letter-spacing: 0.06em;
+  color: rgba(243, 239, 230, 0.66);
+}
+
+.ending__btn {
+  appearance: none;
+  padding: 11px 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(233, 197, 106, 0.5);
+  background: rgba(233, 197, 106, 0.08);
+  color: #f0d493;
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 0.26em;
+  text-indent: 0.26em;
+  cursor: pointer;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.ending__btn:hover,
+.ending__btn:focus-visible {
+  background: rgba(233, 197, 106, 0.18);
+  border-color: rgba(233, 197, 106, 0.9);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* ---------------------- 证候词条 ---------------------- */
+
+.states {
+  position: fixed;
+  top: calc(22px + env(safe-area-inset-top, 0px));
+  right: calc(22px + env(safe-area-inset-right, 0px));
+  z-index: 7;
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  max-width: min(380px, calc(100vw - 44px));
+  padding: 11px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.16);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(20, 20, 32, 0.14);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s linear 0.35s;
+  pointer-events: none;
+  user-select: none;
+}
+
+.states.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.states__group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.states__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: #34343e;
+  opacity: 0.7;
+}
+
+.states__dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.states__group--yin .states__dot {
+  background: #13131a;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+.states__group--yang .states__dot {
+  background: #fbfbfe;
+  box-shadow: inset 0 0 0 1px rgba(19, 19, 26, 0.35);
+}
+
+.states__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 150px;
+}
+
+.states__empty {
+  font-size: 12px;
+  line-height: 1;
+  color: rgba(28, 28, 38, 0.32);
+}
+
+.states__divider {
+  width: 1px;
+  margin: 2px 0;
+  background: rgba(23, 23, 29, 0.14);
+}
+
+.tag {
+  position: relative;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.34);
+  color: #1c1c24;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  cursor: help;
+  outline: none;
+  animation: tag-in 0.3s ease both;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.tag:hover,
+.tag:focus-visible {
+  background: rgba(255, 255, 255, 0.55);
+  transform: translateY(-1px);
+}
+
+.tag__tip {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: -6px;
+  width: max-content;
+  max-width: 210px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: rgba(26, 26, 34, 0.93);
+  color: #f1f1f4;
+  font-size: 12px;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  text-align: left;
+  white-space: normal;
+  opacity: 0;
+  transform: translateY(-5px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 14px 36px rgba(8, 8, 16, 0.3);
+  z-index: 8;
+}
+
+.tag:hover .tag__tip,
+.tag:focus .tag__tip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes tag-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------------- 底部：阴阳关系 ---------------------- */
+
+.laws {
+  position: fixed;
+  left: 50%;
+  bottom: calc(26px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  width: fit-content;
+  max-width: calc(100vw - 18px);
+  z-index: 6;
+}
+
+/* 人体词条：只有开了「人体」才出现 */
+.laws .law--body {
+  display: none;
+  border-color: rgba(150, 116, 64, 0.4);
+  background: rgba(255, 248, 234, 0.3);
+}
+
+.laws.is-human .law--body {
+  display: inline-flex;
+}
+
+.law {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(20, 20, 32, 0.12);
+  color: #2c2c34;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease,
+    color 0.25s ease, border-color 0.25s ease;
+}
+
+.law:hover,
+.law:focus-visible {
+  background: rgba(255, 255, 255, 0.24);
+  box-shadow: 0 10px 30px rgba(20, 20, 32, 0.16);
+  transform: translateY(-1px);
+}
+
+.law:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.law__icon {
+  font-size: 15px;
+  line-height: 1;
+  opacity: 0.9;
+  transition: opacity 0.25s ease;
+}
+
+/* 已关闭的定律：整条退成灰，标签划掉，图标空掉 */
+.law.is-off {
+  color: rgba(44, 44, 52, 0.42);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+
+.law.is-off .law__label {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(44, 44, 52, 0.5);
+}
+
+.law.is-off .law__icon {
+  opacity: 0.28;
+}
+
+.law.is-off:hover,
+.law.is-off:focus-visible {
+  color: rgba(44, 44, 52, 0.62);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.law__tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 12px);
+  width: min(288px, calc(100vw - 40px));
+  padding: 12px 15px 13px;
+  border-radius: 12px;
+  background: rgba(26, 26, 34, 0.92);
+  color: #f1f1f4;
+  font-size: 12px;
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+  text-align: left;
+  opacity: 0;
+  transform: translate(-50%, 6px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 16px 40px rgba(8, 8, 16, 0.28);
+}
+
+.law__tip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(26, 26, 34, 0.92);
+}
+
+.law__tip strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: #e8c46a;
+}
+
+.law__act {
+  display: block;
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: rgba(232, 196, 106, 0.82);
+}
+
+.law.is-off .law__act {
+  color: rgba(232, 196, 106, 0.5);
+}
+
+.law:hover .law__tip,
+.law:focus .law__tip,
+.law.is-open .law__tip,
+.law:focus-within .law__tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ---------------------- 调摄（补泻）面板 ---------------------- */
+
+.control {
+  position: fixed;
+  left: calc(22px + env(safe-area-inset-left, 0px));
+  bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  z-index: 7;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  width: 236px;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  background: rgba(255, 255, 255, 0.16);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(20, 20, 32, 0.14);
+  user-select: none;
+}
+
+.control__title {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 2px 1px;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: rgba(52, 52, 62, 0.62);
+}
+
+.control__head-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.control__help {
+  width: 17px;
+  height: 17px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(44, 44, 52, 0.32);
+  background: rgba(255, 255, 255, 0.5);
+  color: #34343e;
+  font-family: inherit;
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0;
+  text-indent: 0;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+.control__help:hover,
+.control__help:focus-visible {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.control__rate {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: #6b5210;
+  opacity: 0.85;
+}
+
+.control__btn {
+  padding: 7px 0;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.3);
+  color: #22222a;
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease, transform 0.12s ease, box-shadow 0.2s ease;
+}
+
+.control__btn:hover,
+.control__btn:focus-visible {
+  background: rgba(255, 255, 255, 0.52);
+  box-shadow: 0 6px 16px rgba(20, 20, 32, 0.1);
+}
+
+.control__btn:active {
+  transform: scale(0.96);
+}
+
+.control__btn--drain {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #4a4a54;
+}
+
+.control__pause {
+  grid-column: span 2;
+  padding: 7px 0;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.22);
+  color: #2c2c34;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease, transform 0.12s ease, box-shadow 0.2s ease;
+}
+
+.control__pause:hover,
+.control__pause:focus-visible {
+  background: rgba(255, 255, 255, 0.38);
+  box-shadow: 0 6px 16px rgba(20, 20, 32, 0.1);
+}
+
+.control__pause.is-active {
+  background: rgba(233, 197, 106, 0.32);
+  border-color: rgba(233, 197, 106, 0.7);
+  color: #6b5210;
+  font-weight: 600;
+}
+
+/* 减速 / 加速：夹在时停两侧的小方按钮 */
+.control__btn--speed {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-indent: 0.08em;
+  color: #3a3a44;
+}
+
+.control__btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+  box-shadow: none;
+  transform: none;
+}
+
+/* 食 / 息 / 静养：人的日用 */
+.control__btn--eat {
+  border-color: rgba(150, 116, 64, 0.45);
+  background: rgba(226, 205, 168, 0.4);
+  color: #5c4a26;
+}
+
+.control__btn--breath {
+  border-color: rgba(96, 118, 140, 0.42);
+  background: rgba(206, 219, 232, 0.42);
+  color: #33455a;
+}
+
+.control__btn--eat:hover,
+.control__btn--eat:focus-visible {
+  background: rgba(226, 205, 168, 0.62);
+}
+
+.control__btn--breath:hover,
+.control__btn--breath:focus-visible {
+  background: rgba(206, 219, 232, 0.64);
+}
+
+/* 人体总开关：关闭时下面那几组都不出现 */
+.body-only {
+  display: none;
+}
+
+.control.is-human .body-only {
+  display: block;
+}
+
+/* 视图切换：粒子 / 色块 */
+.control__view {
+  grid-column: span 2;
+  padding: 7px 0;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.1);
+  color: #5a5a64;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.control__view:hover,
+.control__view:focus-visible {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.control__view.is-on {
+  border-color: rgba(96, 118, 140, 0.55);
+  background: rgba(120, 140, 165, 0.3);
+  color: #2b394a;
+  font-weight: 600;
+}
+.control__human {
+  grid-column: 1 / -1;
+  position: relative;
+  padding: 7px 0;
+  border-radius: 999px;
+  border: 1px dashed rgba(120, 96, 60, 0.5);
+  background: rgba(255, 255, 255, 0.16);
+  color: #5c4a26;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.control__human:hover,
+.control__human:focus-visible {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.control__human.is-on {
+  border-style: solid;
+  border-color: rgba(214, 150, 60, 0.65);
+  background: rgba(228, 172, 82, 0.26);
+  color: #6b4a10;
+  font-weight: 600;
+}
+
+/* 悬停说明：生命活动的收支数值都写在这里 */
+.control__tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  z-index: 10;
+  width: min(304px, calc(100vw - 48px));
+  padding: 11px 14px 12px;
+  border-radius: 11px;
+  background: rgba(26, 26, 34, 0.94);
+  color: #f1f1f4;
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+  text-align: left;
+  text-indent: 0;
+  opacity: 0;
+  transform: translate(-50%, 6px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 16px 40px rgba(8, 8, 16, 0.28);
+}
+
+.control__tip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(26, 26, 34, 0.94);
+}
+
+.control__tip strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: #e8c46a;
+}
+
+.control__human:hover .control__tip,
+.control__human:focus-visible .control__tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* 外感：手点召邪 */
+.control__omen {
+  grid-column: span 2;
+  padding: 7px 0;
+  border-radius: 10px;
+  border: 1px solid rgba(214, 150, 60, 0.55);
+  background: rgba(228, 172, 82, 0.2);
+  color: #6b4a10;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease, transform 0.12s ease, box-shadow 0.2s ease;
+}
+
+.control__omen:hover,
+.control__omen:focus-visible {
+  background: rgba(228, 172, 82, 0.34);
+  box-shadow: 0 6px 16px rgba(120, 80, 10, 0.14);
+}
+
+.control__omen:active {
+  transform: scale(0.96);
+}
+
+.control__omen:disabled,
+.control__auto:disabled {
+  opacity: 0.35;
+  cursor: default;
+  box-shadow: none;
+  transform: none;
+}
+
+/* 自动 / 手动：外感是否自然发生 */
+.control__auto {
+  grid-column: span 2;
+  padding: 7px 0;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.12);
+  color: #6a6a74;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+    transform 0.12s ease;
+}
+
+.control__auto:hover,
+.control__auto:focus-visible {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.control__auto:active {
+  transform: scale(0.96);
+}
+
+.control__auto.is-on {
+  border-color: rgba(214, 150, 60, 0.55);
+  background: rgba(228, 172, 82, 0.26);
+  color: #6b4a10;
+}
+
+.control__auto.is-on:hover,
+.control__auto.is-on:focus-visible {
+  background: rgba(228, 172, 82, 0.38);
+}
+
+@media (max-width: 900px) {
+  .control {
+    left: calc(14px + env(safe-area-inset-left, 0px));
+    top: calc(74px + env(safe-area-inset-top, 0px));
+    bottom: auto;
+    width: 210px;
+  }
+}
+
+/* ---------------------- 版本号 ---------------------- */
+
+.version {
+  position: fixed;
+  right: calc(22px + env(safe-area-inset-right, 0px));
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  z-index: 4;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: rgba(23, 23, 29, 0.38);
+  user-select: none;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .version {
+    right: calc(14px + env(safe-area-inset-right, 0px));
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ---------------------- 消长状态 / 转化横幅 ---------------------- */
+
+.trend {
+  position: fixed;
+  top: calc(22px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  padding: 7px 15px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: #2c2c34;
+  opacity: 0.85;
+  user-select: none;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.trend.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.banner {
+  position: fixed;
+  top: 44%;
+  left: 50%;
+  z-index: 9;
+  padding: 12px 30px;
+  border-radius: 14px;
+  background: rgba(26, 26, 34, 0.88);
+  color: #f0d493;
+  font-family: "Songti SC", "Noto Serif SC", "STSong", serif;
+  font-size: 28px;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.94);
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.banner.is-visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* 开关定律时用的轻提示，比「重阴必阳」轻一档 */
+.banner.is-small {
+  padding: 10px 24px;
+  border-radius: 10px;
+  background: rgba(26, 26, 34, 0.8);
+  font-size: 16px;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  color: #e9dfc4;
+}
+
+/* ---------------------- 外感卡片 ---------------------- */
+
+.omen {
+  position: fixed;
+  top: calc(58px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  z-index: 8;
+  width: min(348px, calc(100vw - 40px));
+  padding: 11px 16px 12px;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(252, 251, 247, 0.95);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 16px 40px rgba(20, 20, 32, 0.2);
+  opacity: 0;
+  transform: translate(-50%, -10px);
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.omen.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* 阳邪从朱，阴邪从黛 */
+.omen--yang {
+  border-left: 4px solid rgba(186, 74, 48, 0.7);
+}
+
+.omen--yin {
+  border-left: 4px solid rgba(58, 76, 110, 0.7);
+}
+
+.omen__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.omen__tag {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(44, 44, 52, 0.1);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  color: #4a4a54;
+}
+
+.omen__name {
+  font-family: "Songti SC", "Noto Serif SC", "STSong", serif;
+  font-size: 17px;
+  letter-spacing: 0.16em;
+  color: #202028;
+}
+
+.omen__text {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  color: #4a4a54;
+}
+
+@media (max-width: 900px) {
+  .trend {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  /* 手指比鼠标粗：按钮给到 36px 左右 */
+  .control__btn,
+  .control__pause,
+  .control__omen,
+  .control__auto,
+  
+.control__human {
+    padding-top: 9px;
+    padding-bottom: 9px;
+  }
+
+  .states {
+    top: 74px;
+    right: 14px;
+  }
+
+  .control {
+    top: calc(74px + env(safe-area-inset-top, 0px));
+    left: calc(14px + env(safe-area-inset-left, 0px));
+    bottom: auto;
+  }
+}
+
+@media (max-height: 520px) {
+  /* 横屏手机：面板整体收一号，别顶出屏幕 */
+  .control {
+    transform: scale(0.78);
+    transform-origin: top left;
+  }
+
+  .laws {
+    transform: translateX(-50%) scale(0.88);
+    transform-origin: bottom center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hud {
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    left: calc(14px + env(safe-area-inset-left, 0px));
+    gap: 12px;
+    padding: 8px 12px;
+  }
+
+  .hud__meta {
+    display: none;
+  }
+
+  .states {
+    top: calc(66px + env(safe-area-inset-top, 0px));
+  }
+
+  .states__list {
+    max-width: 120px;
+  }
+
+  /* 小屏词条收一号，九条排成三行 */
+  .laws {
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    gap: 6px;
+  }
+
+  .law {
+    padding: 7px 10px;
+    gap: 5px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .law__icon {
+    font-size: 13px;
+  }
+}
+
+
+
+
+
+
+/* ---------------------- 新手教程 ---------------------- */
+
+.tut {
+  position: fixed;
+  left: 50%;
+  bottom: calc(118px + env(safe-area-inset-bottom, 0px));
+  z-index: 12;
+  width: min(520px, calc(100vw - 32px));
+  opacity: 0;
+  transform: translate(-50%, 14px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.tut.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+
+.tut__card {
+  padding: 13px 18px 13px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(252, 251, 247, 0.96);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 18px 46px rgba(20, 20, 32, 0.22);
+}
+
+.tut__head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.tut__step {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #8a7a55;
+  font-variant-numeric: tabular-nums;
+}
+
+.tut__title {
+  font-family: "Songti SC", "Noto Serif SC", "STSong", serif;
+  font-size: 16px;
+  letter-spacing: 0.14em;
+  color: #202028;
+}
+
+.tut__text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+  color: #3e3e48;
+}
+
+.tut__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 11px;
+}
+
+.tut__skip,
+.tut__next {
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+.tut__skip {
+  border: 1px solid rgba(44, 44, 52, 0.18);
+  background: transparent;
+  color: #6a6a74;
+}
+
+.tut__skip:hover,
+.tut__skip:focus-visible {
+  background: rgba(44, 44, 52, 0.07);
+}
+
+.tut__next {
+  border: 1px solid rgba(214, 150, 60, 0.6);
+  background: rgba(228, 172, 82, 0.28);
+  color: #6b4a10;
+  font-weight: 600;
+}
+
+.tut__next:hover,
+.tut__next:focus-visible {
+  background: rgba(228, 172, 82, 0.45);
+}
+
+/* 教程进行时，底部词条先锁住，免得点乱 */
+.laws.is-locked {
+  pointer-events: none;
+  opacity: 0.42;
+}
+
+@media (max-width: 720px) {
+  .tut {
+    bottom: calc(104px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .tut__card {
+    padding: 12px 14px 12px;
+  }
+
+  .tut__text {
+    font-size: 12px;
+    line-height: 1.75;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <canvas id="stage"></canvas>
+
+  <header class="hud" aria-live="polite">
+    <div class="hud__item hud__item--black">
+      <span class="dot"></span>
+      <span class="label">阴</span>
+      <span class="value" id="black-count">0</span>
+    </div>
+    <div class="hud__item hud__item--white">
+      <span class="dot"></span>
+      <span class="label">阳</span>
+      <span class="value" id="white-count">0</span>
+    </div>
+    <div class="hud__meta">
+      <span id="total-count">共 0</span>
+      <span class="sep">·</span>
+      <span id="balance" class="is-balanced">阴阳平衡</span>
+    </div>
+  </header>
+
+  <div class="ending" id="ending" aria-hidden="true">
+    <div class="ending__card" role="dialog" aria-modal="true" aria-labelledby="ending-title">
+      <span class="ending__mark" aria-hidden="true">☯</span>
+      <h2 class="ending__title" id="ending-title">阴阳离决</h2>
+      <p class="ending__counts" id="ending-counts"></p>
+      <p class="ending__text" id="ending-text"></p>
+      <button class="ending__btn" id="revive" type="button">阴阳交感</button>
+    </div>
+  </div>
+
+  <aside class="states" id="tags" aria-live="polite" aria-hidden="true"></aside>
+
+  <div class="laws" id="laws">
+    <button class="law" type="button" data-law="zhizhi" aria-pressed="true" aria-describedby="law-tip">
+      <span class="law__icon" aria-hidden="true">☯</span>
+      <span class="law__label">对立制约</span>
+      <span class="law__tip" id="law-tip" role="tooltip">
+        <strong>对立制约</strong>
+        阴与阳此消彼长：一方的减少，源于另一方的存在。只有对方在，这一方才会消散；对方越盛，散得越急，差距越大崩得越快。若对方不在，这一方也不会减少。
+        <span class="law__act">点击 · 关闭此律</span>
+      </span>
+    </button>
+
+    <button class="law" type="button" data-law="huzang" aria-pressed="true" aria-describedby="support-tip">
+      <span class="law__icon" aria-hidden="true">☯</span>
+      <span class="law__label">互藏互用</span>
+      <span class="law__tip" id="support-tip" role="tooltip">
+        <strong>互藏互用</strong>
+        阴中含阳，阳中含阴：一方的生成，取资于另一方。对方越多，这一方生得越多；彼此促进，互相资助。
+        <span class="law__act">点击 · 关闭此律</span>
+      </span>
+    </button>
+
+    <button class="law" type="button" data-law="husun" aria-pressed="true" aria-describedby="loss-tip">
+      <span class="law__icon" aria-hidden="true">☯</span>
+      <span class="law__label">阴阳互损</span>
+      <span class="law__tip" id="loss-tip" role="tooltip">
+        <strong>阴阳互损 · 互根互用失常</strong>
+        一方虚损，不能助长另一方，累及对方亦虚，终致<em>阴阳两虚</em>。<br />
+        阳损及阴（以阳虚为主）：阳气虚损不能化阴，累及阴液不足。<br />
+        阴损及阳（以阴虚为主）：阴液亏损不能生阳，累及阳气不足。
+        <span class="law__act">点击 · 关闭此律</span>
+      </span>
+    </button>
+
+    <button class="law" type="button" data-law="xiaozhang" aria-pressed="true" aria-describedby="xiaozhang-tip">
+      <span class="law__icon" aria-hidden="true">☯</span>
+      <span class="law__label">阴阳消长</span>
+      <span class="law__tip" id="xiaozhang-tip" role="tooltip">
+        <strong>阴阳消长 · 动态平衡</strong>
+        对立互根的阴阳双方处于不断增长和消减的变化中。<br />
+        互为消长（基于对立制约）：一方增长则另一方消减，或一方消减则另一方增长。<br />
+        皆消皆长（基于互根互用）：一方增长则另一方亦增长，或一方消减则另一方亦消减。<br />
+        属量变阶段，维持动态平衡。
+        <span class="law__act">点击 · 关闭此律</span>
+      </span>
+    </button>
+
+    <button class="law" type="button" data-law="zhuanhua" aria-pressed="true" aria-describedby="zhuanhua-tip">
+      <span class="law__icon" aria-hidden="true">☯</span>
+      <span class="law__label">阴阳转化</span>
+      <span class="law__tip" id="zhuanhua-tip" role="tooltip">
+        <strong>阴阳转化 · 物极必反</strong>
+        重阴必阳，重阳必阴：事物发展到极点，会向相反方向转化。<br />
+        消长是量变（比例增减，属性未变）；转化是质变（比例颠倒，属性反转），突破临界点才发生。
+        <span class="law__act">点击 · 关闭此律</span>
+      </span>
+    </button>
+
+    <button class="law" type="button" data-law="zihe" aria-pressed="true" aria-describedby="zihe-tip">
+      <span class="law__icon" aria-hidden="true">☯</span>
+      <span class="law__label">阴阳自和</span>
+      <span class="law__tip" id="zihe-tip" role="tooltip">
+        <strong>阴阳自和</strong>
+        阴阳双方自动维持、自动恢复其协调平衡状态的能力和趋势。<br />
+        《素问·调经论》：“阴阳匀平，以充其形，九候若一，命曰平人。”
+        <span class="law__act">点击 · 关闭此律</span>
+      </span>
+    </button>
+
+    <button class="law law--body" type="button" data-law="shuigu" aria-pressed="true" aria-describedby="shuigu-tip">
+      <span class="law__icon" aria-hidden="true">谷</span>
+      <span class="law__label">水谷</span>
+      <span class="law__tip" id="shuigu-tip" role="tooltip">
+        <strong>水谷</strong>
+        饮食入胃，化生精微，以养阴为主。<br />
+        食：阴 +5，阳 +1。<br />
+        关掉则不纳水谷，「食」不能再补。
+        <span class="law__act">点击 · 关闭此律</span>
+      </span>
+    </button>
+
+    <button class="law law--body" type="button" data-law="qingqi" aria-pressed="true" aria-describedby="qingqi-tip">
+      <span class="law__icon" aria-hidden="true">气</span>
+      <span class="law__label">清气</span>
+      <span class="law__tip" id="qingqi-tip" role="tooltip">
+        <strong>清气</strong>
+        吸入天气清气，以养阳为主。<br />
+        息：阳 +5，阴 +1。<br />
+        关掉则不纳清气，「息」不能再补。
+        <span class="law__act">点击 · 关闭此律</span>
+      </span>
+    </button>
+
+    <button class="law law--body" type="button" data-law="riyong" aria-pressed="true" aria-describedby="riyong-tip">
+      <span class="law__icon" aria-hidden="true">劳</span>
+      <span class="law__label">日用</span>
+      <span class="law__tip" id="riyong-tip" role="tooltip">
+        <strong>日用 · 生命活动</strong>
+        形体日用、思虑劳作，阴阳俱耗。<br />
+        每 28–40 秒：阴 −2，阳 −2。<br />
+        关掉即静养，不再消耗。
+        <span class="law__act">点击 · 关闭此律</span>
+      </span>
+    </button>
+  </div>
+
+  <div class="trend" id="trend" aria-live="polite"></div>
+  <div class="banner" id="banner" aria-live="polite"></div>
+
+  <div class="control" id="control">
+    <div class="control__title">
+      <span>调摄</span>
+      <span class="control__head-right">
+        <button class="control__help" id="tut-start" type="button" title="新手教程：一条条讲阴阳，边讲边开">?</button>
+        <span class="control__rate" id="rate">×1</span>
+      </span>
+    </div>
+    <button class="control__btn" id="add-yin" type="button" title="补阴：增加 5 个阴粒子">补阴</button>
+    <button class="control__btn control__btn--drain" id="sub-yin" type="button" title="泻阴：减少 5 个阴粒子">泻阴</button>
+    <button class="control__btn" id="add-yang" type="button" title="补阳：增加 5 个阳粒子">补阳</button>
+    <button class="control__btn control__btn--drain" id="sub-yang" type="button" title="泻阳：减少 5 个阳粒子">泻阳</button>
+    <button class="control__btn control__btn--speed" id="slower" type="button" title="减速：放慢生灭与漂移">减速</button>
+    <button class="control__pause" id="pause" type="button" title="时停：粒子照常运动，生灭暂停">时停</button>
+    <button class="control__btn control__btn--speed" id="faster" type="button" title="加速：加快生灭与漂移">加速</button>
+    <button class="control__omen body-only" id="omen-btn" type="button" title="手动召一次外感（六淫中随机一邪）">外感</button>
+    <button class="control__auto body-only" id="auto-btn" type="button" aria-pressed="true" title="外感是否自然发生">自动 · 开</button>
+    <button class="control__btn control__btn--eat body-only" id="eat" type="button" title="进食：水谷精微，补阴为主（阴 +5，阳 +1）">食</button>
+    <button class="control__btn control__btn--breath body-only" id="breath" type="button" title="呼吸：吸入清气，补阳为主（阳 +5，阴 +1）">息</button>
+    <button class="control__view" id="view-particles" type="button" aria-pressed="true" title="粒子：一个粒子代表一分阴阳">粒子</button>
+    <button class="control__view" id="view-block" type="button" aria-pressed="false" title="色块：阴阳图的颜色面积就是阴阳多少">色块</button>
+    <button class="control__human" id="human-btn" type="button" aria-pressed="false">
+      <span id="human-label">人体 · 关</span>
+      <span class="control__tip" role="tooltip">
+        <strong>人身日用</strong>
+        生命活动：每 28–40 秒，阴 −2、阳 −2（日用、思虑、劳作）。<br />
+        食：阴 +5、阳 +1（水谷精微）。<br />
+        息：阳 +5、阴 +1（天气清气）。<br />
+        开启后，底下的「水谷 / 清气 / 日用」可各自关掉。
+      </span>
+    </button>
+  </div>
+
+  <div class="omen" id="omen" aria-live="polite" aria-hidden="true">
+    <div class="omen__head">
+      <span class="omen__tag">外感</span>
+      <span class="omen__name" id="omen-name"></span>
+    </div>
+    <p class="omen__text" id="omen-text"></p>
+  </div>
+
+  <div class="tut" id="tut" aria-hidden="true">
+    <div class="tut__card" role="dialog" aria-modal="true" aria-labelledby="tut-title">
+      <div class="tut__head">
+        <span class="tut__step" id="tut-step">1 / 9</span>
+        <span class="tut__title" id="tut-title">阴与阳</span>
+      </div>
+      <p class="tut__text" id="tut-text"></p>
+      <div class="tut__foot">
+        <button class="tut__skip" id="tut-skip" type="button">跳过教程</button>
+        <button class="tut__next" id="tut-next" type="button">下一步</button>
+      </div>
+    </div>
+  </div>
+
+  <span class="version">v1.12</span>
+
+  <script>
+﻿/* ---------------------------------------------------------------
+   阴阳 · 黑白粒子 1.6
+   - 白色为阳，黑色为阴
+   - 对立制约：一方只因另一方存在而消散（每个粒子消散概率 ∝ 对方数量，线性）
+   - 互藏互用：一方的生成取资于另一方（生成速率 ∝ 对方数量²）
+   - 阴阳消长：顶部实时报出"阳长阴消 / 阴长阳消 / 皆长 / 皆消"
+   - 阴阳转化：一方达另一方的 2 倍即"极"，触发"重阴必阳 / 重阳必阴"
+   - 阴阳自和：数量差会自动收敛回 0
+    - 六律开关：底部六个词条可点击，点一下就把那条规律从场子里抽掉，再点恢复
+   - 稳定的是"阴阳平衡"（双方数量差收敛到 0），不是总数：
+     总数由两个系数之比缓慢消长，两边会一起盛、一起虚
+--------------------------------------------------------------- */
+
+(function () {
+  'use strict';
+
+  // ---------------------------------------------------------------
+  // 配置
+  // ---------------------------------------------------------------
+  var CONFIG = {
+    radius: 7,                // 所有粒子统一半径
+    targetTotal: 110,         // 初始粒子总数（黑白各半）
+    speed: [30, 62],          // 游走速度（px/s）
+    speedDrift: 1.12,
+    wander: 0.9,              // 方向随机漂移强度（rad/s）
+    bounceDamping: 0.99,      // 撞墙反弹的微小速度损失
+    restraint: 6.67e-4,       // 制约系数：每个粒子每秒消散概率 = 对方数量 × 该值（线性）
+    generate: 6.6e-4,         // 生成系数：每秒新生 = 对方数量² × 该值（互藏互用）
+                              // 两者相近：阴阳差会稳定收敛到 0；而总数随两者比值缓慢消长
+    jitter: [0.7, 1.3],       // 每次生 / 灭事件的间隔浮动范围（相对平均值）
+    conversionRatio: 2,       // 转化阈值：一方达到另一方的 2 倍即算"极"
+    conversionCooldown: 6,    // 转化冷却（秒）
+    fadeIn: 1.2,              // 出生淡入
+    fadeOut: 2.2,             // 消失淡出
+    maxTotal: 600,            // 自动生成上限：关掉对立制约后只增不减，防止无限膨胀
+    weakTotal: 104,           // 两虚托底线：关掉阴阳互损后，总数不再跌破这里
+    omenGap: [26, 46],        // 外感自然发生的间隔（模拟秒）
+    lifeGap: [28, 40],        // 生命活动的间隔（模拟秒）：形体日用，阴阳俱耗
+    lifeCost: 2,              // 每次消耗：阴、阳各减 2
+    eatGain: { yin: 5, yang: 1 },     // 食：水谷精微，补阴为主
+    breathGain: { yin: 1, yang: 5 },  // 息：吸入清气，补阳为主
+    actionCooldown: 8,        // 食 / 息的冷却（真实秒）
+    maxSpawnPerFrame: 2,
+    spawnGap: 4,              // 出生位置尽量避开已有粒子
+    maxSpawnTry: 18,
+    dprCap: 2
+  };
+
+  // ---------------------------------------------------------------
+  // DOM
+  // ---------------------------------------------------------------
+  var canvas = document.getElementById('stage');
+  var ctx = canvas.getContext('2d');
+  var ui = {
+    black: document.getElementById('black-count'),
+    white: document.getElementById('white-count'),
+    total: document.getElementById('total-count'),
+    balance: document.getElementById('balance'),
+    tags: document.getElementById('tags'),
+    trend: document.getElementById('trend'),
+    banner: document.getElementById('banner'),
+    addYin: document.getElementById('add-yin'),
+    addYang: document.getElementById('add-yang'),
+    subYin: document.getElementById('sub-yin'),
+    subYang: document.getElementById('sub-yang'),
+    pauseBtn: document.getElementById('pause'),
+    slower: document.getElementById('slower'),
+    faster: document.getElementById('faster'),
+    rate: document.getElementById('rate'),
+    omenBtn: document.getElementById('omen-btn'),
+    autoBtn: document.getElementById('auto-btn'),
+    eat: document.getElementById('eat'),
+    breath: document.getElementById('breath'),
+    humanBtn: document.getElementById('human-btn'),
+    viewParticles: document.getElementById('view-particles'),
+    viewBlock: document.getElementById('view-block'),
+    tutStart: document.getElementById('tut-start'),
+    tut: document.getElementById('tut'),
+    tutStep: document.getElementById('tut-step'),
+    tutTitle: document.getElementById('tut-title'),
+    tutText: document.getElementById('tut-text'),
+    tutSkip: document.getElementById('tut-skip'),
+    tutNext: document.getElementById('tut-next'),
+    humanLabel: document.getElementById('human-label'),
+    control: document.getElementById('control'),
+    laws: document.getElementById('laws')
+  };
+  var omen = {
+    card: document.getElementById('omen'),
+    name: document.getElementById('omen-name'),
+    text: document.getElementById('omen-text')
+  };
+  var ending = {
+    screen: document.getElementById('ending'),
+    counts: document.getElementById('ending-counts'),
+    text: document.getElementById('ending-text'),
+    button: document.getElementById('revive')
+  };
+
+  // ---------------------------------------------------------------
+  // 状态
+  // ---------------------------------------------------------------
+  var W = 0;
+  var H = 0;
+  var dpr = 1;
+  var particles = [];
+  var sprites = {};
+  var birthAcc = { black: 0, white: 0 };
+  var birthNeed = { black: 1, white: 1 };
+  var deathAcc = 0;
+  var deathNeed = 1;
+  var convertCd = 0;          // 转化冷却计时
+  var bannerTime = 0;
+  var paused = false;         // 时停：只停生灭，粒子照常运动
+  var trendHist = [];
+  var trendClock = 0;
+  var state = 'running';      // running | separated
+  var endingShown = false;
+
+  // 六律开关：底部词条可点击，关掉的那条规律在 update() 里被跳过
+  // zihe 关掉时，生成不再取资于对方，偏差失去自动回归的能力
+  var lawsOff = {
+    zhizhi: false,     // 对立制约：一方只因对方存在而消散
+    huzang: false,     // 互藏互用：一方取资于对方而生成
+    husun: false,      // 阴阳互损：总数越虚越少，终致两虚
+    xiaozhang: false,  // 阴阳消长：顶部报出阳长阴消 / 皆长 / 皆消
+    zhuanhua: false,   // 阴阳转化：一方到另一方的 2 倍即物极必反
+    zihe: false,       // 阴阳自和：数量差自动收敛回 0
+    shuigu: false,     // 水谷：能不能纳食
+    qingqi: false,     // 清气：能不能纳气
+    riyong: false      // 日用：生命活动耗不耗阴阳
+  };
+  var LAW_NAME = {
+    zhizhi: '对立制约',
+    huzang: '互藏互用',
+    husun: '阴阳互损',
+    xiaozhang: '阴阳消长',
+    zhuanhua: '阴阳转化',
+    zihe: '阴阳自和',
+    shuigu: '水谷',
+    qingqi: '清气',
+    riyong: '日用'
+  };
+  var lawEls = [];
+
+  // 速度档：0.25× ~ 4×，只改模拟时间的步长（生灭、漂移、事件一起快慢）
+  var SPEED_STEPS = [0.25, 0.5, 1, 2, 4];
+  var speedStep = 2;            // 默认 ×1
+  var simSpeed = 1;
+
+  // 外感六淫：自然发生（可关成手动）
+  var eventAuto = true;
+  var eventNext = 16;           // 开局先安静十几秒
+  var omenTime = 0;
+
+  // 人的生命活动：日用耗阴阳，食息补阴阳
+  var humanOn = false;          // 人体总开关：开了才谈得上食、息、外感、日用
+  var lifeNext = 20;            // 下一次消耗的倒计时（模拟秒）
+  var eatCd = 0;                // 食的冷却（真实秒）
+  var breathCd = 0;             // 息的冷却（真实秒）
+  var lastHud = { black: -1, white: -1, total: -1, balance: '', cls: null };
+
+  // 视图：粒子（一粒一分） / 色块（阴阳图里的颜色面积）
+  var viewMode = 'particles';
+
+  // 新手教程：一条条讲，讲一条开一条
+  var tutorial = { on: false, step: 0, time: 0 };
+
+  function rand(a, b) {
+    return a + Math.random() * (b - a);
+  }
+
+  // 近似标准正态（-3 ~ 3），用于随机游走
+  function gauss() {
+    return (Math.random() + Math.random() + Math.random() - 1.5) * 2;
+  }
+
+  // ---------------------------------------------------------------
+  // 粒子外观：统一大小，预渲染一次
+  // ---------------------------------------------------------------
+  function buildSprite(kind, radius) {
+    var isBlack = kind === 'black';
+    var pad = 7;
+    var size = (radius + pad) * 2;
+    var px = Math.max(2, Math.round(size * dpr));
+
+    var c = document.createElement('canvas');
+    c.width = px;
+    c.height = px;
+    var g = c.getContext('2d');
+    g.scale(px / size, px / size);
+
+    var cx = size / 2;
+    var cy = size / 2;
+
+    // 落影，给一点体积感
+    g.save();
+    g.shadowColor = isBlack ? 'rgba(0, 0, 0, 0.44)' : 'rgba(18, 18, 30, 0.40)';
+    g.shadowBlur = radius * 0.95;
+    g.shadowOffsetY = radius * 0.22;
+    g.beginPath();
+    g.arc(cx, cy, radius, 0, Math.PI * 2);
+    g.fillStyle = isBlack ? '#08080c' : '#f7f7fb';
+    g.fill();
+    g.restore();
+
+    // 球面渐变
+    var body = g.createRadialGradient(
+      cx - radius * 0.34, cy - radius * 0.38, radius * 0.1,
+      cx, cy, radius * 1.02
+    );
+    if (isBlack) {
+      body.addColorStop(0, '#575764');
+      body.addColorStop(0.45, '#1a1a21');
+      body.addColorStop(1, '#000003');
+    } else {
+      body.addColorStop(0, '#ffffff');
+      body.addColorStop(0.58, '#f3f3f8');
+      body.addColorStop(1, '#c6c6d4');
+    }
+    g.beginPath();
+    g.arc(cx, cy, radius, 0, Math.PI * 2);
+    g.fillStyle = body;
+    g.fill();
+
+    // 边缘细线
+    g.beginPath();
+    g.arc(cx, cy, radius - 0.35, 0, Math.PI * 2);
+    g.lineWidth = 0.7;
+    g.strokeStyle = isBlack ? 'rgba(255, 255, 255, 0.10)' : 'rgba(255, 255, 255, 0.8)';
+    g.stroke();
+
+    // 高光
+    g.beginPath();
+    g.ellipse(
+      cx - radius * 0.30, cy - radius * 0.36,
+      radius * 0.30, radius * 0.19, -0.6, 0, Math.PI * 2
+    );
+    g.fillStyle = isBlack ? 'rgba(255, 255, 255, 0.16)' : 'rgba(255, 255, 255, 0.92)';
+    g.fill();
+
+    return { canvas: c, size: size };
+  }
+
+  function buildSprites() {
+    sprites.black = buildSprite('black', CONFIG.radius);
+    sprites.white = buildSprite('white', CONFIG.radius);
+  }
+
+  // ---------------------------------------------------------------
+  // 粒子
+  // ---------------------------------------------------------------
+  function createParticle(kind) {
+    return {
+      kind: kind,
+      radius: CONFIG.radius,
+      x: 0,
+      y: 0,
+      age: 0,                   // 只用于出生淡入
+      dying: false,             // 是否正在消散（被对方"带走"了）
+      dyingTime: 0,
+      fastFade: false,          // 手动减粒子时用更快的淡出
+      angle: rand(0, Math.PI * 2),
+      speed: rand(CONFIG.speed[0], CONFIG.speed[1]),
+      alpha: 0
+    };
+  }
+
+  // 淡入 / 淡出 —— 只改透明度，不改大小
+  function updateAlpha(p) {
+    var a = 1;
+    if (p.age < CONFIG.fadeIn) a = p.age / CONFIG.fadeIn;
+    if (p.dying) {
+      var span = p.fastFade ? 0.4 : CONFIG.fadeOut;
+      var b = Math.max(0, 1 - p.dyingTime / span);
+      if (b < a) a = b;
+    }
+    p.alpha = a;
+  }
+
+  function isFreeSpot(x, y, r) {
+    var limitX = Math.max(r, W - r);
+    var limitY = Math.max(r, H - r);
+    if (x < r || x > limitX || y < r || y > limitY) return false;
+    for (var i = 0; i < particles.length; i++) {
+      var q = particles[i];
+      var dx = q.x - x;
+      var dy = q.y - y;
+      var min = q.radius + r + CONFIG.spawnGap;
+      if (dx * dx + dy * dy < min * min) return false;
+    }
+    return true;
+  }
+
+  function spawn(kind) {
+    var p = createParticle(kind);
+    var r = p.radius;
+    var limitX = Math.max(r, W - r);
+    var limitY = Math.max(r, H - r);
+
+    for (var i = 0; i < CONFIG.maxSpawnTry; i++) {
+      p.x = rand(r, limitX);
+      p.y = rand(r, limitY);
+      if (isFreeSpot(p.x, p.y, r)) break;
+    }
+
+    updateAlpha(p);
+    particles.push(p);
+  }
+
+  // 场上所有粒子（含正在消散的）
+  function countKinds() {
+    var black = 0;
+    for (var i = 0; i < particles.length; i++) {
+      if (particles[i].kind === 'black') black++;
+    }
+    return { black: black, white: particles.length - black, total: particles.length };
+  }
+
+  // 真正"存在"的粒子（不含正在消散的），离决判定用它
+  function countAlive() {
+    var black = 0;
+    var white = 0;
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      if (p.dying) continue;
+      if (p.kind === 'black') black++;
+      else white++;
+    }
+    return { black: black, white: white };
+  }
+
+  // 把某个"活着"的粒子标记为消散中
+  function killOne(kind) {
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      if (!p.dying && p.kind === kind) {
+        p.dying = true;
+        p.dyingTime = 0;
+        updateAlpha(p);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // 生成取资于谁：自和开着，看对方数量（对方越多生得越多，互相资助）
+  //                 自和关掉，只看自身（对方的多少不再拉着偏差回中）
+  function birthWeight(kind, alive) {
+    if (lawsOff.zihe) return kind === 'black' ? alive.black : alive.white;
+    return kind === 'black' ? alive.white : alive.black;
+  }
+
+  // ---------------------------------------------------------------
+  // 外感六淫：风寒暑湿燥火，来时直接改动阴阳之数
+  // 阳邪（风、暑、燥、火）助阳耗阴；阴邪（寒、湿）助阴伤阳
+  // ---------------------------------------------------------------
+  var OMENS = [
+    { name: '风邪', side: 'yang', yang: 5, yin: -5,
+      text: '风为阳邪，其性开泄 · 阳 +5，阴 −5' },
+    { name: '寒邪', side: 'yin', yang: -8, yin: 8,
+      text: '寒为阴邪，易伤阳气 · 阳 −8，阴 +8' },
+    { name: '暑邪', side: 'yang', yang: 9, yin: -9,
+      text: '暑为阳邪，耗气伤津 · 阳 +9，阴 −9' },
+    { name: '湿邪', side: 'yin', yang: -6, yin: 6,
+      text: '湿为阴邪，重浊黏滞 · 阳 −6，阴 +6' },
+    { name: '燥邪', side: 'yang', yang: 3, yin: -9,
+      text: '燥胜则干，最耗阴津 · 阳 +3，阴 −9' },
+    { name: '火邪', side: 'yang', yang: 12, yin: -10,
+      text: '火为阳邪，其性炎上 · 阳 +12，阴 −10' }
+  ];
+
+  // 新手教程：一条条讲，讲一条开一条（on = 这一步要启用的规律）
+  var TUTORIAL = [
+    {
+      title: '阴与阳',
+      text: '黑的为阴，白的为阳。现在两边各一半，这叫阴阳平衡。接下来一条一条把规律打开，你会看到它自己怎么动。',
+      dur: 9
+    },
+    {
+      title: '对立制约',
+      on: 'zhizhi',
+      text: '一方之所以会消散，是因为另一方在。对方越多，散得越急。现在只开了这一条——看它们一点点少下去。',
+      dur: 10
+    },
+    {
+      title: '互藏互用',
+      on: 'huzang',
+      text: '一方的生成，取资于另一方：对方越多，这一方生得越多。现在两边都会自己补回来了。',
+      dur: 9
+    },
+    {
+      title: '阴阳自和',
+      on: 'zihe',
+      text: '失衡之后，它自己会往平衡走，偏差越大，拉回来的劲也越大——这就是阴阳自和。',
+      dur: 9
+    },
+    {
+      title: '阴阳消长',
+      on: 'xiaozhang',
+      text: '顶部会报出这一段时间里谁长谁消：阳长阴消、阴长阳消，或者两边一起长、一起消。',
+      dur: 9
+    },
+    {
+      title: '阴阳转化',
+      on: 'zhuanhua',
+      text: '一方到了另一方的两倍，就是「极」——重阴必阳，重阳必阴。想看得快点，就自己点补阳或补阴。',
+      dur: 10
+    },
+    {
+      title: '阴阳互损',
+      on: 'husun',
+      text: '两边一起虚下去，就是阴阳两虚；再往下走到一边归零，就是阴阳离决。',
+      dur: 9
+    },
+    {
+      title: '调摄',
+      text: '左下四个按钮：补阴、泻阴、补阳、泻阳，一次五个粒子，想推哪边就推哪边。中间是时停，两边是减速和加速。',
+      dur: 14
+    },
+    {
+      title: '看下去',
+      text: '就这样。底下那排词条可以点，点掉哪一条，就能看没有它的世界会变成什么样。',
+      dur: 8
+    }
+  ];
+
+  // 按需增减某一方：正数生，负数灭（走同一套淡入淡出）
+  function changeKind(kind, n) {
+    if (n > 0) {
+      for (var i = 0; i < n; i++) {
+        if (particles.length >= CONFIG.maxTotal) break;
+        spawn(kind);
+      }
+    } else if (n < 0) {
+      removeParticles(kind, -n);
+    }
+  }
+
+  function showOmen(ome) {
+    omen.name.textContent = ome.name;
+    omen.text.textContent = ome.text;
+    omen.card.classList.toggle('omen--yang', ome.side === 'yang');
+    omen.card.classList.toggle('omen--yin', ome.side === 'yin');
+    omen.card.classList.add('is-visible');
+    omen.card.setAttribute('aria-hidden', 'false');
+    omenTime = 4.6;
+  }
+
+  // 召来一邪：随机六淫之一，立刻改动阴阳
+  function triggerOmen() {
+    if (state !== 'running') return;
+    var ome = OMENS[Math.floor(Math.random() * OMENS.length)];
+    changeKind('white', ome.yang);
+    changeKind('black', ome.yin);
+    showOmen(ome);
+  }
+
+  // 食：水谷精微入胃，化生精微，补阴为主
+  function eat() {
+    if (!humanOn || lawsOff.shuigu || state !== 'running' || eatCd > 0) return;
+    changeKind('black', CONFIG.eatGain.yin);
+    changeKind('white', CONFIG.eatGain.yang);
+    eatCd = CONFIG.actionCooldown;
+    updateActions();
+  }
+
+  // 息：吸入天气清气，补阳为主
+  function breathe() {
+    if (!humanOn || lawsOff.qingqi || state !== 'running' || breathCd > 0) return;
+    changeKind('white', CONFIG.breathGain.yang);
+    changeKind('black', CONFIG.breathGain.yin);
+    breathCd = CONFIG.actionCooldown;
+    updateActions();
+  }
+
+  // 人体总开关：开了才出现外感、食息，底下也才长出人体词条
+  function toggleHuman() {
+    humanOn = !humanOn;
+    ui.control.classList.toggle('is-human', humanOn);
+    ui.laws.classList.toggle('is-human', humanOn);
+    ui.humanBtn.classList.toggle('is-on', humanOn);
+    ui.humanBtn.setAttribute('aria-pressed', humanOn ? 'true' : 'false');
+    ui.humanLabel.textContent = humanOn ? '人体 · 开' : '人体 · 关';
+    updateActions();
+  }
+
+  // 冷却 / 未开启 / 已离决，都置灰
+  function updateActions() {
+    var live = humanOn && state === 'running';
+    ui.eat.disabled = !live || lawsOff.shuigu || eatCd > 0;
+    ui.breath.disabled = !live || lawsOff.qingqi || breathCd > 0;
+    ui.omenBtn.disabled = !live;
+    ui.autoBtn.disabled = !humanOn;
+  }
+
+  // 转化横幅：重阴必阳 / 重阳必阴（大字），开关定律时用同一块做轻提示
+  function showBanner(text, small) {
+    ui.banner.textContent = text;
+    ui.banner.classList.toggle('is-small', !!small);
+    ui.banner.classList.add('is-visible');
+    bannerTime = small ? 1.8 : 2.6;
+  }
+
+  // 开关一条规律：词条退灰划线，中央轻提示一句
+  function paintLaw(el, key) {
+    var off = lawsOff[key];
+    el.classList.toggle('is-off', off);
+    el.setAttribute('aria-pressed', off ? 'false' : 'true');
+    var act = el.querySelector('.law__act');
+    if (act) act.textContent = off ? '点击 · 开启此律' : '点击 · 关闭此律';
+  }
+
+  function paintAllLaws() {
+    for (var i = 0; i < lawEls.length; i++) {
+      var key = lawEls[i].getAttribute('data-law');
+      if (key in lawsOff) paintLaw(lawEls[i], key);
+    }
+  }
+
+  function toggleLaw(key, el) {
+    lawsOff[key] = !lawsOff[key];
+    paintLaw(el, key);
+    showBanner('「' + LAW_NAME[key] + '」' + (lawsOff[key] ? '已关闭' : '已恢复'), true);
+    updateActions();
+  }
+
+  // ---------------------------------------------------------------
+  // 视图切换
+  // ---------------------------------------------------------------
+  function setView(mode) {
+    viewMode = mode === 'block' ? 'block' : 'particles';
+    var isBlock = viewMode === 'block';
+    ui.viewParticles.classList.toggle('is-on', !isBlock);
+    ui.viewBlock.classList.toggle('is-on', isBlock);
+    ui.viewParticles.setAttribute('aria-pressed', isBlock ? 'false' : 'true');
+    ui.viewBlock.setAttribute('aria-pressed', isBlock ? 'true' : 'false');
+  }
+
+  // ---------------------------------------------------------------
+  // 新手教程
+  // ---------------------------------------------------------------
+  var TUT_KEYS = ['zhizhi', 'huzang', 'husun', 'xiaozhang', 'zhuanhua', 'zihe'];
+
+  function startTutorial() {
+    if (tutorial.on) return;
+    tutorial.on = true;
+    for (var i = 0; i < TUT_KEYS.length; i++) lawsOff[TUT_KEYS[i]] = true;
+    paintAllLaws();
+
+    ui.laws.classList.add('is-locked');
+    ui.tut.classList.add('is-visible');
+    ui.tut.setAttribute('aria-hidden', 'false');
+
+    // 从干净的局面开始；把速度、时停按住，免得演示被带飞
+    restart();
+    setSpeed(2);
+    if (paused) togglePause();
+    ui.pauseBtn.disabled = true;
+    ui.slower.disabled = true;
+    ui.faster.disabled = true;
+
+    showTutorialStep(0);
+  }
+
+  function showTutorialStep(i) {
+    var s = TUTORIAL[i];
+    // 讲完这一步，才把这条规律打开
+    if (s.on) {
+      lawsOff[s.on] = false;
+      paintAllLaws();
+    }
+    tutorial.step = i;
+    tutorial.time = s.dur || 9;
+    ui.tutStep.textContent = (i + 1) + ' / ' + TUTORIAL.length;
+    ui.tutTitle.textContent = s.title;
+    ui.tutText.textContent = s.text;
+    ui.tutNext.textContent = i === TUTORIAL.length - 1 ? '开始玩' : '下一步';
+  }
+
+  function nextTutorial() {
+    if (!tutorial.on) return;
+    var next = tutorial.step + 1;
+    if (next >= TUTORIAL.length) {
+      endTutorial();
+      return;
+    }
+    showTutorialStep(next);
+  }
+
+  function endTutorial() {
+    if (!tutorial.on) return;
+    tutorial.on = false;
+    for (var i = 0; i < TUT_KEYS.length; i++) lawsOff[TUT_KEYS[i]] = false;
+    paintAllLaws();
+
+    ui.laws.classList.remove('is-locked');
+    ui.tut.classList.remove('is-visible');
+    ui.tut.setAttribute('aria-hidden', 'true');
+
+    ui.pauseBtn.disabled = false;
+    setSpeed(speedStep);
+    updateActions();
+
+    try { localStorage.setItem('yinyang-tut-done', '1'); } catch (e) {}
+  }
+
+  // 速度档位：夹在时停两侧的减速 / 加速，到头就禁用
+  function setSpeed(step) {
+    speedStep = Math.max(0, Math.min(SPEED_STEPS.length - 1, step));
+    simSpeed = SPEED_STEPS[speedStep];
+    ui.rate.textContent = '×' + simSpeed;
+    ui.slower.disabled = speedStep === 0;
+    ui.faster.disabled = speedStep === SPEED_STEPS.length - 1;
+  }
+
+  // 外感自动 / 手动
+  function syncAuto() {
+    ui.autoBtn.classList.toggle('is-on', eventAuto);
+    ui.autoBtn.setAttribute('aria-pressed', eventAuto ? 'true' : 'false');
+    ui.autoBtn.textContent = eventAuto ? '自动 · 开' : '手动 · 关';
+  }
+
+  function toggleAuto() {
+    eventAuto = !eventAuto;
+    if (eventAuto) eventNext = rand(CONFIG.omenGap[0], CONFIG.omenGap[1]);
+    syncAuto();
+  }
+
+  // 消长状态：看最近约 15 秒里阴阳各自是增是减
+  function updateTrend(dt, counts) {
+    if (state !== 'running' || lawsOff.xiaozhang) {
+      ui.trend.classList.add('is-hidden');
+      return;
+    }
+
+    trendClock += dt;
+    if (trendClock >= 1.5) {
+      trendClock -= 1.5;
+      trendHist.push({ black: counts.black, white: counts.white });
+      if (trendHist.length > 10) trendHist.shift();
+    }
+
+    if (trendHist.length < 10) {
+      ui.trend.classList.add('is-hidden');
+      return;
+    }
+    ui.trend.classList.remove('is-hidden');
+
+    var dY = counts.white - trendHist[0].white;
+    var dI = counts.black - trendHist[0].black;
+    var text;
+    if (dY >= 2 && dI <= -2) text = '阳长阴消';
+    else if (dI >= 2 && dY <= -2) text = '阴长阳消';
+    else if (dY >= 2 && dI >= 2) text = '阴阳皆长';
+    else if (dY <= -2 && dI <= -2) text = '阴阳皆消';
+    else text = '消长持平';
+    if (ui.trend.textContent !== text) ui.trend.textContent = text;
+  }
+
+  function seedInitial() {
+    particles.length = 0;
+    var half = Math.floor(CONFIG.targetTotal / 2);
+    for (var c = 0; c < 2; c++) {
+      var kind = c === 0 ? 'black' : 'white';
+      for (var i = 0; i < half; i++) {
+        spawn(kind);
+        // 初始粒子直接是"已长成"的状态，页面一打开就能看见
+        var p = particles[particles.length - 1];
+        p.age = CONFIG.fadeIn;
+        updateAlpha(p);
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // 离决 / 重新开始
+  // ---------------------------------------------------------------
+  function showEnding(counts) {
+    endingShown = true;
+    if (counts.black === 0) {
+      ending.text.textContent = '阴已归零，孤阳不生。天地失其和，此谓阴阳离决。';
+      ending.counts.textContent = '阴 0 · 阳 ' + counts.white;
+    } else {
+      ending.text.textContent = '阳已归零，孤阴不长。天地失其和，此谓阴阳离决。';
+      ending.counts.textContent = '阴 ' + counts.black + ' · 阳 0';
+    }
+    ending.screen.classList.add('is-visible');
+    ending.screen.setAttribute('aria-hidden', 'false');
+  }
+
+  function restart() {
+    ending.screen.classList.remove('is-visible');
+    ending.screen.setAttribute('aria-hidden', 'true');
+    endingShown = false;
+    state = 'running';
+    particles.length = 0;
+    birthAcc.black = 0;
+    birthAcc.white = 0;
+    birthNeed.black = 1;
+    birthNeed.white = 1;
+    deathAcc = 0;
+    deathNeed = 1;
+    convertCd = 0;
+    bannerTime = 0;
+    trendHist = [];
+    trendClock = 0;
+    eventNext = rand(CONFIG.omenGap[0], CONFIG.omenGap[1]);
+    omenTime = 0;
+    lifeNext = rand(CONFIG.lifeGap[0], CONFIG.lifeGap[1]);
+    eatCd = 0;
+    breathCd = 0;
+    ui.banner.classList.remove('is-visible');
+    omen.card.classList.remove('is-visible');
+    omen.card.setAttribute('aria-hidden', 'true');
+    seedInitial();
+    lastHud = { black: -1, white: -1, total: -1, balance: '', cls: null };
+    updateHud(countKinds());
+  }
+
+  // 手动加粒子：按钮一次加 5 个（上限 400，防止点太多卡）
+  function addParticles(kind, n) {
+    if (state !== 'running') return;
+    for (var i = 0; i < n; i++) {
+      if (particles.length >= 400) break;
+      spawn(kind);
+    }
+  }
+
+  // 手动减粒子：标记为消散，让它们淡出
+  function removeParticles(kind, n) {
+    if (state !== 'running') return;
+    var removed = 0;
+    for (var i = 0; i < particles.length && removed < n; i++) {
+      var p = particles[i];
+      if (p.dying || p.kind !== kind) continue;
+      p.dying = true;
+      p.dyingTime = 0;
+      p.fastFade = true;
+      updateAlpha(p);
+      removed++;
+    }
+  }
+
+  // 时停：粒子继续漂，但生灭、转化都停下
+  function togglePause() {
+    paused = !paused;
+    ui.pauseBtn.classList.toggle('is-active', paused);
+    ui.pauseBtn.textContent = paused ? '继续' : '时停';
+    ui.pauseBtn.title = paused ? '继续：恢复生灭' : '时停：粒子照常运动，生灭暂停';
+  }
+
+  // 预览用：按 D 直接让"阴"散尽，立刻看离决界面（正式玩法里自然归零才触发）
+  function previewEnding() {
+    if (state !== 'running') return;
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      if (p.kind === 'black' && !p.dying) {
+        p.dying = true;
+        p.dyingTime = 0;
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // 尺寸
+  // ---------------------------------------------------------------
+  function resize() {
+    var nextDpr = Math.min(window.devicePixelRatio || 1, CONFIG.dprCap);
+    var dprChanged = nextDpr !== dpr;
+    dpr = nextDpr;
+
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      var r = p.radius;
+      if (p.x < r) p.x = r;
+      if (p.x > W - r) p.x = Math.max(r, W - r);
+      if (p.y < r) p.y = r;
+      if (p.y > H - r) p.y = Math.max(H - r, r);
+    }
+
+    if (dprChanged) buildSprites();
+  }
+
+  // ---------------------------------------------------------------
+  // 更新
+  // ---------------------------------------------------------------
+  function update(dt) {
+    var i, p;
+
+    var counts = countKinds();
+    var alive = countAlive();
+
+    // 0) 离决判定：任一方"存在"的数量归零，就停下生灭
+    if (state === 'running' && (alive.black === 0 || alive.white === 0)) {
+      state = 'separated';
+      birthAcc.black = 0;
+      birthAcc.white = 0;
+      deathAcc = 0;
+    }
+
+    // 1) 变老 / 淡出
+    for (i = particles.length - 1; i >= 0; i--) {
+      p = particles[i];
+      p.age += dt;
+
+      if (p.dying) {
+        p.dyingTime += dt;
+        var span = p.fastFade ? 0.4 : CONFIG.fadeOut;
+        if (p.dyingTime >= span) {
+          particles.splice(i, 1);
+          continue;
+        }
+      }
+      updateAlpha(p);
+    }
+
+    // 2) 消亡事件（对立制约）
+    //    每个粒子每秒的消散概率 = 对方数量 × 制约系数（线性）
+    //    按 hazard 加权随机挑一个粒子，两次事件的间隔在 jitter 范围内浮动
+    //    关掉这条律：粒子不再因对方的存在而消散（只增不减）
+    if (!paused && state === 'running' && !lawsOff.zhizhi) {
+      var deathRate = 0;
+      for (i = 0; i < particles.length; i++) {
+        p = particles[i];
+        if (p.dying) continue;
+        var opp = p.kind === 'black' ? alive.white : alive.black;
+        deathRate += CONFIG.restraint * opp;
+      }
+
+      // 收尾加速：剩十几个时，r·b·w 每秒才死掉一个，离决要等太久。
+      // 总数很少时整体放大消亡权重（总率与挑选权重必须同乘一个系数，
+      // 否则随机数会落在空处，挑不到粒子，等于空转）
+      var accel = 1;
+      var fewest = alive.black + alive.white;
+      if (fewest > 0 && fewest <= 22 && deathRate > 0 && deathRate < 0.8) {
+        accel = 0.8 / deathRate;
+      }
+      deathRate *= accel;
+
+      deathAcc += deathRate * dt;
+      while (deathAcc >= deathNeed) {
+        var pick = Math.random() * deathRate;
+        var chosen = null;
+        for (i = 0; i < particles.length; i++) {
+          p = particles[i];
+          if (p.dying) continue;
+          var opp2 = p.kind === 'black' ? alive.white : alive.black;
+          pick -= CONFIG.restraint * opp2 * accel;
+          if (pick <= 0) { chosen = p; break; }
+        }
+        if (!chosen) { deathAcc = 0; break; }
+
+        chosen.dying = true;
+        chosen.dyingTime = 0;
+        updateAlpha(chosen);
+
+        deathAcc -= deathNeed;
+        deathNeed = rand(CONFIG.jitter[0], CONFIG.jitter[1]);
+      }
+    }
+
+    // 2) 随机游走
+    var speedMax = CONFIG.speed[1] * CONFIG.speedDrift;
+    for (i = 0; i < particles.length; i++) {
+      p = particles[i];
+
+      p.angle += gauss() * CONFIG.wander * dt;
+      p.speed += gauss() * 6 * dt;
+      if (p.speed < CONFIG.speed[0]) p.speed = CONFIG.speed[0];
+      if (p.speed > speedMax) p.speed = speedMax;
+
+      p.x += Math.cos(p.angle) * p.speed * dt;
+      p.y += Math.sin(p.angle) * p.speed * dt;
+
+      var m = p.radius;
+      if (p.x < m) {
+        p.x = m;
+        p.angle = Math.PI - p.angle;
+        p.speed *= CONFIG.bounceDamping;
+      } else if (p.x > W - m) {
+        p.x = W - m;
+        p.angle = Math.PI - p.angle;
+        p.speed *= CONFIG.bounceDamping;
+      }
+      if (p.y < m) {
+        p.y = m;
+        p.angle = -p.angle;
+        p.speed *= CONFIG.bounceDamping;
+      } else if (p.y > H - m) {
+        p.y = H - m;
+        p.angle = -p.angle;
+        p.speed *= CONFIG.bounceDamping;
+      }
+    }
+
+    // 4) 生成事件（互藏互用）
+    //    生成速率 = 对方数量² × 生成系数；和消亡用同一个指数，
+    //    于是每边各自收敛到 generate/restraint，总数自然停在那个水平
+    //    关掉这条律：不再新生，只灭不生
+    if (!paused && state === 'running' && !lawsOff.huzang &&
+        particles.length < CONFIG.maxTotal) {
+      counts = countKinds();
+      alive = countAlive();
+
+      // 关掉阴阳互损：总数到两虚线附近就换一套系数，缺口越大补得越快，
+      // 让总数停在 weakTotal 上下，不再一路虚下去，也就走不到"双方都 < 50"
+      var gcoef = CONFIG.generate;
+      if (lawsOff.husun && counts.total < CONFIG.weakTotal) {
+        var gap = CONFIG.weakTotal - counts.total;
+        gcoef = CONFIG.restraint * (1 + Math.min(1, gap / 16));
+      }
+
+      var inBlack = birthWeight('black', alive);
+      var inWhite = birthWeight('white', alive);
+
+      birthAcc.black += gcoef * inBlack * inBlack * dt;
+      birthAcc.white += gcoef * inWhite * inWhite * dt;
+
+      // 谁欠得更多（累计量 / 本次所需）就先补谁，避免总是阴优先
+      var ready = [];
+      if (birthAcc.black >= birthNeed.black) ready.push('black');
+      if (birthAcc.white >= birthNeed.white) ready.push('white');
+      ready.sort(function (a, b) {
+        return birthAcc[b] / birthNeed[b] - birthAcc[a] / birthNeed[a];
+      });
+
+      var n = Math.min(ready.length, CONFIG.maxSpawnPerFrame);
+      for (i = 0; i < n; i++) {
+        var kind = ready[i];
+        spawn(kind);
+        birthAcc[kind] -= birthNeed[kind];
+        birthNeed[kind] = rand(CONFIG.jitter[0], CONFIG.jitter[1]);
+      }
+    }
+
+    // 5) 转化（物极必反）：一方极盛，开始向对方转化
+    //    重阴必阳 / 重阳必阴 —— 比例悬殊到 2:1 就算"极"
+    //    关掉这条律：不再物极必反
+    if (!paused && state === 'running' && !lawsOff.zhuanhua) {
+      convertCd -= dt;
+      var hi = Math.max(alive.black, alive.white);
+      var lo = Math.min(alive.black, alive.white);
+
+      if (convertCd <= 0 && lo >= 2 && hi >= lo * CONFIG.conversionRatio) {
+        var from = alive.black > alive.white ? 'black' : 'white';
+        var to = from === 'black' ? 'white' : 'black';
+        var convertN = Math.max(1, Math.min(3, Math.round(hi / 20)));
+
+        for (i = 0; i < convertN; i++) {
+          if (!killOne(from)) break;
+          spawn(to);
+        }
+
+        showBanner(from === 'black' ? '重阴必阳' : '重阳必阴');
+        convertCd = CONFIG.conversionCooldown;
+      }
+    }
+
+    // 6) 外感六淫：自然发生（关掉后只能手点）
+    if (humanOn && eventAuto && !paused && state === 'running') {
+      eventNext -= dt;
+      if (eventNext <= 0) {
+        triggerOmen();
+        eventNext = rand(CONFIG.omenGap[0], CONFIG.omenGap[1]);
+      }
+    }
+
+    // 7) 生命活动：形体日用，阴阳俱耗（关了「日用」这条即静养）
+    //    吃饭、呼吸是补，日常活动是耗；一耗一补，阴阳才有"收支"
+    if (humanOn && !lawsOff.riyong && !paused && state === 'running') {
+      lifeNext -= dt;
+      if (lifeNext <= 0) {
+        changeKind('black', -CONFIG.lifeCost);
+        changeKind('white', -CONFIG.lifeCost);
+        lifeNext = rand(CONFIG.lifeGap[0], CONFIG.lifeGap[1]);
+      }
+    }
+
+    // 4) 等最后几个粒子淡完，再揭开"阴阳离决"
+    if (state === 'separated' && !endingShown) {
+      var left = countKinds();
+      if (left.black === 0 || left.white === 0) showEnding(left);
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // 绘制
+  // ---------------------------------------------------------------
+  function draw(counts) {
+    ctx.clearRect(0, 0, W, H);
+
+    if (viewMode === 'block') {
+      drawBlock(counts);
+      return;
+    }
+
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      if (p.alpha <= 0.02) continue;
+      var sprite = sprites[p.kind];
+      var s = sprite.size;
+      ctx.globalAlpha = p.alpha;
+      ctx.drawImage(sprite.canvas, p.x - s / 2, p.y - s / 2, s, s);
+    }
+
+    ctx.globalAlpha = 1;
+  }
+
+  // 色块模式：一张阴阳图，黑鱼的面积就是阴的多少
+  //
+  // 几何：分界点沿竖直直径偏移 d，上半段小圆半径 (R+d)/2、下半段 (R-d)/2，
+  // 于是黑鱼面积 = πR²(0.5 - d/R)，与 d 成线性 —— 反解 d = R(0.5 - p阴) 即可
+  // 精确对上比例，50:50 时正好是标准太极。
+  function drawBlock(counts) {
+    var total = counts.total;
+    var pBlack = total > 0 ? counts.black / total : 0.5;
+
+    var narrow = W < 720;
+    var R = Math.min(W, H) * (narrow ? 0.26 : 0.3);
+    var cx = narrow ? W * 0.64 : W / 2;
+    var cy = narrow ? H * 0.53 : H / 2;
+
+    var d = R * (0.5 - pBlack);
+    var r1 = (R + d) / 2;
+    var r2 = (R - d) / 2;
+    var cy1 = cy + (d - R) / 2;
+    var cy2 = cy + (d + R) / 2;
+
+    // 白鱼打底
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.fillStyle = '#f8f8fb';
+    ctx.fill();
+
+    // 黑鱼：左半大圆 + 下小圆 - 上小圆
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - R);
+    ctx.arc(cx, cy, R, -Math.PI / 2, Math.PI / 2, true);
+    ctx.arc(cx, cy2, r2, Math.PI / 2, -Math.PI / 2, true);
+    ctx.arc(cx, cy1, r1, Math.PI / 2, Math.PI * 1.5, false);
+    ctx.closePath();
+    ctx.fillStyle = '#08080c';
+    ctx.fill();
+
+    // 鱼眼：白鱼里一点黑，黑鱼里一点白
+    ctx.beginPath();
+    ctx.arc(cx, cy1, Math.max(2, r1 * 0.33), 0, Math.PI * 2);
+    ctx.fillStyle = '#08080c';
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy2, Math.max(2, r2 * 0.33), 0, Math.PI * 2);
+    ctx.fillStyle = '#f8f8fb';
+    ctx.fill();
+
+    // 外圈
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(20, 20, 30, 0.3)';
+    ctx.stroke();
+
+    // 比例
+    var pctI = Math.round(pBlack * 100);
+    ctx.font = '13px "Songti SC", "Noto Serif SC", "STSong", serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = 'rgba(28, 28, 36, 0.68)';
+    ctx.fillText('阴 ' + pctI + '%  ·  阳 ' + (100 - pctI) + '%', cx, cy + R + 26);
+    ctx.textAlign = 'start';
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  // ---------------------------------------------------------------
+  // HUD
+  // ---------------------------------------------------------------
+  function updateHud(counts) {
+    if (counts.black !== lastHud.black) {
+      ui.black.textContent = counts.black;
+      lastHud.black = counts.black;
+    }
+    if (counts.white !== lastHud.white) {
+      ui.white.textContent = counts.white;
+      lastHud.white = counts.white;
+    }
+    if (counts.total !== lastHud.total) {
+      ui.total.textContent = '共 ' + counts.total;
+      lastHud.total = counts.total;
+    }
+
+    var balance, cls;
+    if (state === 'separated') {
+      balance = '阴阳离决';
+      cls = 'is-separated';
+    } else if (counts.black < 50 && counts.white < 50) {
+      // 互根互用失常：一方虚损不能助长另一方，累及对方亦虚
+      balance = '阴阳两虚';
+      if (counts.black !== counts.white) {
+        balance += counts.white < counts.black ? ' · 阳损及阴' : ' · 阴损及阳';
+      }
+      cls = 'is-deficiency';
+    } else if (counts.total > 0) {
+      // 平衡也按占比判断：两边各占一半附近才算平衡
+      var pY = counts.white / counts.total;
+      if (Math.abs(pY - 0.5) <= 0.045) {
+        balance = '阴阳平衡';
+        cls = 'is-balanced';
+      } else {
+        var major = pY > 0.5 ? '阳' : '阴';
+        var pct = Math.round((pY > 0.5 ? pY : 1 - pY) * 100);
+        balance = '阴阳失衡 · ' + major + '占 ' + pct + '%';
+        cls = 'is-over';
+      }
+    }
+
+    if (balance !== lastHud.balance) {
+      ui.balance.textContent = balance;
+      lastHud.balance = balance;
+    }
+    if (cls !== lastHud.cls) {
+      ui.balance.classList.toggle('is-balanced', cls === 'is-balanced');
+      ui.balance.classList.toggle('is-over', cls === 'is-over');
+      ui.balance.classList.toggle('is-separated', cls === 'is-separated');
+      ui.balance.classList.toggle('is-deficiency', cls === 'is-deficiency');
+      lastHud.cls = cls;
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // 证候词条：右上角分区显示，阴归阴、阳归阳，可同时出现多条
+  // ---------------------------------------------------------------
+  var lastTagSig = '';
+
+  function conditions(counts) {
+    var yang = counts.white;   // 阳
+    var yin = counts.black;    // 阴
+    var yinTags = [];
+    var yangTags = [];
+    var total = yin + yang;
+    if (total <= 0) return { yin: yinTags, yang: yangTags };
+
+    // 全部按"占比"判断，和总数无关：50 / 50 的场子里，130 和 60 的总数一视同仁
+    var pY = yang / total;    // 阳的占比
+    var pI = yin / total;     // 阴的占比
+    var SHENG = 0.5455;       // 过半有余 → 盛
+    var XU = 0.4545;          // 不足一半 → 虚
+    var SHUAI = 0.3636;       // 不足四成 → 衰
+
+    // —— 阴区 ——
+    if (pI > SHENG) {
+      yinTags.push({ key: 'yin-sheng', label: '阴盛', side: 'yin', tip: '阴盛：阴的占比超过 54.5%，相对偏盛。' });
+    } else if (pI < SHUAI) {
+      yinTags.push({ key: 'yin-shuai', label: '阴衰', side: 'yin', tip: '阴衰：阴的占比低于 36.4%，相对衰微。' });
+    } else if (pI < XU) {
+      yinTags.push({ key: 'yin-xu', label: '阴虚', side: 'yin', tip: '阴虚：阴的占比低于 45.5%，相对偏虚。' });
+    }
+
+    // —— 阳区 ——
+    if (pY > SHENG) {
+      yangTags.push({ key: 'yang-sheng', label: '阳盛', side: 'yang', tip: '阳盛：阳的占比超过 54.5%，相对偏盛。' });
+    } else if (pY < SHUAI) {
+      yangTags.push({ key: 'yang-shuai', label: '阳衰', side: 'yang', tip: '阳衰：阳的占比低于 36.4%，相对衰微。' });
+    } else if (pY < XU) {
+      yangTags.push({ key: 'yang-xu', label: '阳虚', side: 'yang', tip: '阳虚：阳的占比低于 45.5%，相对偏虚。' });
+    }
+
+    // 阴虚则阳亢：阴的占比不足，阳相对失制 → 阳区
+    if (pI < XU) {
+      yangTags.push({ key: 'yang-kang', label: '阳亢', side: 'yang', tip: '阴虚则阳亢：阴的占比不足，阳失所制而上亢。' });
+    }
+
+    // 阳虚则阴盛：阳的占比不足，阴相对失制 → 阴区（与"阴盛"重名时只留一条解释）
+    if (pY < XU) {
+      for (var i = yinTags.length - 1; i >= 0; i--) {
+        if (yinTags[i].key === 'yin-sheng') yinTags.splice(i, 1);
+      }
+      yinTags.push({ key: 'yin-sheng-yangxu', label: '阴盛', side: 'yin', tip: '阳虚则阴盛：阳的占比不足，阴失所制而偏盛。' });
+    }
+
+    // 阴盛则阳病：阴的占比过半 → 阳区
+    if (pI > SHENG) {
+      yangTags.push({ key: 'yang-bing', label: '阳病', side: 'yang', tip: '阴盛则阳病：阴的占比过半，阳受其制而为病。' });
+    }
+
+    // 阳盛则阴病：阳的占比过半 → 阴区
+    if (pY > SHENG) {
+      yinTags.push({ key: 'yin-bing', label: '阴病', side: 'yin', tip: '阳盛则阴病：阳的占比过半，阴受其制而为病。' });
+    }
+
+    return { yin: yinTags, yang: yangTags };
+  }
+
+  function makeChip(t) {
+    var chip = document.createElement('span');
+    chip.className = 'tag tag--' + t.side;
+    chip.tabIndex = 0;
+
+    var label = document.createElement('span');
+    label.className = 'tag__label';
+    label.textContent = t.label;
+
+    var tip = document.createElement('span');
+    tip.className = 'tag__tip';
+    tip.textContent = t.tip;
+
+    chip.appendChild(label);
+    chip.appendChild(tip);
+    return chip;
+  }
+
+  function makeGroup(label, side, list) {
+    var group = document.createElement('div');
+    group.className = 'states__group states__group--' + side;
+
+    var head = document.createElement('div');
+    head.className = 'states__head';
+
+    var dot = document.createElement('span');
+    dot.className = 'states__dot';
+
+    var name = document.createElement('span');
+    name.textContent = label;
+
+    head.appendChild(dot);
+    head.appendChild(name);
+
+    var body = document.createElement('div');
+    body.className = 'states__list';
+
+    if (!list.length) {
+      var empty = document.createElement('span');
+      empty.className = 'states__empty';
+      empty.textContent = '—';
+      body.appendChild(empty);
+    } else {
+      for (var i = 0; i < list.length; i++) body.appendChild(makeChip(list[i]));
+    }
+
+    group.appendChild(head);
+    group.appendChild(body);
+    return group;
+  }
+
+  function renderTags(groups) {
+    var sig = '';
+    for (var i = 0; i < groups.yin.length; i++) sig += groups.yin[i].key + ',';
+    sig += '|';
+    for (var j = 0; j < groups.yang.length; j++) sig += groups.yang[j].key + ',';
+    if (sig === lastTagSig) return;
+    lastTagSig = sig;
+
+    var total = groups.yin.length + groups.yang.length;
+    ui.tags.classList.toggle('is-visible', total > 0);
+    ui.tags.setAttribute('aria-hidden', total ? 'false' : 'true');
+
+    while (ui.tags.firstChild) ui.tags.removeChild(ui.tags.firstChild);
+    if (!total) return;
+
+    // 两个分区始终都画出来，空的一侧用"—"，让"阴归阴、阳归阳"一目了然
+    ui.tags.appendChild(makeGroup('阴', 'yin', groups.yin));
+    var divider = document.createElement('div');
+    divider.className = 'states__divider';
+    ui.tags.appendChild(divider);
+    ui.tags.appendChild(makeGroup('阳', 'yang', groups.yang));
+  }
+
+  // ---------------------------------------------------------------
+  // 主循环
+  // ---------------------------------------------------------------
+  var lastTime = 0;
+
+  function frame(now) {
+    if (!lastTime) lastTime = now;
+    var dt = (now - lastTime) / 1000;
+    lastTime = now;
+    if (dt > 0.05) dt = 0.05;
+
+    update(dt * simSpeed);
+
+    var counts = countKinds();
+    draw(counts);
+    updateHud(counts);
+
+    // 教程按真实时间推进，免得被加速带飞
+    if (tutorial.on) {
+      tutorial.time -= dt;
+      if (tutorial.time <= 0) nextTutorial();
+    }
+
+    renderTags(state === 'separated' ? { yin: [], yang: [] } : conditions(counts));
+    updateTrend(dt * simSpeed, counts);
+
+    if (bannerTime > 0) {
+      bannerTime -= dt;
+      if (bannerTime <= 0) ui.banner.classList.remove('is-visible');
+    }
+
+    if (omenTime > 0) {
+      omenTime -= dt;
+      if (omenTime <= 0) {
+        omen.card.classList.remove('is-visible');
+        omen.card.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    // 食 / 息的冷却走真实时间，加速时也不会变成狂点
+    if (eatCd > 0) eatCd -= dt;
+    if (breathCd > 0) breathCd -= dt;
+    updateActions();
+
+    requestAnimationFrame(frame);
+  }
+
+  // ---------------------------------------------------------------
+  // 启动
+  // ---------------------------------------------------------------
+  function start() {
+    dpr = -1;
+    resize();
+    seedInitial();
+    updateHud(countKinds());
+
+    ending.button.addEventListener('click', restart);
+    ui.addYin.addEventListener('click', function () { addParticles('black', 5); });
+    ui.addYang.addEventListener('click', function () { addParticles('white', 5); });
+    ui.subYin.addEventListener('click', function () { removeParticles('black', 5); });
+    ui.subYang.addEventListener('click', function () { removeParticles('white', 5); });
+    ui.pauseBtn.addEventListener('click', togglePause);
+    ui.slower.addEventListener('click', function () { setSpeed(speedStep - 1); });
+    ui.faster.addEventListener('click', function () { setSpeed(speedStep + 1); });
+    ui.omenBtn.addEventListener('click', triggerOmen);
+    ui.autoBtn.addEventListener('click', toggleAuto);
+    ui.eat.addEventListener('click', eat);
+    ui.breath.addEventListener('click', breathe);
+    ui.humanBtn.addEventListener('click', toggleHuman);
+    ui.viewParticles.addEventListener('click', function () { setView('particles'); });
+    ui.viewBlock.addEventListener('click', function () { setView('block'); });
+    ui.tutStart.addEventListener('click', startTutorial);
+    ui.tutNext.addEventListener('click', nextTutorial);
+    ui.tutSkip.addEventListener('click', endTutorial);
+    setSpeed(speedStep);
+    syncAuto();
+    setView(viewMode);
+    updateActions();
+
+    // 底部六律：点一下关掉，再点恢复（button 原生支持 Enter / Space）
+    lawEls = document.querySelectorAll('.law');
+    for (var li = 0; li < lawEls.length; li++) {
+      (function (el) {
+        var key = el.getAttribute('data-law');
+        if (!(key in lawsOff)) return;
+        el.addEventListener('click', function () {
+          toggleLaw(key, el);
+          el.blur();
+        });
+      })(lawEls[li]);
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.shiftKey && (e.key === 'D' || e.key === 'd')) previewEnding();
+    });
+
+    window.addEventListener('resize', resize);
+    window.addEventListener('orientationchange', function () {
+      setTimeout(resize, 120);
+    });
+
+    // 第一次来，先把教程走一遍
+    var tutSeen = false;
+    try { tutSeen = localStorage.getItem('yinyang-tut-done') === '1'; } catch (e) {}
+    if (!tutSeen) setTimeout(startTutorial, 700);
+
+    requestAnimationFrame(frame);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+})();
+
+  </script>
+</body>
+</html>
