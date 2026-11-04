@@ -62,6 +62,7 @@ h1{font-size:30px;letter-spacing:.5px;margin:0 0 12px;text-align:center;font-wei
   box-shadow:0 16px 36px -14px rgba(124,92,255,.95);
 }
 .btn.ghost{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.13);color:#e2e4f7;font-weight:600}
+#btnResume:not(.hidden){margin-top:11px;border-color:rgba(94,231,196,.5);color:#5ee7c4;background:rgba(94,231,196,.08)}
 .btn:disabled{opacity:.4}
 .gap{height:11px}
 
@@ -206,6 +207,7 @@ input.inp:disabled{opacity:.72}
 .wl .a{font-weight:700;letter-spacing:.3px}
 .wl .b{color:#8d94bf;font-size:12.5px;text-align:right;margin-left:12px;flex:none;max-width:56%}
 .footer-note{text-align:center;color:#5c6389;font-size:11.5px;margin-top:18px;line-height:1.7}
+.footer-note .ver{opacity:.6;font-size:10.5px;letter-spacing:.3px}
 </style>
 </head>
 <body>
@@ -226,9 +228,10 @@ input.inp:disabled{opacity:.72}
     <button class="btn primary" id="btnStart">开始听写</button>
     <div class="gap"></div>
     <button class="btn ghost hidden" id="btnWrongOnly"><span id="wrongOnlyLabel">只练待攻克的词</span></button>
+    <button class="btn ghost hidden" id="btnResume"><span id="resumeLabel">继续上次</span></button>
     <button class="btn ghost" id="btnBrowse">📖 翻一遍词表</button>
 
-    <p class="footer-note" id="homeNote">第一次点喇叭时如果没有声音，<br>再点一下就好。</p>
+    <p class="footer-note" id="homeNote">第一次点喇叭时如果没有声音，<br>再点一下就好。<br><span class="ver">v3 · 单选词性 / 进度自动保存</span></p>
   </section>
 
   <!-- ============ 词表 ============ -->
@@ -267,7 +270,7 @@ input.inp:disabled{opacity:.72}
       </div>
 
       <div class="field">
-        <label>词性 <span class="dim">（可多选）</span></label>
+        <label>词性</label>
         <div class="pos" id="posRow"></div>
       </div>
 
@@ -309,6 +312,7 @@ var WORDS = [
 "pos": [
 "adj."
 ],
+"primary": "adj.",
 "zh": "情绪的，感情的；易动感情的",
 "keys": [
 "情绪",
@@ -323,6 +327,7 @@ var WORDS = [
 "pos": [
 "adj."
 ],
+"primary": "adj.",
 "zh": "被（强烈情感）淹没的，不知所措的",
 "keys": [
 "淹没",
@@ -339,6 +344,7 @@ var WORDS = [
 "n.",
 "adj."
 ],
+"primary": "v.",
 "zh": "颠倒，逆转；相反的情况；相反的",
 "keys": [
 "颠倒",
@@ -353,6 +359,7 @@ var WORDS = [
 "pos": [
 "v."
 ],
+"primary": "v.",
 "zh": "减少，降低",
 "keys": [
 "减少",
@@ -367,6 +374,7 @@ var WORDS = [
 "adj.",
 "n."
 ],
+"primary": "adj.",
 "zh": "浪漫的；浪漫的人",
 "keys": [
 "浪漫"
@@ -378,6 +386,7 @@ var WORDS = [
 "pos": [
 "n."
 ],
+"primary": "n.",
 "zh": "尴尬，难堪；使人尴尬的事物",
 "keys": [
 "尴尬",
@@ -392,6 +401,7 @@ var WORDS = [
 "adj.",
 "n."
 ],
+"primary": "adj.",
 "zh": "心爱的，钟爱的；心爱的人",
 "keys": [
 "心爱",
@@ -406,6 +416,7 @@ var WORDS = [
 "pos": [
 "adj."
 ],
+"primary": "adj.",
 "zh": "荒谬的，可笑的",
 "keys": [
 "荒谬",
@@ -419,6 +430,7 @@ var WORDS = [
 "pos": [
 "v."
 ],
+"primary": "v.",
 "zh": "欣赏；感激；领会",
 "keys": [
 "欣赏",
@@ -435,6 +447,7 @@ var WORDS = [
 "pos": [
 "adv."
 ],
+"primary": "adv.",
 "zh": "否则，不然；另外",
 "keys": [
 "否则",
@@ -449,6 +462,7 @@ var WORDS = [
 "pos": [
 "v."
 ],
+"primary": "v.",
 "zh": "使尴尬，使窘迫",
 "keys": [
 "尴尬",
@@ -463,6 +477,7 @@ var WORDS = [
 "v.",
 "n."
 ],
+"primary": "v.",
 "zh": "擦亮，磨光；润色；抛光剂",
 "keys": [
 "擦亮",
@@ -478,6 +493,7 @@ var WORDS = [
 "pos": [
 "n."
 ],
+"primary": "n.",
 "zh": "效率，效能",
 "keys": [
 "效率",
@@ -491,6 +507,7 @@ var WORDS = [
 "v.",
 "n."
 ],
+"primary": "v.",
 "zh": "控制，抑制；路缘",
 "keys": [
 "控制",
@@ -506,6 +523,7 @@ var WORDS = [
 "pos": [
 "v."
 ],
+"primary": "v.",
 "zh": "等候，期待",
 "keys": [
 "等候",
@@ -519,6 +537,7 @@ var WORDS = [
 "pos": [
 "n."
 ],
+"primary": "n.",
 "zh": "捐赠，捐款",
 "keys": [
 "捐赠",
@@ -533,6 +552,7 @@ var WORDS = [
 "v.",
 "n."
 ],
+"primary": "v.",
 "zh": "倾倒，丢弃；垃圾场",
 "keys": [
 "倾倒",
@@ -548,6 +568,7 @@ var WORDS = [
 "n.",
 "v."
 ],
+"primary": "n.",
 "zh": "东西，物品；填满，塞满",
 "keys": [
 "东西",
@@ -562,6 +583,7 @@ var WORDS = [
 "pos": [
 "adj."
 ],
+"primary": "adj.",
 "zh": "历史的，历史上的",
 "keys": [
 "历史"
@@ -578,6 +600,79 @@ function saveStore() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(store
 function rec(w) {
   if (!store[w]) store[w] = { r: 0, w: 0 };
   return store[w];
+}
+
+/* ---------- 进度保存 ---------- */
+var PROG_KEY = "vocab_progress_v1";
+
+function saveProgress() {
+  try {
+    localStorage.setItem(PROG_KEY, JSON.stringify({
+      queue: queue.map(function (x) { return x.w; }),
+      qi: qi,
+      score: score,
+      results: roundResults,
+      draft: {
+        spell: $("inpSpell").value,
+        zh: $("inpZh").value,
+        pos: chosenPos
+      },
+      ts: Date.now()
+    }));
+  } catch (e) {}
+}
+
+function saveDraft() {
+  try {
+    var raw = localStorage.getItem(PROG_KEY);
+    if (!raw) return;
+    var p = JSON.parse(raw);
+    if (!p) return;
+    p.draft = { spell: $("inpSpell").value, zh: $("inpZh").value, pos: chosenPos };
+    localStorage.setItem(PROG_KEY, JSON.stringify(p));
+  } catch (e) {}
+}
+
+function clearProgress() {
+  try { localStorage.removeItem(PROG_KEY); } catch (e) {}
+}
+
+function loadProgress() {
+  try {
+    var p = JSON.parse(localStorage.getItem(PROG_KEY) || "null");
+    if (!p || !p.queue || !p.queue.length) return null;
+    if (p.qi >= p.queue.length) return null;
+    return p;
+  } catch (e) { return null; }
+}
+
+function resumeRound() {
+  var p = loadProgress();
+  if (!p) return;
+  var map = {};
+  WORDS.forEach(function (x) { map[x.w] = x; });
+  var list = p.queue.map(function (w) { return map[w]; }).filter(Boolean);
+  if (!list.length) { clearProgress(); return; }
+
+  queue = list;
+  qi = Math.min(p.qi || 0, list.length - 1);
+  score = p.score || 0;
+  roundResults = p.results || [];
+
+  show("screen-quiz");
+  renderQ();
+
+  if (p.draft) {
+    if (p.draft.spell) $("inpSpell").value = p.draft.spell;
+    if (p.draft.zh) $("inpZh").value = p.draft.zh;
+    if (p.draft.pos) {
+      chosenPos = p.draft.pos;
+      var btns = $("posRow").children;
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.toggle("on", btns[i].textContent === chosenPos);
+      }
+    }
+  }
 }
 
 /* ---------- 音频 ---------- */
@@ -621,7 +716,7 @@ function playWord(word, slow) {
 
 /* ---------- 状态 ---------- */
 var queue = [], qi = 0, score = 0, roundResults = [], cur = null;
-var chosenPos = {}, locked = false, zhFixed = false, lastGiveUp = false, peeked = false;
+var chosenPos = "", locked = false, zhFixed = false, lastGiveUp = false, peeked = false;
 
 var $ = function (id) { return document.getElementById(id); };
 function show(id) {
@@ -660,6 +755,15 @@ function refreshHome() {
   } else {
     b.classList.add("hidden");
   }
+
+  var pg = loadProgress();
+  var rb = $("btnResume");
+  if (pg) {
+    rb.classList.remove("hidden");
+    $("resumeLabel").textContent = "▶ 继续上次（" + (pg.qi + 1) + " / " + pg.queue.length + "）";
+  } else {
+    rb.classList.add("hidden");
+  }
 }
 
 var SPEAKER_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.06A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z"/></svg>';
@@ -673,7 +777,7 @@ function renderList() {
     d.innerHTML = '<button class="sw" aria-label="读音">' + SPEAKER_SVG + "</button>" +
       '<div class="wt"><div class="ww">' + escapeHtml(item.w) +
         '<span class="wipa">' + escapeHtml(item.ipa) + "</span></div>" +
-      '<div class="wz"><span class="wpos">' + escapeHtml(item.pos.join(" ")) + "</span>" +
+      '<div class="wz"><span class="wpos">' + escapeHtml(item.primary) + "</span>" +
         escapeHtml(item.zh) + "</div></div>";
     d.querySelector(".sw").onclick = function () { playWord(item.w, false); };
     el.appendChild(d);
@@ -689,12 +793,13 @@ function startRound(list) {
   saveStore();
   show("screen-quiz");
   renderQ();
+  saveProgress();
 }
 
 function renderQ() {
   cur = queue[qi];
   locked = false; zhFixed = false;
-  chosenPos = {};
+  chosenPos = "";
   peeked = false;
 
   $("card").classList.remove("ok", "bad", "judged");
@@ -726,8 +831,10 @@ function renderQ() {
     b.textContent = p;
     b.onclick = function () {
       if (locked) return;
-      if (chosenPos[p]) { delete chosenPos[p]; b.classList.remove("on"); }
-      else { chosenPos[p] = 1; b.classList.add("on"); }
+      chosenPos = (chosenPos === p) ? "" : p;
+      for (var i = 0; i < row.children.length; i++) row.children[i].classList.remove("on");
+      if (chosenPos) b.classList.add("on");
+      saveDraft();
     };
     row.appendChild(b);
   });
@@ -746,7 +853,7 @@ function togglePeek() {
     box.innerHTML =
       '<div class="pw">' + escapeHtml(cur.w) +
         '<span class="pipa">' + escapeHtml(cur.ipa) + "</span></div>" +
-      '<div class="pz"><span class="pst">' + escapeHtml(cur.pos.join(" ")) + "</span>" +
+      '<div class="pz"><span class="pst">' + escapeHtml(cur.primary) + "</span>" +
         escapeHtml(cur.zh) + "</div>";
     box.classList.remove("hidden");
     b.textContent = "🙈 收起";
@@ -770,9 +877,7 @@ function zhMatch(input, word) {
 }
 
 function posMatch(word) {
-  var a = Object.keys(chosenPos).sort().join(",");
-  var b = word.pos.slice().sort().join(",");
-  return a === b;
+  return !!chosenPos && chosenPos === word.primary;
 }
 
 function submit(giveUp) {
@@ -782,7 +887,7 @@ function submit(giveUp) {
 
   if (!giveUp) {
     if (!spellRaw.trim()) { shake($("inpSpell")); return; }
-    if (Object.keys(chosenPos).length === 0) { shake($("posRow")); return; }
+    if (!chosenPos) { shake($("posRow")); return; }
     if (!zhRaw.trim()) { shake($("inpZh")); return; }
   }
 
@@ -845,9 +950,9 @@ function renderVerdict(okSpell, okPos, okZh, spellRaw, zhRaw) {
   h += "</div></div>";
 
   h += '<div class="rv"><div class="k">词性</div><div class="v">';
-  var chosenTxt = Object.keys(chosenPos).length ? Object.keys(chosenPos).join(" ") : "（未选）";
-  if (okPos) h += "<b>" + cur.pos.join(" ") + "</b>";
-  else h += "<del>" + escapeHtml(chosenTxt) + "</del> → <b>" + cur.pos.join(" ") + "</b>";
+  var chosenTxt = chosenPos || "（未选）";
+  if (okPos) h += "<b>" + cur.primary + "</b>";
+  else h += "<del>" + escapeHtml(chosenTxt) + "</del> → <b>" + cur.primary + "</b>";
   h += "</div></div>";
 
   h += '<div class="rv"><div class="k">释义</div><div class="v">';
@@ -857,7 +962,7 @@ function renderVerdict(okSpell, okPos, okZh, spellRaw, zhRaw) {
 
   h += '<div class="answerbox">'
     + '<div class="w">' + cur.w + ' <span class="ipa">' + cur.ipa + '</span>'
-    + '<span class="p">' + cur.pos.join(" ") + "</span></div>"
+    + '<span class="p">' + cur.primary + "</span></div>"
     + '<div class="z">' + escapeHtml(cur.zh) + "</div>"
     + "</div>";
 
@@ -902,10 +1007,12 @@ function nextQ() {
   qi++;
   if (qi >= queue.length) { showDone(); return; }
   renderQ();
+  saveProgress();
 }
 
 /* ---------- 结果页 ---------- */
 function showDone() {
+  clearProgress();
   var total = queue.length;
   var pct = total ? Math.round(score / total * 100) : 0;
   $("finalPct").innerHTML = pct + "<small>%</small>";
@@ -934,7 +1041,7 @@ function showDone() {
     var d = document.createElement("div");
     d.className = "wl";
     d.innerHTML = '<span class="a">' + escapeHtml(item.w) + "</span>"
-      + '<span class="b">' + item.pos.join(" ") + " · " + escapeHtml(item.zh) + "</span>";
+      + '<span class="b">' + item.primary + " · " + escapeHtml(item.zh) + "</span>";
     list.appendChild(d);
   });
   list.classList.toggle("hidden", items.length === 0);
@@ -958,6 +1065,7 @@ $("btnWrongOnly").onclick = function () {
 };
 $("btnBrowse").onclick = function () { renderList(); show("screen-list"); };
 $("btnListBack").onclick = function () { refreshHome(); show("screen-home"); };
+$("btnResume").onclick = resumeRound;
 
 $("btnSpeak").onclick = function () { playWord(cur.w, false); };
 $("btnSlow").onclick = function () { playWord(cur.w, true); };
@@ -967,7 +1075,9 @@ $("inpSpell").addEventListener("input", function () {
   var el = this;
   var v = el.value.toLowerCase().replace(/[^a-z' ]/g, "");
   if (v !== el.value) el.value = v;
+  saveDraft();
 });
+$("inpZh").addEventListener("input", function () { saveDraft(); });
 
 $("inpSpell").addEventListener("keydown", function (e) {
   if (e.key === "Enter") { e.preventDefault(); $("inpZh").focus(); }
