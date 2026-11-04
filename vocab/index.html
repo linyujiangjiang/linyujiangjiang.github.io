@@ -62,6 +62,27 @@ h1{font-size:30px;letter-spacing:.5px;margin:0 0 12px;text-align:center;font-wei
 .btn:disabled{opacity:.4}
 .gap{height:11px}
 
+/* ---------- 词表浏览 ---------- */
+#btnBrowse{margin-top:11px}
+.listhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.listtitle{font-size:12.5px;color:#8d94bf;letter-spacing:.5px}
+.wcard{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:15px;
+  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.075);margin-bottom:9px;
+}
+.wcard .sw{
+  flex:none;width:38px;height:38px;border-radius:50%;border:none;padding:0;cursor:pointer;
+  background:linear-gradient(135deg,#7c5cff,#4ad9c3);color:#0d0a1f;
+  display:flex;align-items:center;justify-content:center;transition:transform .1s;
+}
+.wcard .sw:active{transform:scale(.9)}
+.wcard .sw svg{width:18px;height:18px;display:block}
+.wcard .wt{flex:1;min-width:0}
+.wcard .ww{font-size:16.5px;font-weight:750;letter-spacing:.3px}
+.wcard .ww .wipa{font-size:11.5px;color:#8d94bf;font-weight:500;margin-left:5px;letter-spacing:0}
+.wcard .wz{font-size:13px;color:#a8afd6;margin-top:3px;line-height:1.5}
+.wcard .wz .wpos{color:#ffd479;font-weight:700;margin-right:5px}
+
 /* ---------- 答题 ---------- */
 .topbar{margin-bottom:16px}
 .progress{height:5px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}
@@ -96,16 +117,15 @@ h1{font-size:30px;letter-spacing:.5px;margin:0 0 12px;text-align:center;font-wei
 }
 .chip:active{background:rgba(94,231,196,.16)}
 .chip:disabled{opacity:.45}
-.hintbox{
-  margin-top:14px;display:flex;flex-direction:column;gap:8px;
-  background:rgba(255,214,102,.075);border:1px solid rgba(255,214,102,.26);
-  border-radius:13px;padding:11px 13px;font-size:13.8px;line-height:1.6;color:#ffd479;
-  animation:fade .25s ease;
+.peekbox{
+  margin-top:14px;background:rgba(94,231,196,.075);border:1px solid rgba(94,231,196,.3);
+  border-radius:15px;padding:14px 16px;animation:fade .22s ease;
 }
-.hintrow{display:flex;gap:8px;align-items:flex-start}
-.hintrow .hico{flex:none;line-height:1.55}
-.hintrow b{color:#ffe9b8;font-weight:700;letter-spacing:.5px}
-.card.judged .hintbox{display:none}
+.peekbox .pw{font-size:23px;font-weight:800;letter-spacing:.4px;color:#fff;word-break:break-word}
+.peekbox .pw .pipa{font-size:12.5px;color:#9aa1cc;font-weight:500;margin-left:6px;letter-spacing:0}
+.peekbox .pz{margin-top:7px;font-size:14.5px;color:#dfe3ff;line-height:1.65}
+.peekbox .pz .pst{color:#ffd479;font-weight:700;margin-right:6px}
+.card.judged .peekbox{display:none}
 
 .field{margin-top:19px}
 .field label{display:block;font-size:12.5px;color:#8d94bf;margin-bottom:8px;letter-spacing:.6px;font-weight:600}
@@ -203,8 +223,18 @@ input.inp:disabled{opacity:.72}
     <button class="btn primary" id="btnStart">开始听写</button>
     <div class="gap"></div>
     <button class="btn ghost hidden" id="btnWrongOnly"><span id="wrongOnlyLabel">只练待攻克的词</span></button>
+    <button class="btn ghost" id="btnBrowse">📖 翻一遍词表</button>
 
     <p class="footer-note" id="homeNote">第一次点喇叭时如果没有声音，<br>再点一下就好。</p>
+  </section>
+
+  <!-- ============ 词表 ============ -->
+  <section id="screen-list" class="hidden">
+    <div class="listhead">
+      <button class="chip" id="btnListBack">← 返回</button>
+      <span class="listtitle" id="listCount"></span>
+    </div>
+    <div id="wordList"></div>
   </section>
 
   <!-- ============ 答题 ============ -->
@@ -221,10 +251,10 @@ input.inp:disabled{opacity:.72}
       <div class="tip">
         <span>点喇叭再听</span>
         <button class="chip" id="btnSlow">🐢 慢速</button>
-        <button class="chip" id="btnHint">💡 提示</button>
+        <button class="chip" id="btnHint">👁 看答案</button>
       </div>
 
-      <div class="hintbox hidden" id="hintBox"></div>
+      <div class="peekbox hidden" id="hintBox"></div>
 
       <div class="field">
         <label for="inpSpell">拼写</label>
@@ -588,11 +618,11 @@ function playWord(word, slow) {
 
 /* ---------- 状态 ---------- */
 var queue = [], qi = 0, score = 0, roundResults = [], cur = null;
-var chosenPos = {}, locked = false, zhFixed = false, lastGiveUp = false, hintLevel = 0;
+var chosenPos = {}, locked = false, zhFixed = false, lastGiveUp = false, peeked = false;
 
 var $ = function (id) { return document.getElementById(id); };
 function show(id) {
-  ["screen-home", "screen-quiz", "screen-done"].forEach(function (s) {
+  ["screen-home", "screen-quiz", "screen-done", "screen-list"].forEach(function (s) {
     $(s).classList.toggle("hidden", s !== id);
   });
   window.scrollTo(0, 0);
@@ -629,6 +659,25 @@ function refreshHome() {
   }
 }
 
+var SPEAKER_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.06A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z"/></svg>';
+
+function renderList() {
+  var el = $("wordList");
+  el.innerHTML = "";
+  WORDS.forEach(function (item) {
+    var d = document.createElement("div");
+    d.className = "wcard";
+    d.innerHTML = '<button class="sw" aria-label="读音">' + SPEAKER_SVG + "</button>" +
+      '<div class="wt"><div class="ww">' + escapeHtml(item.w) +
+        '<span class="wipa">' + escapeHtml(item.ipa) + "</span></div>" +
+      '<div class="wz"><span class="wpos">' + escapeHtml(item.pos.join(" ")) + "</span>" +
+        escapeHtml(item.zh) + "</div></div>";
+    d.querySelector(".sw").onclick = function () { playWord(item.w, false); };
+    el.appendChild(d);
+  });
+  $("listCount").textContent = WORDS.length + " 个词";
+}
+
 /* ---------- 一轮 ---------- */
 function startRound(list) {
   queue = shuffle(list);
@@ -643,7 +692,7 @@ function renderQ() {
   cur = queue[qi];
   locked = false; zhFixed = false;
   chosenPos = {};
-  hintLevel = 0;
+  peeked = false;
 
   $("card").classList.remove("ok", "bad", "judged");
   $("verdict").classList.add("hidden");
@@ -653,7 +702,7 @@ function renderQ() {
   $("hintBox").innerHTML = "";
   var hb = $("btnHint");
   hb.disabled = false;
-  hb.textContent = "💡 提示";
+  hb.textContent = "👁 看答案";
 
   var total = queue.length;
   $("bar").style.width = ((qi) / total * 100) + "%";
@@ -684,36 +733,24 @@ function renderQ() {
   setTimeout(function () { try { sp.focus({ preventScroll: true }); } catch (e) {} }, 260);
 }
 
-/* ---------- 分级提示 ---------- */
-var HINT_STEPS = [
-  function () {
-    return "首字母 <b>" + cur.w.charAt(0).toUpperCase() + "</b> · 一共 <b>" + cur.w.length + "</b> 个字母";
-  },
-  function () {
-    var w = cur.w;
-    if (w.length <= 6) return "开头三个字母：<b>" + escapeHtml(w.slice(0, 3)) + "…</b>";
-    return "开头 <b>" + escapeHtml(w.slice(0, 3)) + "</b>&nbsp;·&nbsp;结尾 <b>" + escapeHtml(w.slice(-3)) + "</b>";
-  },
-  function () {
-    return "完整释义：<b>" + escapeHtml(cur.zh) + "</b>";
-  }
-];
-
-function useHint() {
-  if (locked || hintLevel >= HINT_STEPS.length) return;
-  hintLevel++;
-  var row = document.createElement("div");
-  row.className = "hintrow";
-  row.innerHTML = '<span class="hico">💡</span><span>' + HINT_STEPS[hintLevel - 1]() + "</span>";
-  $("hintBox").appendChild(row);
-  $("hintBox").classList.remove("hidden");
-
+/* ---------- 看答案（可反复开合，不影响判分） ---------- */
+function togglePeek() {
+  if (locked) return;
+  peeked = !peeked;
+  var box = $("hintBox");
   var b = $("btnHint");
-  if (hintLevel >= HINT_STEPS.length) {
-    b.textContent = "💡 没有了";
-    b.disabled = true;
+  if (peeked) {
+    box.innerHTML =
+      '<div class="pw">' + escapeHtml(cur.w) +
+        '<span class="pipa">' + escapeHtml(cur.ipa) + "</span></div>" +
+      '<div class="pz"><span class="pst">' + escapeHtml(cur.pos.join(" ")) + "</span>" +
+        escapeHtml(cur.zh) + "</div>";
+    box.classList.remove("hidden");
+    b.textContent = "🙈 收起";
   } else {
-    b.textContent = hintLevel === 1 ? "💡 再提示" : "💡 最后一条";
+    box.innerHTML = "";
+    box.classList.add("hidden");
+    b.textContent = "👁 看答案";
   }
 }
 
@@ -759,7 +796,7 @@ function submit(giveUp) {
   if (perfect) { r.r++; } else { r.w++; }
   saveStore();
 
-  roundResults.push({ w: cur.w, ok: perfect, hinted: hintLevel > 0 });
+  roundResults.push({ w: cur.w, ok: perfect });
 
   $("inpSpell").disabled = true;
   $("inpZh").disabled = true;
@@ -768,6 +805,11 @@ function submit(giveUp) {
 
   $("card").classList.add(perfect ? "ok" : "bad");
   $("card").classList.add("judged");
+  peeked = false;
+  $("hintBox").classList.add("hidden");
+  $("hintBox").innerHTML = "";
+  $("btnHint").disabled = true;
+  $("btnHint").textContent = "👁 看答案";
   $("lblScore").innerHTML = "对 <b>" + score + "</b>";
 
   renderVerdict(okSpell, okPos, okZh, spellRaw, zhRaw);
@@ -868,7 +910,6 @@ function showDone() {
     "conic-gradient(#5ee7c4 0deg " + (pct * 3.6) + "deg, rgba(255,255,255,.12) " + (pct * 3.6) + "deg 360deg)";
 
   var wrongs = roundResults.filter(function (x) { return !x.ok; }).map(function (x) { return x.w; });
-  var hintedN = roundResults.filter(function (x) { return x.hinted; }).length;
   var t = "这一轮结束";
   if (pct === 100) t = "全对，漂亮 🎉";
   else if (pct >= 80) t = "稳，就差一点";
@@ -878,8 +919,7 @@ function showDone() {
   $("doneTitle").textContent = t;
 
   $("doneSub").innerHTML = "这轮答对 <b style=\"color:#5ee7c4\">" + score + "</b> / " + total
-    + (wrongs.length ? "，下面这些再练一遍" : "，全部拿下")
-    + (hintedN ? "，有 " + hintedN + " 题用了提示" : "");
+    + (wrongs.length ? "，下面这些再练一遍" : "，全部拿下");
 
   var list = $("wrongList");
   list.innerHTML = "";
@@ -913,10 +953,12 @@ $("btnWrongOnly").onclick = function () {
   var list = WORDS.filter(function (x) { return store[x.w] && store[x.w].w > 0; });
   if (list.length) startRound(list);
 };
+$("btnBrowse").onclick = function () { renderList(); show("screen-list"); };
+$("btnListBack").onclick = function () { refreshHome(); show("screen-home"); };
 
 $("btnSpeak").onclick = function () { playWord(cur.w, false); };
 $("btnSlow").onclick = function () { playWord(cur.w, true); };
-$("btnHint").onclick = useHint;
+$("btnHint").onclick = togglePeek;
 
 $("inpSpell").addEventListener("input", function () {
   var el = this;
