@@ -95,6 +95,17 @@ h1{font-size:30px;letter-spacing:.5px;margin:0 0 12px;text-align:center;font-wei
   border-radius:99px;padding:6px 13px;font-size:12.5px;font-family:inherit;cursor:pointer;
 }
 .chip:active{background:rgba(94,231,196,.16)}
+.chip:disabled{opacity:.45}
+.hintbox{
+  margin-top:14px;display:flex;flex-direction:column;gap:8px;
+  background:rgba(255,214,102,.075);border:1px solid rgba(255,214,102,.26);
+  border-radius:13px;padding:11px 13px;font-size:13.8px;line-height:1.6;color:#ffd479;
+  animation:fade .25s ease;
+}
+.hintrow{display:flex;gap:8px;align-items:flex-start}
+.hintrow .hico{flex:none;line-height:1.55}
+.hintrow b{color:#ffe9b8;font-weight:700;letter-spacing:.5px}
+.card.judged .hintbox{display:none}
 
 .field{margin-top:19px}
 .field label{display:block;font-size:12.5px;color:#8d94bf;margin-bottom:8px;letter-spacing:.6px;font-weight:600}
@@ -210,7 +221,10 @@ input.inp:disabled{opacity:.72}
       <div class="tip">
         <span>点喇叭再听</span>
         <button class="chip" id="btnSlow">🐢 慢速</button>
+        <button class="chip" id="btnHint">💡 提示</button>
       </div>
+
+      <div class="hintbox hidden" id="hintBox"></div>
 
       <div class="field">
         <label for="inpSpell">拼写</label>
@@ -574,7 +588,7 @@ function playWord(word, slow) {
 
 /* ---------- 状态 ---------- */
 var queue = [], qi = 0, score = 0, roundResults = [], cur = null;
-var chosenPos = {}, locked = false, zhFixed = false, lastGiveUp = false;
+var chosenPos = {}, locked = false, zhFixed = false, lastGiveUp = false, hintLevel = 0;
 
 var $ = function (id) { return document.getElementById(id); };
 function show(id) {
@@ -629,11 +643,17 @@ function renderQ() {
   cur = queue[qi];
   locked = false; zhFixed = false;
   chosenPos = {};
+  hintLevel = 0;
 
   $("card").classList.remove("ok", "bad", "judged");
   $("verdict").classList.add("hidden");
   $("verdict").innerHTML = "";
   $("actions").classList.remove("hidden");
+  $("hintBox").classList.add("hidden");
+  $("hintBox").innerHTML = "";
+  var hb = $("btnHint");
+  hb.disabled = false;
+  hb.textContent = "💡 提示";
 
   var total = queue.length;
   $("bar").style.width = ((qi) / total * 100) + "%";
@@ -662,6 +682,39 @@ function renderQ() {
 
   playWord(cur.w, false);
   setTimeout(function () { try { sp.focus({ preventScroll: true }); } catch (e) {} }, 260);
+}
+
+/* ---------- 分级提示 ---------- */
+var HINT_STEPS = [
+  function () {
+    return "首字母 <b>" + cur.w.charAt(0).toUpperCase() + "</b> · 一共 <b>" + cur.w.length + "</b> 个字母";
+  },
+  function () {
+    var w = cur.w;
+    if (w.length <= 6) return "开头三个字母：<b>" + escapeHtml(w.slice(0, 3)) + "…</b>";
+    return "开头 <b>" + escapeHtml(w.slice(0, 3)) + "</b>&nbsp;·&nbsp;结尾 <b>" + escapeHtml(w.slice(-3)) + "</b>";
+  },
+  function () {
+    return "完整释义：<b>" + escapeHtml(cur.zh) + "</b>";
+  }
+];
+
+function useHint() {
+  if (locked || hintLevel >= HINT_STEPS.length) return;
+  hintLevel++;
+  var row = document.createElement("div");
+  row.className = "hintrow";
+  row.innerHTML = '<span class="hico">💡</span><span>' + HINT_STEPS[hintLevel - 1]() + "</span>";
+  $("hintBox").appendChild(row);
+  $("hintBox").classList.remove("hidden");
+
+  var b = $("btnHint");
+  if (hintLevel >= HINT_STEPS.length) {
+    b.textContent = "💡 没有了";
+    b.disabled = true;
+  } else {
+    b.textContent = hintLevel === 1 ? "💡 再提示" : "💡 最后一条";
+  }
 }
 
 /* ---------- 判定 ---------- */
@@ -706,7 +759,7 @@ function submit(giveUp) {
   if (perfect) { r.r++; } else { r.w++; }
   saveStore();
 
-  roundResults.push({ w: cur.w, ok: perfect });
+  roundResults.push({ w: cur.w, ok: perfect, hinted: hintLevel > 0 });
 
   $("inpSpell").disabled = true;
   $("inpZh").disabled = true;
@@ -815,6 +868,7 @@ function showDone() {
     "conic-gradient(#5ee7c4 0deg " + (pct * 3.6) + "deg, rgba(255,255,255,.12) " + (pct * 3.6) + "deg 360deg)";
 
   var wrongs = roundResults.filter(function (x) { return !x.ok; }).map(function (x) { return x.w; });
+  var hintedN = roundResults.filter(function (x) { return x.hinted; }).length;
   var t = "这一轮结束";
   if (pct === 100) t = "全对，漂亮 🎉";
   else if (pct >= 80) t = "稳，就差一点";
@@ -824,7 +878,8 @@ function showDone() {
   $("doneTitle").textContent = t;
 
   $("doneSub").innerHTML = "这轮答对 <b style=\"color:#5ee7c4\">" + score + "</b> / " + total
-    + (wrongs.length ? "，下面这些再练一遍" : "，全部拿下");
+    + (wrongs.length ? "，下面这些再练一遍" : "，全部拿下")
+    + (hintedN ? "，有 " + hintedN + " 题用了提示" : "");
 
   var list = $("wrongList");
   list.innerHTML = "";
@@ -861,6 +916,7 @@ $("btnWrongOnly").onclick = function () {
 
 $("btnSpeak").onclick = function () { playWord(cur.w, false); };
 $("btnSlow").onclick = function () { playWord(cur.w, true); };
+$("btnHint").onclick = useHint;
 
 $("inpSpell").addEventListener("input", function () {
   var el = this;
