@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<meta name="theme-color" content="#0b0d10" />
+<title>岐黄问道 · 中医典籍背诵闯关</title>
+<style>
+:root{
+  --gold:#c9a86a;
+  --gold-2:#efdcae;
+  --gold-3:#8f7442;
+  --ink:#e9e2d4;
+  --ink-dim:#9a9384;
+  --ink-faint:#6d6759;
+  --red:#a8342a;
+  --jade:#7aa593;
+  --line:rgba(201,168,106,.20);
+  --line-strong:rgba(201,168,106,.48);
+  --serif:"Songti SC","Noto Serif SC","Source Han Serif SC","STSong","SimSun","Microsoft YaHei",serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+html{height:100%}
+body{
+  min-height:100dvh;color:var(--ink);font-family:var(--serif);
+  background:#0b0d10;-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:.02em;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(1100px 780px at 74% -14%, rgba(201,168,106,.14), transparent 62%),
+    radial-gradient(900px 720px at 4% 108%, rgba(146,52,36,.17), transparent 60%),
+    radial-gradient(760px 620px at 102% 102%, rgba(74,104,90,.10), transparent 60%),
+    linear-gradient(168deg,#0c0e11 0%,#12100c 54%,#090a0c 100%);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.30;
+  mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.5'/></svg>");
+}
+#app{
+  position:relative;width:100%;max-width:760px;margin:0 auto;min-height:100dvh;
+  padding:clamp(20px,4vw,40px) clamp(16px,4.4vw,36px) calc(30px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;
+}
+.screen{display:none;flex-direction:column;flex:1;animation:rise .55s cubic-bezier(.2,.7,.2,1) both}
+.screen.active{display:flex}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.corner{position:fixed;width:26px;height:26px;border:1px solid rgba(201,168,106,.28);pointer-events:none;z-index:1}
+.corner.tl{top:14px;left:14px;border-right:0;border-bottom:0}
+.corner.tr{top:14px;right:14px;border-left:0;border-bottom:0}
+.corner.bl{bottom:14px;left:14px;border-right:0;border-top:0}
+.corner.br{bottom:14px;right:14px;border-left:0;border-top:0}
+
+/* ---------- 首页 ---------- */
+.hero{padding-top:clamp(6px,3vh,30px);text-align:center}
+.seal{
+  display:inline-flex;align-items:center;justify-content:center;width:50px;height:50px;margin-bottom:16px;
+  border:1px solid rgba(168,52,42,.62);border-radius:7px;
+  color:#d3554a;font-size:13px;font-weight:700;line-height:1.15;letter-spacing:.14em;
+  writing-mode:vertical-rl;text-orientation:upright;
+  box-shadow:0 0 26px rgba(168,52,42,.16), inset 0 0 14px rgba(168,52,42,.10);
+}
+.hero h1{
+  margin:0;font-size:clamp(34px,8.4vw,56px);font-weight:700;
+  letter-spacing:.26em;text-indent:.26em;line-height:1.1;
+  background:linear-gradient(178deg,#f6ecd4 0%,#dcc394 42%,#a8863f 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 18px rgba(201,168,106,.22));
+}
+.hero .sub{margin:12px 0 0;color:var(--ink-dim);font-size:clamp(11px,3vw,13px);letter-spacing:.32em;text-indent:.32em}
+.hero .rule{width:min(280px,64%);height:1px;margin:18px auto 0;background:linear-gradient(90deg,transparent,rgba(201,168,106,.55),transparent);position:relative}
+.hero .rule::after{content:"";position:absolute;left:50%;top:-3px;width:7px;height:7px;margin-left:-3.5px;transform:rotate(45deg);background:var(--gold);box-shadow:0 0 12px rgba(201,168,106,.7)}
+
+/* 模式切换 */
+.tabs{
+  display:flex;gap:6px;margin:clamp(20px,3.4vh,30px) 0 18px;padding:5px;
+  border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.022);
+}
+.tabs button{
+  flex:1;background:none;border:0;color:var(--ink-dim);font-family:inherit;
+  font-size:12.5px;letter-spacing:.2em;text-indent:.2em;padding:11px 0;border-radius:9px;
+  cursor:pointer;transition:.3s;
+}
+.tabs button.on{
+  background:linear-gradient(160deg,rgba(201,168,106,.18),rgba(201,168,106,.06));
+  color:var(--gold-2);box-shadow:inset 0 0 0 1px rgba(201,168,106,.28);
+}
+.panel{display:none;flex-direction:column;gap:13px}
+.panel.on{display:flex;animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+.panelHint{margin:0 0 6px;color:var(--ink-faint);font-size:12px;letter-spacing:.06em;line-height:1.9}
+
+/* 关卡卡 */
+.levels{display:flex;flex-direction:column;gap:13px}
+.level{
+  position:relative;display:block;padding:18px 21px 15px;
+  border:1px solid var(--line);border-radius:15px;
+  background:linear-gradient(150deg,rgba(255,255,255,.045),rgba(255,255,255,.012));
+  cursor:pointer;overflow:hidden;
+  transition:transform .35s cubic-bezier(.2,.7,.2,1),border-color .35s,box-shadow .35s,background .35s;
+  animation:rise .6s cubic-bezier(.2,.7,.2,1) both;
+}
+.level:nth-child(2){animation-delay:.06s}
+.level:nth-child(3){animation-delay:.12s}
+.level::before{content:"";position:absolute;left:0;top:16%;bottom:16%;width:2px;background:linear-gradient(180deg,transparent,var(--gold),transparent);opacity:.55;transition:opacity .35s}
+.level:hover{transform:translateY(-3px);border-color:var(--line-strong);
+  box-shadow:0 18px 44px -22px rgba(201,168,106,.42), 0 0 0 1px rgba(201,168,106,.06) inset;
+  background:linear-gradient(150deg,rgba(201,168,106,.10),rgba(255,255,255,.012));}
+.level:hover::before{opacity:1}
+.level .head{display:flex;align-items:center;gap:12px}
+.level .num{flex:0 0 auto;font-size:10.5px;letter-spacing:.16em;color:var(--gold-3);border:1px solid rgba(201,168,106,.32);border-radius:5px;padding:3px 7px;line-height:1.25;white-space:nowrap}
+.level h3{margin:0;flex:1;min-width:0;font-size:clamp(17px,4.4vw,21px);font-weight:700;letter-spacing:.16em;color:#efe6d2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.level .tag{flex:0 0 auto;margin-left:6px;color:var(--gold);font-size:11px;letter-spacing:.18em;opacity:.9;white-space:nowrap}
+.level .meta{margin:9px 0 0;color:var(--ink-faint);font-size:clamp(11px,2.9vw,12.3px);letter-spacing:.06em;line-height:1.75}
+.level .meta em{font-style:normal;color:var(--gold-3)}
+.level .stars{display:flex;gap:5px;margin-top:10px}
+.level .stars i{width:7px;height:7px;transform:rotate(45deg);border:1px solid var(--gold-3);display:block}
+.level .stars i.on{background:var(--gold);border-color:var(--gold);box-shadow:0 0 9px rgba(201,168,106,.65)}
+.level.locked{cursor:not-allowed;opacity:.42;filter:saturate(.5)}
+.level.locked:hover{transform:none;box-shadow:none;border-color:var(--line);background:linear-gradient(150deg,rgba(255,255,255,.045),rgba(255,255,255,.012))}
+.level.locked .tag{color:var(--ink-faint)}
+
+/* ---------- 背诵 ---------- */
+.segs{display:flex;gap:7px;margin-bottom:6px;flex-wrap:wrap}
+.segs button{
+  flex:1;min-width:86px;background:none;border:1px solid var(--line);border-radius:9px;
+  color:var(--ink-dim);font-family:inherit;font-size:12px;letter-spacing:.16em;padding:9px 6px;
+  cursor:pointer;transition:.3s;
+}
+.segs button.on{border-color:rgba(201,168,106,.55);color:var(--gold-2);background:rgba(201,168,106,.10)}
+.memEra{
+  display:flex;align-items:center;gap:10px;margin:22px 0 9px;
+  font-size:10.5px;letter-spacing:.3em;color:var(--gold-3);
+}
+.memEra::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(201,168,106,.28),transparent)}
+.memEra:first-child{margin-top:6px}
+.memItem{
+  padding:13px 16px;border:1px solid var(--line);border-radius:11px;
+  background:rgba(255,255,255,.02);margin-bottom:9px;line-height:1.7;
+}
+.memItem .b{font-size:clamp(14px,3.7vw,15.5px);color:#efe6d2;letter-spacing:.05em;font-weight:700}
+.memItem .p{margin-top:4px;font-size:12px;color:var(--gold-3);letter-spacing:.06em}
+.memItem .s{margin-top:6px;font-size:12.5px;color:var(--ink-dim);letter-spacing:.02em}
+.memItem .z{margin-top:5px;font-size:11.5px;color:var(--ink-faint)}
+
+.foot{margin-top:auto;padding-top:30px;text-align:center;color:var(--ink-faint);font-size:11px;letter-spacing:.18em;line-height:2}
+.foot button{background:none;border:0;color:var(--ink-faint);font-family:inherit;font-size:11px;letter-spacing:.18em;cursor:pointer;padding:4px 8px;border-bottom:1px solid transparent}
+.foot button:hover{opacity:1;border-bottom-color:rgba(201,168,106,.35);color:var(--gold-3)}
+
+/* ---------- 游戏屏 ---------- */
+#screen-play,#screen-drill{gap:0}
+.hud{display:flex;align-items:center;gap:12px;padding:2px 0 12px}
+.hud .back{
+  background:none;border:1px solid var(--line);border-radius:9px;color:var(--ink-dim);
+  font-family:inherit;font-size:13px;padding:7px 11px;cursor:pointer;letter-spacing:.1em;transition:.3s;
+}
+.hud .back:hover{color:var(--gold-2);border-color:var(--line-strong)}
+.hud .stage{flex:1;min-width:0}
+.hud .stage b{display:block;font-size:14px;letter-spacing:.18em;font-weight:700;color:#e6dcc7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hud .stage span{display:block;margin-top:3px;font-size:10.5px;letter-spacing:.2em;color:var(--ink-faint)}
+.hearts{display:flex;gap:7px}
+.hearts i{width:9px;height:9px;transform:rotate(45deg);background:var(--gold);box-shadow:0 0 10px rgba(201,168,106,.6);transition:.4s}
+.hearts i.lost{background:transparent;border:1px solid rgba(201,168,106,.22);box-shadow:none;transform:rotate(45deg) scale(.8)}
+.dscore{font-size:11px;letter-spacing:.16em;color:var(--gold-3);white-space:nowrap}
+.bar{height:1px;background:rgba(201,168,106,.13);border-radius:2px;overflow:hidden;margin-bottom:clamp(16px,3.4vh,28px)}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold-3),var(--gold-2));transition:width .6s cubic-bezier(.2,.7,.2,1);box-shadow:0 0 10px rgba(201,168,106,.6)}
+
+.qbox{flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:clamp(30px,9vh,110px);animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+.qtag{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-size:10.5px;letter-spacing:.28em;color:var(--gold-3);margin-bottom:13px}
+.qtag::before{content:"";width:16px;height:1px;background:var(--gold-3)}
+.qtitle{margin:0 0 6px;font-size:clamp(17px,4.4vw,21px);line-height:1.7;font-weight:700;letter-spacing:.05em;color:#efe6d2}
+.qdesc{margin:0 0 18px;color:var(--ink-dim);font-size:12.5px;letter-spacing:.06em;line-height:1.8}
+
+.opt{
+  position:relative;text-align:center;padding:13px 10px;
+  border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.022);
+  color:#e2d9c7;font-size:clamp(12.5px,3.3vw,14.5px);line-height:1.5;letter-spacing:.03em;
+  cursor:pointer;transition:border-color .25s,background .25s,color .25s,box-shadow .25s;
+  min-height:52px;display:flex;align-items:center;justify-content:center;
+  user-select:none;-webkit-user-select:none;
+}
+.opt:hover{border-color:rgba(201,168,106,.4);background:rgba(201,168,106,.055)}
+.opt.sel{border-color:var(--gold);background:rgba(201,168,106,.13);color:var(--gold-2);box-shadow:0 0 22px -6px rgba(201,168,106,.5)}
+.opt.done{color:var(--gold-2);border-color:rgba(201,168,106,.55);background:rgba(201,168,106,.075);opacity:.92}
+.opt.done::after{content:"";position:absolute;right:9px;top:9px;width:5px;height:5px;transform:rotate(45deg);background:var(--gold)}
+.opt.bad{border-color:rgba(168,52,42,.8);background:rgba(168,52,42,.12);color:#e5a49c}
+.opt.ok{border-color:rgba(122,165,147,.75);background:rgba(122,165,147,.13);color:#cfe6da}
+
+/* 连线 */
+.matchwrap{position:relative;display:flex;flex-direction:column;justify-content:center;padding:6px 0;margin-top:6px}
+.matchgrid{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:11px clamp(24px,6.4vw,60px)}
+.matchgrid svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.matchgrid svg path{
+  fill:none;stroke:var(--gold);stroke-width:1.4;stroke-dasharray:600;stroke-dashoffset:600;
+  animation:draw .55s ease forwards;filter:drop-shadow(0 0 5px rgba(201,168,106,.55));
+}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+/* 排序 */
+.seqwrap{display:flex;flex-direction:column;gap:16px;justify-content:center;margin-top:6px}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.slot{
+  min-height:50px;border:1px dashed rgba(201,168,106,.26);border-radius:11px;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  color:var(--ink-faint);font-size:12px;letter-spacing:.12em;transition:.3s;padding:8px 6px;text-align:center;
+}
+.slot .n{color:var(--gold-3);font-size:10px}
+.slot.filled{border-style:solid;border-color:rgba(201,168,106,.5);background:rgba(201,168,106,.08);color:#e8dfcb;cursor:pointer}
+.slot.filled:hover{background:rgba(201,168,106,.14)}
+.pool{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+
+/* 填空 */
+.fillwrap{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px;padding:8px 0;margin-top:6px}
+.fillline{font-size:clamp(15px,4.1vw,19px);line-height:2;text-align:center;color:#e9e1cf;letter-spacing:.04em}
+.fillline u{display:inline-block;min-width:104px;border-bottom:1px solid rgba(201,168,106,.5);text-decoration:none;margin:0 6px}
+#fillInput{
+  width:min(330px,84%);padding:13px 16px;text-align:center;
+  background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:11px;
+  color:var(--gold-2);font-family:inherit;font-size:17px;letter-spacing:.16em;outline:none;transition:.3s;
+}
+#fillInput:focus{border-color:var(--gold);box-shadow:0 0 24px -6px rgba(201,168,106,.5);background:rgba(201,168,106,.06)}
+#fillInput::placeholder{color:var(--ink-faint);letter-spacing:.08em;font-size:13px}
+.btn{
+  font-family:inherit;font-size:13px;letter-spacing:.24em;text-indent:.24em;padding:12px 24px;border-radius:11px;cursor:pointer;
+  border:1px solid var(--line-strong);color:var(--gold-2);
+  background:linear-gradient(160deg,rgba(201,168,106,.16),rgba(201,168,106,.04));transition:.3s;
+}
+.btn:hover{background:linear-gradient(160deg,rgba(201,168,106,.28),rgba(201,168,106,.08));box-shadow:0 0 26px -8px rgba(201,168,106,.7)}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:none;border-color:var(--line);color:var(--ink-dim)}
+.btn.ghost:hover{color:var(--gold-2);border-color:var(--line-strong);box-shadow:none}
+.btn.mini{font-size:11.5px;padding:8px 14px;letter-spacing:.14em;text-indent:.14em}
+
+/* 选择 */
+.choices{display:flex;flex-direction:column;gap:10px;justify-content:center;margin-top:14px}
+.choices .opt{justify-content:flex-start;text-align:left;padding:14px 16px;min-height:54px}
+.choices .opt .k{flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:1px solid rgba(201,168,106,.35);display:flex;align-items:center;justify-content:center;font-size:10.5px;color:var(--gold-3);margin-right:12px;transition:.25s}
+.choices .opt.sel .k{border-color:var(--gold);color:var(--gold-2)}
+
+/* 训练 */
+.hintRow{display:flex;align-items:center;gap:12px;margin:14px 0 2px;flex-wrap:wrap}
+.hintText{color:var(--gold-3);font-size:12px;letter-spacing:.06em;line-height:1.7;animation:rise .35s both}
+
+/* 反馈 */
+.toast{
+  position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));transform:translate(-50%,20px);
+  max-width:min(560px,90vw);padding:13px 20px;border-radius:12px;border:1px solid var(--line-strong);
+  background:rgba(14,13,10,.94);backdrop-filter:blur(10px);
+  color:#e9e1cf;font-size:13px;line-height:1.75;letter-spacing:.03em;text-align:center;
+  box-shadow:0 20px 50px -20px rgba(0,0,0,.9);
+  opacity:0;pointer-events:none;transition:.35s cubic-bezier(.2,.7,.2,1);z-index:40;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.good{border-color:rgba(122,165,147,.6)}
+.toast.bad{border-color:rgba(168,52,42,.7)}
+.toast b{color:var(--gold-2);font-weight:700}
+
+/* 开卷过场 */
+.veil{
+  position:fixed;inset:0;z-index:100;pointer-events:none;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 50% 46%, #17130d 0%, #08090b 72%);transition:opacity .65s ease;
+}
+.veil.out{opacity:0}
+.veil-in{text-align:center}
+.veil-in span{display:block;font-size:11px;letter-spacing:.52em;text-indent:.52em;color:var(--gold-3);margin-bottom:16px}
+.veil-in b{
+  display:block;font-size:clamp(28px,7.6vw,42px);font-weight:700;letter-spacing:.3em;text-indent:.3em;
+  background:linear-gradient(178deg,#f6ecd4,#d5b981 55%,#8f7442);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 20px rgba(201,168,106,.25));
+}
+.veil-in i{display:block;width:56px;height:1px;margin:20px auto 0;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+
+/* 确认弹层 */
+.modal{
+  position:fixed;inset:0;z-index:200;background:rgba(4,4,6,.78);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.modal.on{opacity:1;pointer-events:auto}
+.modalBox{
+  width:100%;max-width:340px;border:1px solid var(--line-strong);border-radius:14px;
+  background:linear-gradient(160deg,#171310,#0f0d0a);padding:22px 20px;text-align:center;
+  box-shadow:0 30px 80px -30px #000;
+}
+.modalBox p{margin:0 0 18px;color:#e2d8c4;font-size:13.5px;line-height:1.9;letter-spacing:.05em}
+.modalBox .row{display:flex;gap:10px}
+.modalBox .row .btn{flex:1;padding:11px 0;font-size:12px}
+
+/* 结算 */
+#screen-end{align-items:center;justify-content:center;text-align:center}
+.result{width:100%;animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.result .mini{font-size:11px;letter-spacing:.4em;color:var(--gold-3);margin-bottom:14px}
+.result h2{
+  margin:0 0 10px;font-size:clamp(25px,6.6vw,34px);font-weight:700;letter-spacing:.2em;text-indent:.2em;
+  background:linear-gradient(178deg,#f6ecd4,#cfae6e 55%,#8f7442);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.result .line{margin:0 0 22px;color:var(--ink-dim);font-size:13px;letter-spacing:.14em;line-height:1.9}
+.stars{display:flex;justify-content:center;gap:12px;margin:0 0 24px}
+.stars i{width:13px;height:13px;display:block;transform:rotate(45deg);border:1px solid var(--gold-3);transition:.5s}
+.stars i.on{background:var(--gold);border-color:var(--gold);box-shadow:0 0 16px rgba(201,168,106,.8);transform:rotate(45deg) scale(1.1)}
+.review{
+  text-align:left;border:1px solid var(--line);border-radius:13px;padding:15px 16px;
+  background:rgba(255,255,255,.02);margin-bottom:22px;max-height:34vh;overflow:auto;
+}
+.review h4{margin:0 0 9px;font-size:11px;letter-spacing:.28em;color:var(--gold-3);font-weight:400}
+.review .item{padding:8px 0;border-top:1px solid rgba(201,168,106,.10);font-size:12.5px;line-height:1.8;color:var(--ink-dim)}
+.review .item:first-of-type{border-top:0}
+.review .item b{color:#e2d8c4;font-weight:400}
+.review .item span{color:var(--gold-3)}
+.review .empty{color:var(--jade);font-size:12.5px;letter-spacing:.08em}
+.actions{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
+
+@media (max-width:430px){
+  .matchgrid{gap:9px 22px}
+  .opt{padding:11px 8px;font-size:12px}
+  .slots,.pool{gap:7px}
+  .slot{font-size:11px;min-height:46px}
+  .tabs button{font-size:11.5px;letter-spacing:.14em}
+}
+@media (hover:none){
+  .level:hover{transform:none;box-shadow:none;background:linear-gradient(150deg,rgba(255,255,255,.045),rgba(255,255,255,.012))}
+  .level:hover::before{opacity:.55}
+}
+</style>
+</head>
+<body>
+<div class="corner tl"></div><div class="corner tr"></div>
+<div class="corner bl"></div><div class="corner br"></div>
+
+<main id="app">
+
+  <!-- 首页 -->
+  <section id="screen-home" class="screen active">
+    <div class="hero">
+      <div class="seal">岐黄</div>
+      <h1>岐黄问道</h1>
+      <p class="sub">中医典籍 · 背诵闯关</p>
+      <div class="rule"></div>
+    </div>
+
+    <nav class="tabs" id="tabs">
+      <button data-tab="play" class="on">闯 关</button>
+      <button data-tab="drill">训 练</button>
+      <button data-tab="mem">背 诵</button>
+    </nav>
+
+    <div class="panel on" id="panel-play">
+      <div class="levels" id="levelList"></div>
+    </div>
+
+    <div class="panel" id="panel-drill">
+      <p class="panelHint">按卷把书、人、地位逐个过一遍。想不起来就点「看提示」——看过提示的，本轮末尾会再考一次。</p>
+      <div class="levels" id="drillList"></div>
+    </div>
+
+    <div class="panel" id="panel-mem">
+      <div class="segs" id="memSegs"></div>
+      <div id="memList"></div>
+    </div>
+
+    <div class="foot">
+      <div id="progressText">尚未入门</div>
+      <button id="btnReset">重置进度</button>
+    </div>
+  </section>
+
+  <!-- 闯关 -->
+  <section id="screen-play" class="screen">
+    <div class="hud">
+      <button class="back" id="btnBack">返回</button>
+      <div class="stage">
+        <b id="stageName">卷一</b>
+        <span id="stageSub">第 1 / 7 题</span>
+      </div>
+      <div class="hearts" id="hearts"></div>
+    </div>
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="qbox" id="qbox"></div>
+  </section>
+
+  <!-- 训练 -->
+  <section id="screen-drill" class="screen">
+    <div class="hud">
+      <button class="back" id="drillBack">返回</button>
+      <div class="stage">
+        <b id="drillName">训练 · 卷一</b>
+        <span id="drillSub">第 1 / 16 条</span>
+      </div>
+      <div class="dscore" id="drillScore">✓ 0</div>
+    </div>
+    <div class="bar"><i id="drillBar"></i></div>
+    <div class="qbox" id="drillBox"></div>
+  </section>
+
+  <!-- 结算 -->
+  <section id="screen-end" class="screen">
+    <div class="result">
+      <div class="mini" id="endMini">卷 一</div>
+      <h2 id="endTitle">通关</h2>
+      <p class="line" id="endLine"></p>
+      <div class="stars" id="endStars"></div>
+      <div class="review" id="review"></div>
+      <div class="actions" id="endActions"></div>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal">
+  <div class="modalBox">
+    <p id="modalText"></p>
+    <div class="row">
+      <button class="btn ghost" id="modalNo">再想想</button>
+      <button class="btn" id="modalYes">确定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ==========================================================
+   一、知识库（训练 + 背诵的安全来源）
+   t: 1=明以前  2=明清及以后
+   ========================================================== */
+const KB = [
+  /* ---------- 卷一 ---------- */
+  {t:1,era:"先秦两汉",book:"《黄帝内经》",author:"",zi:"",hao:"",
+   status:"现存最早的中医学经典",note:"分《素问》《灵枢》两部，战国至秦汉成书"},
+  {t:1,era:"先秦两汉",book:"《难经》",author:"秦越人",zi:"",hao:"",
+   status:"以问答解释疑难，详于脉学",note:"又称《黄帝八十一难经》，传说为秦越人所著"},
+  {t:1,era:"先秦两汉",book:"《伤寒杂病论》",author:"张机",zi:"仲景",hao:"",
+   status:"第一部辨证论治专著",note:"王叔和整理为《伤寒论》《金匮要略》；尊张机为医圣，尊此书为医方之祖"},
+  {t:1,era:"先秦两汉",book:"《神农本草经》",author:"",zi:"",hao:"",
+   status:"现存最早的中药学专著",note:"载药365种，分上、中、下三品；四气五味由此立"},
+
+  {t:1,era:"魏晋",book:"《脉经》",author:"王叔和",zi:"",hao:"",
+   status:"第一部脉学专著",note:"3世纪成书；24种病脉，倡寸口诊法"},
+  {t:1,era:"魏晋",book:"《针灸甲乙经》",author:"皇甫谧",zi:"",hao:"",
+   status:"第一部针灸学专著",note:"259年成书；藏象、经络、腧穴、刺法俱备"},
+  {t:1,era:"东晋",book:"《肘后备急方》",author:"葛洪",zi:"",hao:"",
+   status:"第一部临床急症著作",note:"原名《肘后救卒方》；青蒿截疟的记载出于此"},
+  {t:1,era:"隋",book:"《诸病源候论》",author:"巢元方",zi:"",hao:"",
+   status:"第一部病因病机证候学专著",note:"610年成书"},
+  {t:1,era:"唐",book:"《备急千金要方》",author:"孙思邈",zi:"",hao:"",
+   status:"第一部医学百科全书",note:"652年成书；撰「大医精诚」，后世尊为药王"},
+  {t:1,era:"唐",book:"《千金翼方》",author:"孙思邈",zi:"",hao:"",
+   status:"与《千金要方》相辅，代表盛唐医学水平",note:"682年成书"},
+
+  {t:1,era:"北宋",book:"《小儿药证直诀》",author:"钱乙",zi:"仲阳",hao:"",
+   status:"系统论述小儿体质、病机与治疗特点",note:"脏腑柔弱，易虚易实，易寒易热"},
+  {t:1,era:"南宋",book:"《三因极一病证方论》",author:"陈言",zi:"无择",hao:"",
+   status:"三因学说",note:"外感六淫为外因，七情内伤为内因，余为不内外因；简称《三因方》"},
+
+  {t:1,era:"金",book:"《素问玄机原病式》",author:"刘完素",zi:"守真",hao:"河间",
+   status:"寒凉派 · 六气皆从火化",note:"金元四大家之一，金代"},
+  {t:1,era:"金",book:"《儒门事亲》",author:"张从正",zi:"子和",hao:"戴人",
+   status:"攻邪派 · 病由邪生",note:"善用汗、吐、下三法"},
+  {t:1,era:"金元",book:"《脾胃论》",author:"李杲",zi:"明之",hao:"东垣",
+   status:"补土派 · 内伤脾胃，百病由生",note:"师从易水学派创始人张元素"},
+  {t:1,era:"元",book:"《格致余论》",author:"朱震亨",zi:"彦修",hao:"丹溪",
+   status:"滋阴派 · 阳常有余，阴常不足",note:"善用滋阴降火"},
+
+  /* ---------- 卷二 ---------- */
+  {t:2,era:"明",book:"《本草纲目》",author:"李时珍",zi:"东璧",hao:"濒湖山人",
+   status:"载药1892种，分16部60类",note:"1578年成书；17世纪末传入欧洲"},
+  {t:2,era:"明",book:"《濒湖脉学》",author:"李时珍",zi:"东璧",hao:"濒湖山人",
+   status:"脉学门径之书",note:"论脉精辟，易学易用"},
+  {t:2,era:"明",book:"《古今医统大全》",author:"徐春甫",zi:"",hao:"",
+   status:"辑录230余部医籍的医学全书",note:"1556年成书"},
+  {t:2,era:"明",book:"《证治准绳》",author:"王肯堂",zi:"",hao:"",
+   status:"临床医学丛书",note:"1602年成书，以临床各科方证为主"},
+  {t:2,era:"清",book:"《古今图书集成·医部全录》",author:"陈梦雷",zi:"",hao:"",
+   status:"中医学类书",note:"1723年成书"},
+  {t:2,era:"清",book:"《医宗金鉴》",author:"吴谦",zi:"",hao:"",
+   status:"太医院中医学教科书",note:"1742年成书，理法方药歌诀俱备"},
+  {t:2,era:"清",book:"《医林改错》",author:"王清任",zi:"勋臣",hao:"",
+   status:"灵机记性不在心在脑 · 瘀血理论",note:"1830年成书"},
+
+  {t:2,era:"明末",book:"《温疫论》",author:"吴有性",zi:"又可",hao:"",
+   status:"戾气学说",note:"戾气从口鼻而入，温病学派由此开端"},
+  {t:2,era:"清",book:"《温热论》",author:"叶桂",zi:"天士",hao:"香岩",
+   status:"卫气营血辨证",note:"温邪上受，首先犯肺，逆传心包"},
+  {t:2,era:"清",book:"《湿热条辨》",author:"薛雪",zi:"生白",hao:"",
+   status:"湿热病因理论",note:"阐明湿热病的病因、传变与治法"},
+  {t:2,era:"清",book:"《温病条辨》",author:"吴瑭",zi:"鞠通",hao:"",
+   status:"三焦辨证",note:"始于上焦，在手太阴；传中焦，胃与脾"},
+  {t:2,era:"清",book:"《温热经纬》《霍乱论》",author:"王士雄",zi:"孟英",hao:"潜斋",
+   status:"新感、伏邪两大辨证纲领",note:"晚号梦隐"},
+
+  {t:2,era:"清",book:"",author:"张介宾",zi:"景岳",hao:"",
+   status:"阳非有余，真阴不足",note:"命门学说；重温补肾阳、滋养肾阴"},
+  {t:2,era:"明",book:"",author:"赵献可",zi:"",hao:"",
+   status:"命门为人身之主",note:"重「命门之火」在养生防病中的意义"},
+
+  {t:2,era:"近代",book:"《中国医学大成》",author:"曹炳章",zi:"赤电",hao:"",
+   status:"集古今中医学大成的巨著",note:"20世纪30年代主编"},
+  {t:2,era:"近代",book:"《中西汇通医经精义》",author:"唐宗海",zi:"容川",hao:"",
+   status:"中西汇通代表作",note:"中西汇通学派代表"},
+  {t:2,era:"近代",book:"《医学衷中参西录》",author:"张锡纯",zi:"寿甫",hao:"",
+   status:"中西汇通代表作",note:"中西汇通学派代表"}
+];
+KB.forEach((k,i)=>{ k.id = i; });
+
+/* ==========================================================
+   二、闯关题库
+   ========================================================== */
+const L1 = [
+  {type:"match",tag:"连线",title:"典籍 · 地位",prompt:"把典籍与它的身份连起来",pairs:[
+    {l:"《黄帝内经》",r:"现存最早的中医学经典"},
+    {l:"《伤寒杂病论》",r:"第一部辨证论治专著"},
+    {l:"《神农本草经》",r:"现存最早的中药学专著"},
+    {l:"《脉经》",r:"第一部脉学专著"},
+    {l:"《针灸甲乙经》",r:"第一部针灸学专著"},
+  ]},
+  {type:"match",tag:"连线",title:"典籍 · 地位",prompt:"把典籍与它的身份连起来",pairs:[
+    {l:"《肘后备急方》",r:"第一部临床急症著作"},
+    {l:"《诸病源候论》",r:"第一部病因病机证候学专著"},
+    {l:"《备急千金要方》",r:"第一部医学百科全书"},
+    {l:"《三因极一病证方论》",r:"三因学说"},
+    {l:"《小儿药证直诀》",r:"小儿体质病机与治疗特点"},
+  ]},
+  {type:"match",tag:"连线",title:"医家 · 字号",prompt:"把医家与他的字、号连起来",pairs:[
+    {l:"张机",r:"字仲景"},
+    {l:"钱乙",r:"字仲阳"},
+    {l:"陈言",r:"字无择"},
+    {l:"刘完素",r:"字守真 · 号河间"},
+    {l:"张从正",r:"字子和 · 号戴人"},
+  ]},
+  {type:"match",tag:"连线",title:"医家 · 字号",prompt:"把医家与他的字、号连起来",pairs:[
+    {l:"李杲",r:"字明之 · 号东垣"},
+    {l:"朱震亨",r:"字彦修 · 号丹溪"},
+    {l:"张机",r:"字仲景"}, 
+    {l:"钱乙",r:"字仲阳"},
+  ]},
+  {type:"match",tag:"连线",title:"金元四大家 · 主张",prompt:"把医家与他的学派主张连起来",pairs:[
+    {l:"刘完素",r:"寒凉派 · 六气皆从火化"},
+    {l:"张从正",r:"攻邪派 · 病由邪生"},
+    {l:"李杲",r:"补土派 · 内伤脾胃，百病由生"},
+    {l:"朱震亨",r:"滋阴派 · 阳常有余，阴常不足"},
+  ]},
+  {type:"match",tag:"连线",title:"著作 · 作者",prompt:"把著作与作者连起来",pairs:[
+    {l:"《素问玄机原病式》",r:"刘完素"},
+    {l:"《儒门事亲》",r:"张从正"},
+    {l:"《脾胃论》",r:"李杲"},
+    {l:"《格致余论》",r:"朱震亨"},
+    {l:"《小儿药证直诀》",r:"钱乙"},
+  ]},
+  {type:"match",tag:"连线",title:"典籍 · 作者",prompt:"把典籍与作者连起来",pairs:[
+    {l:"《脉经》",r:"王叔和"},
+    {l:"《针灸甲乙经》",r:"皇甫谧"},
+    {l:"《肘后备急方》",r:"葛洪"},
+    {l:"《诸病源候论》",r:"巢元方"},
+    {l:"《备急千金要方》",r:"孙思邈"},
+  ]},
+
+  {type:"choice",tag:"选择",title:"选择 · 经典",prompt:"“六经辨证”出自下列哪部著作？",options:["《黄帝内经》","《伤寒论》","《难经》","《神农本草经》"],answer:1,
+   why:"《伤寒论》创立“六经辨证”理论。"},
+  {type:"choice",tag:"选择",title:"选择 · 经典",prompt:"“治未病”的观点最早出自？",options:["《伤寒杂病论》","《神农本草经》","《黄帝内经》","《脉经》"],answer:2,
+   why:"《黄帝内经》在疾病防治上提出“治未病”。"},
+  {type:"choice",tag:"选择",title:"选择 · 经典",prompt:"《肘后备急方》的原名是？",options:["《肘后救卒方》","《肘后卒救方》","《救卒肘后方》","《肘后方》"],answer:0,
+   why:"原名《肘后救卒方》，简称《肘后方》。"},
+  {type:"choice",tag:"选择",title:"选择 · 经典",prompt:"“青蒿一握，以水二升渍，绞取汁，尽服之”的记载见于？",options:["《神农本草经》","《肘后备急方》","《千金要方》","《本草纲目》"],answer:1,
+   why:"屠呦呦受此启发提取青蒿素。"},
+  {type:"choice",tag:"选择",title:"选择 · 学派",prompt:"主张“阳常有余，阴常不足”的是？",options:["刘完素","李杲","朱震亨","张从正"],answer:2,
+   why:"朱震亨，滋阴派，善用滋阴降火。"},
+  {type:"choice",tag:"选择",title:"选择 · 学派",prompt:"提出“内伤脾胃，百病由生”的医家是？",options:["张从正","李杲","刘完素","钱乙"],answer:1,
+   why:"李杲，补土派，著《脾胃论》。"},
+  {type:"choice",tag:"选择",title:"选择 · 学派",prompt:"“三因学说”的提出者是？",options:["陈言","钱乙","张机","巢元方"],answer:0,
+   why:"陈言《三因极一病证方论》：外因、内因、不内外因。"},
+  {type:"choice",tag:"选择",title:"选择 · 学派",prompt:"提出“六气皆从火化”的医家是？",options:["李杲","刘完素","张从正","朱震亨"],answer:1,
+   why:"刘完素，寒凉派，著《素问玄机原病式》。"},
+  {type:"choice",tag:"选择",title:"选择 · 经典",prompt:"《黄帝内经》分为哪两部分？",options:["《素问》与《灵枢》","《素问》与《太素》","《灵枢》与《难经》","《素问》与《脉经》"],answer:0,
+   why:"《素问》《灵枢》两部，共18卷162篇。"},
+  {type:"choice",tag:"选择",title:"选择 · 脉学",prompt:"《脉经》第一次系统论述了多少种病脉？",options:["24 种","27 种","28 种","12 种"],answer:0,
+   why:"浮、芤、洪、滑、数、促、弦、紧等24种病脉。"},
+  {type:"choice",tag:"选择",title:"选择 · 作者",prompt:"《脉经》的作者是？",options:["王叔和","皇甫谧","葛洪","巢元方"],answer:0,
+   why:"西晋·王叔和，3世纪成书。"},
+  {type:"choice",tag:"选择",title:"选择 · 作者",prompt:"《肘后备急方》的作者是？",options:["葛洪","王叔和","巢元方","孙思邈"],answer:0,
+   why:"东晋·葛洪。"},
+  {type:"choice",tag:"选择",title:"选择 · 著作",prompt:"张机的代表著作是？",options:["《伤寒杂病论》","《难经》","《脉经》","《神农本草经》"],answer:0,
+   why:"《伤寒杂病论》，后世尊为“医方之祖”。"},
+  {type:"choice",tag:"选择",title:"选择 · 著作",prompt:"“医方之祖”指的是哪部书？",options:["《伤寒杂病论》","《黄帝内经》","《神农本草经》","《难经》"],answer:0,
+   why:"后世医家尊《伤寒杂病论》为“医方之祖”。"},
+  {type:"choice",tag:"选择",title:"选择 · 称号",prompt:"“药王”指哪位医家？",options:["孙思邈","张仲景","李时珍","钱乙"],answer:0,
+   why:"孙思邈《备急千金要方》撰“大医精诚”，后世尊为药王。"},
+  {type:"choice",tag:"选择",title:"选择 · 经典",prompt:"《神农本草经》把药物分为？",options:["上、中、下三品","寒、热、温、凉四性","六经","三因"],answer:0,
+   why:"上品主益气，中品主治病补虚，下品主除病邪。"},
+  {type:"choice",tag:"选择",title:"选择 · 经典",prompt:"《难经》又称？",options:["《黄帝八十一难经》","《素问》","《灵枢》","《太素》"],answer:0,
+   why:"以问答解释疑难，传说为秦越人所著。"},
+  {type:"choice",tag:"选择",title:"选择 · 称号",prompt:"“医圣”指哪位医家？",options:["张仲景","孙思邈","李时珍","扁鹊"],answer:0,
+   why:"张仲景，著《伤寒杂病论》。"},
+];
+
+const L2 = [
+  {type:"match",tag:"连线",title:"典籍 · 作者",prompt:"把明清典籍与作者连起来",pairs:[
+    {l:"《本草纲目》",r:"李时珍"},
+    {l:"《古今医统大全》",r:"徐春甫"},
+    {l:"《证治准绳》",r:"王肯堂"},
+    {l:"《医宗金鉴》",r:"吴谦"},
+    {l:"《医林改错》",r:"王清任"},
+  ]},
+  {type:"match",tag:"连线",title:"温病 · 著作",prompt:"把温病学家与他的成就连起来",pairs:[
+    {l:"吴有性",r:"《温疫论》· 戾气"},
+    {l:"叶桂",r:"《温热论》· 卫气营血"},
+    {l:"薛雪",r:"《湿热条辨》"},
+    {l:"吴瑭",r:"《温病条辨》· 三焦"},
+    {l:"王士雄",r:"《温热经纬》· 新感伏邪"},
+  ]},
+  {type:"match",tag:"连线",title:"医家 · 字号",prompt:"把医家与他的字、号连起来",pairs:[
+    {l:"吴有性",r:"字又可"},
+    {l:"叶桂",r:"字天士 · 号香岩"},
+    {l:"薛雪",r:"字生白"},
+    {l:"吴瑭",r:"字鞠通"},
+    {l:"王士雄",r:"字孟英 · 号潜斋"},
+  ]},
+  {type:"match",tag:"连线",title:"医家 · 字号",prompt:"把明清医家与他的字、号连起来",pairs:[
+    {l:"李时珍",r:"字东璧 · 号濒湖山人"},
+    {l:"王清任",r:"字勋臣"},
+    {l:"张介宾",r:"字景岳"},
+    {l:"唐宗海",r:"字容川"},
+    {l:"张锡纯",r:"字寿甫"},
+  ]},
+  {type:"match",tag:"连线",title:"近代 · 汇通",prompt:"把近代医家与他的著作连起来",pairs:[
+    {l:"唐宗海",r:"《中西汇通医经精义》"},
+    {l:"张锡纯",r:"《医学衷中参西录》"},
+    {l:"曹炳章",r:"《中国医学大成》"},
+    {l:"朱沛文",r:"中西汇通学派代表"},
+  ]},
+  {type:"match",tag:"连线",title:"理论 · 归属",prompt:"把理论主张与医家连起来",pairs:[
+    {l:"“阳非有余，真阴不足”",r:"张介宾"},
+    {l:"“命门之火”为养生要义",r:"赵献可"},
+    {l:"“灵机记性不在心在脑”",r:"王清任"},
+    {l:"“温邪上受，首先犯肺”",r:"叶桂"},
+  ]},
+  {type:"sequence",tag:"排序",title:"年代 · 典籍先后",prompt:"按成书年代由早到晚排列",items:["《古今医统大全》","《本草纲目》","《证治准绳》","《医宗金鉴》"],
+   why:"1556 → 1578 → 1602 → 1742。"},
+  {type:"sequence",tag:"排序",title:"年代 · 医家先后",prompt:"按年代先后排列温病四家",items:["吴有性","叶桂","薛雪","吴瑭"],
+   why:"吴有性（明末）→ 叶桂 → 薛雪 → 吴瑭（清）。"},
+  {type:"sequence",tag:"排序",title:"年代 · 典籍先后",prompt:"按成书年代由早到晚排列",items:["《温疫论》","《温热论》","《湿热条辨》","《温病条辨》"],
+   why:"温病学派由明末至清的递进。"},
+
+  {type:"fill",tag:"填空",title:"填空 · 作者",prompt:"《本草纲目》的作者是 ______",answer:["李时珍"]},
+  {type:"fill",tag:"填空",title:"填空 · 作者",prompt:"《医林改错》的作者是 ______",answer:["王清任"]},
+  {type:"fill",tag:"填空",title:"填空 · 作者",prompt:"《温疫论》的作者是 ______",answer:["吴有性"]},
+  {type:"fill",tag:"填空",title:"填空 · 作者",prompt:"《温病条辨》的作者是 ______",answer:["吴瑭","吴鞠通"]},
+  {type:"fill",tag:"填空",title:"填空 · 字号",prompt:"李时珍，字 ______，晚号濒湖山人",answer:["东璧","东壁"]},
+  {type:"fill",tag:"填空",title:"填空 · 字号",prompt:"吴瑭，字 ______",answer:["鞠通"]},
+  {type:"fill",tag:"填空",title:"填空 · 字号",prompt:"叶桂，字 ______，号香岩",answer:["天士"]},
+  {type:"fill",tag:"填空",title:"填空 · 字号",prompt:"王清任，字 ______",answer:["勋臣"]},
+  {type:"fill",tag:"填空",title:"填空 · 理论",prompt:"张介宾提出“阳非有余，______不足”",answer:["真阴"]},
+  {type:"fill",tag:"填空",title:"填空 · 理论",prompt:"吴有性创 ______ 理论，提出温疫病因为“戾气”",answer:["戾气","疠气"]},
+  {type:"fill",tag:"填空",title:"填空 · 理论",prompt:"吴瑭创立温病 ______ 辨证",answer:["三焦"]},
+  {type:"fill",tag:"填空",title:"填空 · 理论",prompt:"叶桂创立温病 ______ 辨证",answer:["卫气营血"]},
+  {type:"fill",tag:"填空",title:"填空 · 数字",prompt:"《本草纲目》载中药 ______ 种",answer:["1892"]},
+  {type:"fill",tag:"填空",title:"填空 · 数字",prompt:"《医宗金鉴》成书于 ______ 年",answer:["1742"]},
+  {type:"fill",tag:"填空",title:"填空 · 数字",prompt:"《古今医统大全》辑录 ______ 余部医籍",answer:["230"]},
+
+  {type:"choice",tag:"选择",title:"选择 · 明清",prompt:"“卫气营血辨证”是谁创立的？",options:["吴有性","叶桂","薛雪","吴瑭"],answer:1,
+   why:"叶桂《温热论》。"},
+  {type:"choice",tag:"选择",title:"选择 · 明清",prompt:"《温病条辨》创立的是？",options:["三焦辨证","卫气营血辨证","六经辨证","脏腑辨证"],answer:0,
+   why:"吴瑭，三焦辨证。"},
+  {type:"choice",tag:"选择",title:"选择 · 明清",prompt:"提出“戾气”学说的医家是？",options:["吴有性","王士雄","薛雪","叶桂"],answer:0,
+   why:"《温疫论》，“戾气”从口鼻而入。"},
+  {type:"choice",tag:"选择",title:"选择 · 明清",prompt:"提出“灵机记性不在心在脑”的是？",options:["张介宾","王清任","吴谦","李时珍"],answer:1,
+   why:"《医林改错》，改正古医籍解剖错误，发展瘀血理论。"},
+  {type:"choice",tag:"选择",title:"选择 · 明清",prompt:"《医宗金鉴》是哪个机构的中医学教科书？",options:["太医院","国子监","翰林院","太医署"],answer:0,
+   why:"清·吴谦等编，太医院教科书。"},
+  {type:"choice",tag:"选择",title:"选择 · 明清",prompt:"明确提出“新感”“伏邪”两大辨证纲领的是？",options:["吴有性","叶桂","王士雄","吴瑭"],answer:2,
+   why:"王士雄《温热经纬》。"},
+  {type:"choice",tag:"选择",title:"选择 · 明清",prompt:"“阳非有余，真阴不足”是谁的见解？",options:["赵献可","张介宾","朱震亨","李杲"],answer:1,
+   why:"张介宾（字景岳），强调温补肾阳、滋养肾阴。"},
+  {type:"choice",tag:"选择",title:"选择 · 明清",prompt:"《古今图书集成·医部全录》的主编是？",options:["陈梦雷","吴谦","徐春甫","王肯堂"],answer:0,
+   why:"清·陈梦雷等，1723年成书。"},
+];
+
+const L3 = [
+  {type:"choice",tag:"选择",title:"溯源 · 经典",prompt:"《伤寒杂病论》由谁整理，分为《伤寒论》与《金匮要略》？",options:["王叔和","皇甫谧","巢元方","葛洪"],answer:0,
+   why:"晋·王叔和整理。"},
+  {type:"choice",tag:"选择",title:"溯源 · 经典",prompt:"《难经》传说为何人所著？",options:["秦越人","张机","华佗","淳于意"],answer:0,
+   why:"又称《黄帝八十一难经》，传说为秦越人（扁鹊）所著。"},
+  {type:"choice",tag:"选择",title:"溯源 · 经典",prompt:"《黄帝内经》中提出诊病“四德”的是哪一篇？",options:["《素问·疏五过论》","《素问·征四失论》","《灵枢·九针》","《素问·上古天真论》"],answer:0,
+   why:"《素问·疏五过论》提出诊病“四德”；《征四失论》批评医生过失。"},
+  {type:"choice",tag:"选择",title:"溯源 · 经典",prompt:"中医学理论体系形成的标志是哪四部经典？",options:["《黄帝内经》《难经》《伤寒杂病论》《神农本草经》","《黄帝内经》《脉经》《伤寒论》《本草纲目》","《难经》《脉经》《千金要方》《神农本草经》","《素问》《灵枢》《伤寒论》《金匮要略》"],answer:0},
+  {type:"choice",tag:"选择",title:"溯源 · 温病",prompt:"温病理论源自哪部经典？",options:["《黄帝内经》","《伤寒论》","《温疫论》","《难经》"],answer:0,
+   why:"温病理论源自《黄帝内经》，至明清臻于成熟。"},
+  {type:"choice",tag:"选择",title:"溯源 · 学派",prompt:"李杲师从的易水学派创始人是谁？",options:["张元素","刘完素","张从正","钱乙"],answer:0,
+   why:"李杲师从张元素。"},
+  {type:"choice",tag:"选择",title:"溯源 · 经典",prompt:"钱乙论小儿体质，“五脏六腑”处于什么状态？",options:["成而未全，全而未壮","形气未充，脏腑已实","血气已实，骨气已坚","阴阳俱盛，脏腑已成"],answer:0,
+   why:"《小儿药证直诀》：脏腑柔弱，易虚易实，易寒易热。"},
+  {type:"choice",tag:"选择",title:"溯源 · 医德",prompt:"“凡大医治病，必当安神定志，无欲无求”出自？",options:["《备急千金要方·大医精诚》","《伤寒论·自序》","《素问·疏五过论》","《医宗金鉴》"],answer:0,
+   why:"孙思邈，开创中国医学伦理学之先河。"},
+  {type:"choice",tag:"选择",title:"溯源 · 汇通",prompt:"中西汇通学派的代表人物不包括？",options:["唐宗海","张锡纯","朱沛文","陈梦雷"],answer:3,
+   why:"陈梦雷是《古今图书集成·医部全录》主编；汇通派代表为唐宗海、朱沛文、恽树珏、张锡纯。"},
+  {type:"choice",tag:"选择",title:"溯源 · 温病",prompt:"“久病入络”“久痛入络”之论出自？",options:["叶桂《临证指南医案》","吴瑭《温病条辨》","王清任《医林改错》","薛雪《湿热条辨》"],answer:0,
+   why:"叶桂创立辛味通络、络虚通补等治法。"},
+
+  {type:"match",tag:"连线",title:"数字 · 典籍",prompt:"把典籍与它的数字连起来",pairs:[
+    {l:"《神农本草经》",r:"载药 365 种"},
+    {l:"《本草纲目》",r:"载药 1892 种 · 16部60类"},
+    {l:"《古今医统大全》",r:"辑录 230 余部医籍"},
+    {l:"《脉经》",r:"24 种病脉"},
+  ]},
+  {type:"match",tag:"连线",title:"四部经典 · 成书",prompt:"把典籍与它的成书年代连起来",pairs:[
+    {l:"《黄帝内经》",r:"战国至秦汉"},
+    {l:"《难经》",r:"约东汉"},
+    {l:"《伤寒杂病论》",r:"东汉"},
+    {l:"《神农本草经》",r:"东汉"},
+  ]},
+  {type:"match",tag:"连线",title:"温病 · 辨证",prompt:"把温病学家与辨证方法连起来",pairs:[
+    {l:"叶桂",r:"卫气营血辨证"},
+    {l:"吴瑭",r:"三焦辨证"},
+    {l:"吴有性",r:"戾气理论"},
+    {l:"王士雄",r:"新感 · 伏邪"},
+  ]},
+
+  {type:"fill",tag:"填空",title:"填空 · 细节",prompt:"《黄帝内经》共 18 卷 ______ 篇",answer:["162"],hint:"一百六十二"},
+  {type:"fill",tag:"填空",title:"填空",prompt:"《脉经》明确左关主 ______",answer:["肝胆"]},
+  {type:"fill",tag:"填空",title:"填空",prompt:"《神农本草经》上品之药 ______",answer:["无毒"]},
+  {type:"fill",tag:"填空",title:"填空",prompt:"“上以疗君亲之疾，下以救贫贱之厄”出自 ______",answer:["伤寒论·自序","伤寒论自序","伤寒杂病论·自序"]},
+];
+
+const LEVELS = [
+  {id:1,name:"卷一 · 肇基",sub:"先秦两汉 · 魏晋隋唐 · 宋金元",desc:"典籍、医家、字号、地位、学派",pool:L1},
+  {id:2,name:"卷二 · 集成",sub:"明清 · 温病 · 近代汇通",desc:"本草纲目、温病四家、命门学说、中西汇通",pool:L2},
+  {id:3,name:"卷三 · 贯通",sub:"全典合璧 · 细处见功",desc:"三卷混合，考到成书、篇章与数字",pool:[].concat(L1,L2,L3)},
+];
+
+const TOTAL_Q = 7;
+const MAX_HEARTS = 3;
+
+/* ==========================================================
+   三、工具
+   ========================================================== */
+const $ = (s)=>document.querySelector(s);
+const $$ = (s)=>Array.from(document.querySelectorAll(s));
+function shuffle(a){
+  a = a.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function norm(s){
+  return String(s||"").toLowerCase()
+    .replace(/[\s《》〈〉「」“”"'‘’·,，。.、;；:：!！?？\-—_（）()\u3000]/g,"").trim();
+}
+function esc(s){
+  return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+}
+
+/* ==========================================================
+   四、存档
+   ========================================================== */
+const SAVE_KEY = "qihuang.wendao.v2";
+let save = {unlocked:1,best:{},drillKnown:{1:[],2:[],3:[]}};
+try{
+  const raw = localStorage.getItem(SAVE_KEY);
+  if(raw){
+    const o = JSON.parse(raw);
+    if(o && typeof o === "object"){
+      save = Object.assign(save,o);
+      save.best = save.best || {};
+      save.drillKnown = save.drillKnown || {1:[],2:[],3:[]};
+    }
+  }
+}catch(e){}
+function persist(){
+  try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }catch(e){}
+}
+
+/* ==========================================================
+   五、弹层与提示
+   ========================================================== */
+let modalYesFn = null;
+function ask(text, onYes){
+  $("#modalText").textContent = text;
+  modalYesFn = onYes;
+  $("#modal").classList.add("on");
+}
+function closeModal(){ $("#modal").classList.remove("on"); modalYesFn = null; }
+$("#modalNo").addEventListener("click", closeModal);
+$("#modalYes").addEventListener("click", ()=>{ const f = modalYesFn; closeModal(); if(f) f(); });
+$("#modal").addEventListener("click", (e)=>{ if(e.target.id === "modal") closeModal(); });
+
+function toast(msg, kind, dur){
+  const t = $("#toast");
+  t.className = "toast" + (kind ? " "+kind : "");
+  t.innerHTML = msg;
+  requestAnimationFrame(()=>t.classList.add("show"));
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>{ t.classList.remove("show"); }, dur || 1500);
+}
+function show(name){
+  $$(".screen").forEach(s=>s.classList.remove("active"));
+  $("#screen-"+name).classList.add("active");
+}
+function veil(title, kicker){
+  const v = document.createElement("div");
+  v.className = "veil";
+  v.innerHTML = `<div class="veil-in"><span>${kicker}</span><b>${title}</b><i></i></div>`;
+  document.body.appendChild(v);
+  setTimeout(()=>{ v.classList.add("out"); }, 620);
+  setTimeout(()=>{ v.remove(); }, 1400);
+}
+
+/* ==========================================================
+   六、首页：模式切换 / 关卡 / 训练列表 / 背诵
+   ========================================================== */
+const TABS = ["play","drill","mem"];
+$$("#tabs button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    TABS.forEach(t=>{
+      $("#panel-"+t).classList.toggle("on", t === btn.dataset.tab);
+      document.querySelector(`#tabs button[data-tab="${t}"]`).classList.toggle("on", t === btn.dataset.tab);
+    });
+  });
+});
+
+function renderLevels(){
+  const box = $("#levelList");
+  box.innerHTML = "";
+  LEVELS.forEach((lv)=>{
+    const locked = lv.id > save.unlocked;
+    const best = save.best[lv.id] || 0;
+    const el = document.createElement("div");
+    el.className = "level" + (locked ? " locked" : "");
+    let stars = "";
+    for(let i=0;i<3;i++) stars += `<i class="${i<best?"on":""}"></i>`;
+    el.innerHTML = `
+      <div class="head">
+        <span class="num">卷${["一","二","三"][lv.id-1]}</span>
+        <h3>${lv.name.split(" · ")[1]}</h3>
+        <span class="tag">${locked ? "未解锁" : "入卷 ›"}</span>
+      </div>
+      <p class="meta">${esc(lv.sub)}<br><em>${esc(lv.desc)}</em></p>
+      <div class="stars">${stars}</div>
+    `;
+    if(!locked) el.addEventListener("click", ()=>startLevel(lv.id));
+    else el.addEventListener("click", ()=>toast("前一卷通关，方可解锁","",1600));
+    box.appendChild(el);
+  });
+
+  const txt = (save.best[1] && save.best[2] && save.best[3])
+    ? "三卷俱通 · 可为医"
+    : (save.best[1] ? (save.best[2] ? "卷二已过 · 可挑战贯通" : "已通卷一 · 续读明清") : "尚未入门 —— 先从卷一始");
+  $("#progressText").textContent = txt;
+}
+
+function renderDrills(){
+  const box = $("#drillList");
+  box.innerHTML = "";
+  [1,2,3].forEach(t=>{
+    const items = KB.filter(k=>t === 3 ? true : k.t === t);
+    const known = (save.drillKnown[t] || []).filter(id=>items.some(k=>k.id === id)).length;
+    const pct = items.length ? Math.round(known/items.length*100) : 0;
+    const el = document.createElement("div");
+    el.className = "level";
+    el.innerHTML = `
+      <div class="head">
+        <span class="num">卷${["一","二","三"][t-1]}</span>
+        <h3>${["肇基","集成","贯通"][t-1]}</h3>
+        <span class="tag">练 习 ›</span>
+      </div>
+      <p class="meta">共 ${items.length} 条 · 已掌握 <em>${known}</em> 条</p>
+      <div class="bar" style="margin:10px 0 0;height:2px"><i style="width:${pct}%"></i></div>
+    `;
+    el.addEventListener("click", ()=>startDrill(t));
+    box.appendChild(el);
+  });
+}
+
+/* ---------- 背诵 ---------- */
+const MEM = {tier:1};
+function renderMem(){
+  const segs = $("#memSegs");
+  segs.innerHTML = [1,2,3].map(t=>
+    `<button data-t="${t}" class="${MEM.tier===t?"on":""}">卷${["一","二","三"][t-1]}</button>`
+  ).join("");
+  segs.querySelectorAll("button").forEach(b=>{
+    b.addEventListener("click", ()=>{ MEM.tier = Number(b.dataset.t); renderMem(); });
+  });
+
+  const items = KB.filter(k=>MEM.tier === 3 ? true : k.t === MEM.tier);
+  let html = "", lastEra = null;
+  items.forEach(k=>{
+    if(k.era !== lastEra){
+      html += `<div class="memEra">${esc(k.era)}</div>`;
+      lastEra = k.era;
+    }
+    const name = k.book || k.author;
+    const person = k.author
+      ? [k.author, k.zi ? "字"+k.zi : "", k.hao ? "号"+k.hao : ""].filter(Boolean).join(" · ")
+      : "";
+    html += `<div class="memItem">
+      <div class="b">${esc(name)}</div>
+      ${person ? `<div class="p">${esc(person)}</div>` : ""}
+      <div class="s">${esc(k.status)}</div>
+      ${k.note ? `<div class="z">${esc(k.note)}</div>` : ""}
+    </div>`;
+  });
+  $("#memList").innerHTML = html;
+}
+
+/* ==========================================================
+   七、闯关
+   ========================================================== */
+const S = {level:1, list:[], idx:0, hearts:MAX_HEARTS, wrong:[], locked:false};
+
+function pickQuestions(pool, n){
+  const rest = shuffle(pool);
+  const out = [];
+  ["match","sequence","fill","choice"].forEach(type=>{
+    if(out.length >= n) return;
+    const i = rest.findIndex(q=>q.type === type);
+    if(i >= 0) out.push(rest.splice(i,1)[0]);
+  });
+  while(out.length < n && rest.length){
+    out.push(rest.splice(Math.floor(Math.random()*rest.length),1)[0]);
+  }
+  return shuffle(out).slice(0,n);
+}
+
+function startLevel(id){
+  const lv = LEVELS.find(l=>l.id === id);
+  S.level = id;
+  S.list = pickQuestions(lv.pool, TOTAL_Q);
+  S.idx = 0;
+  S.hearts = MAX_HEARTS;
+  S.wrong = [];
+  S.locked = false;
+  $("#stageName").textContent = lv.name;
+  show("play");
+  renderHearts();
+  renderQuestion();
+  veil(lv.name.split(" · ")[1], "第 " + ["一","二","三"][id-1] + " 卷");
+}
+
+function renderHearts(){
+  const h = $("#hearts");
+  h.innerHTML = "";
+  for(let i=0;i<MAX_HEARTS;i++){
+    const d = document.createElement("i");
+    if(i >= S.hearts) d.className = "lost";
+    h.appendChild(d);
+  }
+}
+
+function updateProgress(){
+  $("#stageSub").textContent = `第 ${Math.min(S.idx+1,TOTAL_Q)} / ${TOTAL_Q} 题`;
+  $("#barFill").style.width = `${(S.idx/TOTAL_Q)*100}%`;
+}
+
+function loseHeart(){
+  S.hearts--;
+  renderHearts();
+  if(S.hearts <= 0){ endGame(false); return true; }
+  return false;
+}
+
+function nextQuestion(){
+  if(S.idx >= S.list.length - 1){ S.idx = S.list.length; endGame(true); return; }
+  S.idx++;
+  renderQuestion();
+}
+
+function renderQuestion(){
+  if(S.idx >= S.list.length){ endGame(true); return; }
+  S.locked = false;
+  updateProgress();
+  const q = S.list[S.idx];
+  const box = $("#qbox");
+  box.innerHTML = "";
+  const tag = document.createElement("div");
+  tag.className = "qtag";
+  tag.textContent = q.tag || "答题";
+  box.appendChild(tag);
+
+  const TIPS = {match:"先点左侧一项，再点右侧对应项", sequence:"按先后顺序，依次点选卡片落位"};
+
+  if(q.type !== "fill"){
+    const h = document.createElement("h2");
+    h.className = "qtitle";
+    h.textContent = q.prompt;
+    box.appendChild(h);
+    if(TIPS[q.type]){
+      const d = document.createElement("p");
+      d.className = "qdesc";
+      d.textContent = TIPS[q.type];
+      box.appendChild(d);
+    }
+  }
+
+  if(q.type === "match") renderMatch(q, box);
+  else if(q.type === "sequence") renderSequence(q, box);
+  else if(q.type === "fill") renderFill(q, box);
+  else renderChoice(q, box);
+}
+
+/* ---------- 连线 ---------- */
+function renderMatch(q, box){
+  const pairs = shuffle(q.pairs).slice(0, Math.min(4, q.pairs.length));
+  const leftOrder = shuffle(pairs.map((_,i)=>i));
+  const rightOrder = shuffle(pairs.map((_,i)=>i));
+  const total = pairs.length;
+
+  const wrap = document.createElement("div");
+  wrap.className = "matchwrap";
+  const grid = document.createElement("div");
+  grid.className = "matchgrid";
+  grid.id = "matchGrid";
+  grid.innerHTML = `<svg id="matchSvg"></svg>`;
+  const colL = document.createElement("div");
+  colL.style.cssText = "display:flex;flex-direction:column;gap:11px";
+  const colR = document.createElement("div");
+  colR.style.cssText = "display:flex;flex-direction:column;gap:11px";
+
+  leftOrder.forEach((idx)=>{
+    const b = document.createElement("div");
+    b.className = "opt"; b.dataset.side = "l"; b.dataset.i = idx;
+    b.textContent = pairs[idx].l;
+    colL.appendChild(b);
+  });
+  rightOrder.forEach((idx)=>{
+    const b = document.createElement("div");
+    b.className = "opt"; b.dataset.side = "r"; b.dataset.i = idx;
+    b.textContent = pairs[idx].r;
+    colR.appendChild(b);
+  });
+  grid.appendChild(colL);
+  grid.appendChild(colR);
+  wrap.appendChild(grid);
+  box.appendChild(wrap);
+
+  let selL = null, matched = 0;
+  const donePairs = [];
+
+  function drawLines(){
+    const svg = $("#matchSvg");
+    if(!svg) return;
+    const g = $("#matchGrid").getBoundingClientRect();
+    svg.setAttribute("viewBox", `0 0 ${g.width} ${g.height}`);
+    svg.innerHTML = "";
+    donePairs.forEach(([li])=>{
+      const a = grid.querySelector(`[data-side="l"][data-i="${li}"]`);
+      const b = grid.querySelector(`[data-side="r"][data-i="${li}"]`);
+      if(!a || !b) return;
+      const ar = a.getBoundingClientRect(), br = b.getBoundingClientRect();
+      const x1 = ar.right - g.left, y1 = ar.top + ar.height/2 - g.top;
+      const x2 = br.left - g.left, y2 = br.top + br.height/2 - g.top;
+      const mx = (x1+x2)/2;
+      const p = document.createElementNS("http://www.w3.org/2000/svg","path");
+      p.setAttribute("d", `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);
+      svg.appendChild(p);
+    });
+  }
+  const onResize = ()=>{ if(document.body.contains(grid)) drawLines(); else window.removeEventListener("resize", onResize); };
+  window.addEventListener("resize", onResize);
+
+  grid.addEventListener("click", (e)=>{
+    if(S.locked) return;
+    const t = e.target.closest(".opt");
+    if(!t || t.classList.contains("done")) return;
+    const side = t.dataset.side;
+
+    if(side === "l"){
+      if(selL) selL.classList.remove("sel");
+      selL = t; t.classList.add("sel");
+      return;
+    }
+    if(!selL){
+      t.classList.add("bad");
+      setTimeout(()=>t.classList.remove("bad"), 430);
+      return;
+    }
+    const li = Number(selL.dataset.i), ri = Number(t.dataset.i);
+    if(li === ri){
+      selL.classList.remove("sel");
+      selL.classList.add("done");
+      t.classList.add("done");
+      donePairs.push([li]);
+      selL = null;
+      matched++;
+      drawLines();
+      if(matched === total){
+        S.locked = true;
+        setTimeout(()=>{
+          toast(`<b>${total}</b> 对，全部连上了`, "good", 1100);
+          setTimeout(nextQuestion, 700);
+        }, 340);
+      }
+    }else{
+      t.classList.add("bad");
+      selL.classList.add("bad");
+      const a = selL;
+      setTimeout(()=>{ t.classList.remove("bad"); a.classList.remove("bad"); a.classList.remove("sel"); }, 440);
+      selL = null;
+      const dead = loseHeart();
+      if(!dead) toast("这一对不上，再想想", "bad", 1300);
+    }
+  });
+}
+
+/* ---------- 排序 ---------- */
+function renderSequence(q, box){
+  const answer = q.items;
+  const pool = shuffle(answer);
+  const n = answer.length;
+
+  const wrap = document.createElement("div");
+  wrap.className = "seqwrap";
+  const slots = document.createElement("div");
+  slots.className = "slots";
+  const poolEl = document.createElement("div");
+  poolEl.className = "pool";
+  wrap.appendChild(slots); wrap.appendChild(poolEl);
+  box.appendChild(wrap);
+
+  const placed = new Array(n).fill(null);
+
+  function paint(){
+    slots.innerHTML = "";
+    for(let i=0;i<n;i++){
+      const s = document.createElement("div");
+      s.className = "slot" + (placed[i] ? " filled" : "");
+      if(placed[i]){
+        s.innerHTML = `<span class="n">${i+1}</span>${esc(placed[i])}`;
+        s.addEventListener("click", ()=>{
+          if(S.locked) return;
+          placed[i] = null;
+          paint();
+        });
+      }else{
+        s.innerHTML = `<span class="n">${i+1}</span>`;
+      }
+      slots.appendChild(s);
+    }
+    poolEl.innerHTML = "";
+    pool.forEach((it)=>{
+      const used = placed.includes(it);
+      const b = document.createElement("div");
+      b.className = "opt" + (used ? " done" : "");
+      b.textContent = it;
+      if(!used){
+        b.addEventListener("click", ()=>{
+          if(S.locked) return;
+          if(placed.includes(it)) return;
+          const k = placed.indexOf(null);
+          if(k < 0) return;
+          placed[k] = it;
+          paint();
+          if(placed.every(Boolean)) check();
+        });
+      }
+      poolEl.appendChild(b);
+    });
+  }
+
+  function check(){
+    if(placed.some(v=>!v)) return;
+    const ok = placed.every((v,i)=>v === answer[i]);
+    if(ok){
+      S.locked = true;
+      toast("年代排对了", "good", 1100);
+      setTimeout(nextQuestion, 800);
+    }else{
+      const firstBad = placed.findIndex((v,i)=>v !== answer[i]);
+      const cur = slots.children[firstBad];
+      if(cur){ cur.style.borderColor = "rgba(168,52,42,.85)"; cur.style.background = "rgba(168,52,42,.12)"; cur.style.color = "#e5a49c"; }
+      S.wrong.push({prompt:"排序：「" + answer.join(" → ") + "」", ans:q.why || "", why:""});
+      const dead = loseHeart();
+      if(!dead){
+        toast("第 <b>"+(firstBad+1)+"</b> 位不对，再排一次", "bad", 1500);
+        setTimeout(()=>{ placed.fill(null); paint(); }, 950);
+      }
+    }
+  }
+
+  paint();
+}
+
+/* ---------- 填空 ---------- */
+function renderFill(q, box){
+  const wrap = document.createElement("div");
+  wrap.className = "fillwrap";
+  const promptHtml = esc(q.prompt).replace(/_{3,}/g, "<u></u>");
+  wrap.innerHTML = `
+    <div class="fillline">${promptHtml}</div>
+    <input id="fillInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="写下答案" />
+    <button class="btn" id="fillGo">落 笔</button>
+  `;
+  box.appendChild(wrap);
+  const input = $("#fillInput");
+  const go = $("#fillGo");
+
+  function submit(){
+    if(S.locked) return;
+    const v = norm(input.value);
+    if(!v){ input.focus(); return; }
+    const ok = q.answer.some(a=>norm(a) === v);
+    if(ok){
+      S.locked = true;
+      input.style.borderColor = "rgba(122,165,147,.8)";
+      input.style.color = "#cfe6da";
+      toast("答对了 —— " + q.answer[0], "good", 1200);
+      setTimeout(nextQuestion, 950);
+    }else{
+      input.style.borderColor = "rgba(168,52,42,.85)";
+      setTimeout(()=>{ input.style.borderColor = ""; }, 700);
+      S.wrong.push({prompt:q.prompt, ans:q.answer[0], why:""});
+      const dead = loseHeart();
+      if(!dead){
+        toast("还差一点，再想" + (q.hint ? "（" + esc(q.hint) + "）" : ""), "bad", 1300);
+        input.select();
+      }
+    }
+  }
+  go.addEventListener("click", submit);
+  input.addEventListener("keydown", (e)=>{ if(e.key === "Enter") submit(); });
+  setTimeout(()=>{ if(window.innerWidth > 760) input.focus(); }, 300);
+}
+
+/* ---------- 选择 ---------- */
+function renderChoice(q, box){
+  const wrap = document.createElement("div");
+  wrap.className = "choices";
+  const keys = ["甲","乙","丙","丁","戊","己"];
+  q.options.forEach((op,i)=>{
+    const b = document.createElement("div");
+    b.className = "opt";
+    b.innerHTML = `<span class="k">${keys[i]}</span><span>${esc(op)}</span>`;
+    b.addEventListener("click", ()=>{
+      if(S.locked) return;
+      if(i === q.answer){
+        b.classList.add("ok");
+        S.locked = true;
+        toast(q.why ? esc(q.why) : "答对了", "good", q.why ? 1900 : 1100);
+        setTimeout(nextQuestion, q.why ? 1650 : 900);
+      }else{
+        b.classList.add("bad");
+        S.wrong.push({prompt:q.prompt, ans:q.options[q.answer], why:q.why||""});
+        const dead = loseHeart();
+        if(!dead){
+          toast("不对。正解是「" + esc(q.options[q.answer]) + "」", "bad", 1700);
+          setTimeout(()=>b.classList.remove("bad"), 600);
+          S.locked = true;
+          setTimeout(nextQuestion, 1700);
+        }
+      }
+    });
+    wrap.appendChild(b);
+  });
+  box.appendChild(wrap);
+}
+
+/* ---------- 闯关结算 ---------- */
+function endGame(passed){
+  $("#barFill").style.width = "100%";
+  const lv = LEVELS.find(l=>l.id === S.level);
+
+  if(!passed){
+    $("#endMini").textContent = "卷 " + ["一","二","三"][S.level-1];
+    $("#endTitle").textContent = "元气散尽";
+    $("#endLine").textContent = "别急，先回到卷首，把这几页再念一遍。";
+    $("#endStars").innerHTML = "";
+  }else{
+    const stars = S.hearts === MAX_HEARTS ? 3 : (S.hearts >= 2 ? 2 : 1);
+    save.best[S.level] = Math.max(save.best[S.level]||0, stars);
+    if(S.level === save.unlocked && save.unlocked < 3) save.unlocked = S.level + 1;
+    persist();
+    $("#endMini").textContent = "卷 " + ["一","二","三"][S.level-1];
+    $("#endTitle").textContent = stars === 3 ? "通 关" : "过 卷";
+    $("#endLine").textContent = stars === 3
+      ? `满元气通过 · ${lv.name.split(" · ")[1]}`
+      : `剩余元气 ${S.hearts} · 可再刷满星`;
+    $("#endStars").innerHTML = [0,1,2].map(i=>`<i class="${i<stars?"on":""}"></i>`).join("");
+  }
+
+  const rv = $("#review");
+  if(S.wrong.length){
+    rv.innerHTML = `<h4>错 处 记 下</h4>` + S.wrong.map(w=>
+      `<div class="item"><b>${esc(w.prompt)}</b><br>正解：<span>${esc(w.ans)}</span>${w.why?`<br>${esc(w.why)}`:""}</div>`
+    ).join("");
+  }else if(passed){
+    rv.innerHTML = `<h4>错 处 记 下</h4><div class="empty">一题未错，心手相应。</div>`;
+  }else{
+    rv.innerHTML = "";
+  }
+
+  const acts = $("#endActions");
+  acts.innerHTML = "";
+  const again = document.createElement("button");
+  again.className = "btn"; again.textContent = "再 来 一 卷";
+  again.onclick = ()=>startLevel(S.level);
+  acts.appendChild(again);
+  if(passed && S.level < 3 && save.unlocked > S.level){
+    const nx = document.createElement("button");
+    nx.className = "btn"; nx.textContent = "下 一 卷";
+    nx.onclick = ()=>startLevel(S.level+1);
+    acts.appendChild(nx);
+  }
+  const home = document.createElement("button");
+  home.className = "btn ghost"; home.textContent = "回 卷 首";
+  home.onclick = ()=>{ renderLevels(); renderDrills(); show("home"); };
+  acts.appendChild(home);
+
+  show("end");
+}
+
+/* ==========================================================
+   八、训练
+   ========================================================== */
+const D = {tier:1, queue:[], retry:[], idx:0, known:0, hinted:false, locked:false, cur:null};
+
+function startDrill(tier){
+  D.tier = tier;
+  D.queue = shuffle(KB.filter(k=>tier === 3 ? true : k.t === tier));
+  D.retry = [];
+  D.idx = 0;
+  D.known = 0;
+  D.locked = false;
+  $("#drillName").textContent = "训练 · 卷" + ["一","二","三"][tier-1];
+  show("drill");
+  renderDrill();
+  veil(["肇基","集成","贯通"][tier-1], "训 练");
+}
+
+function buildOptions(ans, field, tier){
+  const same = [], all = [];
+  KB.forEach(k=>{
+    const v = k[field];
+    if(!v || v === ans) return;
+    if(!all.includes(v)) all.push(v);
+    if(k.t === tier && !same.includes(v)) same.push(v);
+  });
+  let pick = shuffle(same).slice(0,3);
+  if(pick.length < 3){
+    const rest = shuffle(all.filter(v=>!pick.includes(v)));
+    pick = pick.concat(rest.slice(0, 3-pick.length));
+  }
+  const options = shuffle([ans].concat(pick));
+  return {options, answer: options.indexOf(ans)};
+}
+
+function makeDrillQ(item){
+  /* 核心方向：书↔人、书↔地位、人↔地位；字号/号作补充 */
+  const core = [];
+  if(item.book && item.author) core.push("b2a","a2b");
+  if(item.book && item.status) core.push("b2s");
+  if(item.author && item.status) core.push("a2s");
+  if(!core.length) return null;
+
+  let dir = core[Math.floor(Math.random()*core.length)];
+  const extras = [];
+  if(item.author && item.zi) extras.push("a2z");
+  if(item.author && item.hao) extras.push("a2h");
+  if(extras.length && Math.random() < 0.34) dir = extras[Math.floor(Math.random()*extras.length)];
+
+  let ask, field, hint;
+  if(dir === "b2a"){
+    ask = `${item.book}的作者是？`;
+    field = "author";
+    hint = `${item.era} · 姓「${item.author[0]}」`;
+  }else if(dir === "a2b"){
+    ask = `${item.author}的代表著作是？`;
+    field = "book";
+    hint = `${item.era} · ${item.status}`;
+  }else if(dir === "b2s"){
+    ask = `${item.book}在中医学史上的地位是？`;
+    field = "status";
+    hint = (item.author ? item.author + " · " : "") + (item.note || "");
+  }else if(dir === "a2s"){
+    ask = `${item.author}的主张是？`;
+    field = "status";
+    hint = `${item.era} · ${item.note || ""}`;
+  }else if(dir === "a2z"){
+    ask = `${item.author}，字？`;
+    field = "zi";
+    hint = `${item.era} · ${item.hao ? "号" + item.hao : item.status}`;
+  }else{
+    ask = `${item.author}，号？`;
+    field = "hao";
+    hint = `${item.era} · 字${item.zi}`;
+  }
+
+  const built = buildOptions(item[field], field, item.t);
+  return {ask, hint, item, options: built.options, answer: built.answer, field};
+}
+
+function addRetry(item){
+  if(!D.retry.some(k=>k.id === item.id)) D.retry.push(item);
+}
+function markKnown(tier, item){
+  const arr = save.drillKnown[tier] || (save.drillKnown[tier] = []);
+  if(!arr.includes(item.id)){ arr.push(item.id); persist(); }
+}
+
+function renderDrill(){
+  if(D.idx >= D.queue.length){ endDrill(); return; }
+  D.locked = false;
+  D.hinted = false;
+
+  const item = D.queue[D.idx];
+  const q = makeDrillQ(item);
+  if(!q){ D.idx++; renderDrill(); return; }
+  D.cur = q;
+
+  $("#drillSub").textContent = `第 ${D.idx+1} / ${D.queue.length} 条`;
+  $("#drillBar").style.width = `${(D.idx/D.queue.length)*100}%`;
+  $("#drillScore").textContent = `✓ ${D.known}`;
+
+  const box = $("#drillBox");
+  box.innerHTML = "";
+  const tag = document.createElement("div");
+  tag.className = "qtag";
+  tag.textContent = "训练 · 先想，再点";
+  box.appendChild(tag);
+
+  const h = document.createElement("h2");
+  h.className = "qtitle";
+  h.textContent = q.ask;
+  box.appendChild(h);
+
+  const hintRow = document.createElement("div");
+  hintRow.className = "hintRow";
+  hintRow.innerHTML = `<button class="btn ghost mini" id="hintBtn">看 提 示</button><span class="hintText" id="hintText"></span>`;
+  box.appendChild(hintRow);
+
+  const wrap = document.createElement("div");
+  wrap.className = "choices";
+  const keys = ["甲","乙","丙","丁","戊","己"];
+  q.options.forEach((op,i)=>{
+    const b = document.createElement("div");
+    b.className = "opt";
+    b.innerHTML = `<span class="k">${keys[i]}</span><span>${esc(op)}</span>`;
+    b.addEventListener("click", ()=>answerDrill(b, i, wrap));
+    wrap.appendChild(b);
+  });
+  box.appendChild(wrap);
+
+  $("#hintBtn").addEventListener("click", ()=>{
+    if(D.locked) return;
+    D.hinted = true;
+    const ht = $("#hintText");
+    ht.textContent = q.hint || item.status;
+    addRetry(item);
+    $("#hintBtn").style.display = "none";
+  });
+}
+
+function answerDrill(el, i, wrap){
+  if(D.locked) return;
+  const q = D.cur;
+  if(i === q.answer){
+    el.classList.add("ok");
+    D.locked = true;
+    if(!D.hinted){
+      D.known++;
+      markKnown(D.tier, q.item);
+      toast("答对了", "good", 800);
+    }else{
+      addRetry(q.item);
+      toast("对了，但看过提示 —— 这条末尾再考一遍", "", 1300);
+    }
+    $("#drillScore").textContent = `✓ ${D.known}`;
+    setTimeout(()=>{ D.idx++; renderDrill(); }, 900);
+  }else{
+    el.classList.add("bad");
+    D.locked = true;
+    addRetry(q.item);
+    const opts = Array.from(wrap.querySelectorAll(".opt"));
+    if(opts[q.answer]) opts[q.answer].classList.add("ok");
+    toast("正解：" + esc(q.options[q.answer]), "bad", 1600);
+    setTimeout(()=>{ D.idx++; renderDrill(); }, 1750);
+  }
+}
+
+function endDrill(){
+  const total = D.queue.length;
+  const retry = D.retry.slice();
+  const title = "训练 · 卷" + ["一","二","三"][D.tier-1];
+
+  $("#endMini").textContent = title;
+  $("#endTitle").textContent = retry.length === 0 ? "过 了" : "记 下";
+  $("#endLine").textContent = `本轮 ${total} 条 · 一次答对 ${D.known} 条 · 待重考 ${retry.length} 条`;
+  $("#endStars").innerHTML = "";
+
+  const rv = $("#review");
+  if(retry.length){
+    rv.innerHTML = `<h4>待 重 考</h4>` + retry.map(k=>{
+      const name = k.book || k.author;
+      const person = k.author ? k.author + (k.zi ? " · 字"+k.zi : "") : "";
+      return `<div class="item"><b>${esc(name)}</b>${person ? `<br><span>${esc(person)}</span>` : ""}<br>${esc(k.status)}</div>`;
+    }).join("");
+  }else{
+    rv.innerHTML = `<h4>待 重 考</h4><div class="empty">一条不剩，这一卷过关了。</div>`;
+  }
+
+  const acts = $("#endActions");
+  acts.innerHTML = "";
+  if(retry.length){
+    const again = document.createElement("button");
+    again.className = "btn";
+    again.textContent = `再 考 一 轮（${retry.length}）`;
+    again.onclick = ()=>{
+      D.queue = shuffle(retry);
+      D.retry = [];
+      D.idx = 0;
+      D.known = 0;
+      show("drill");
+      renderDrill();
+    };
+    acts.appendChild(again);
+  }
+  const re = document.createElement("button");
+  re.className = "btn" + (retry.length ? " ghost" : "");
+  re.textContent = "重 练 一 遍";
+  re.onclick = ()=>startDrill(D.tier);
+  acts.appendChild(re);
+
+  const home = document.createElement("button");
+  home.className = "btn ghost"; home.textContent = "回 卷 首";
+  home.onclick = ()=>{ renderLevels(); renderDrills(); renderMem(); show("home"); };
+  acts.appendChild(home);
+
+  show("end");
+}
+
+/* ==========================================================
+   九、绑定
+   ========================================================== */
+$("#btnBack").addEventListener("click", ()=>{
+  ask("离开本卷？本次作答不保留。", ()=>{ renderLevels(); show("home"); });
+});
+$("#drillBack").addEventListener("click", ()=>{
+  ask("结束本轮训练？没考完的条目下次还在。", ()=>{ renderDrills(); show("home"); });
+});
+$("#btnReset").addEventListener("click", ()=>{
+  ask("清空所有通关进度与训练记录？", ()=>{
+    save = {unlocked:1,best:{},drillKnown:{1:[],2:[],3:[]}};
+    persist();
+    renderLevels(); renderDrills(); renderMem();
+    toast("进度已清空","",1200);
+  });
+});
+
+renderLevels();
+renderDrills();
+renderMem();
+
+/* 预览入口：index.html#play1 / #play2 / #play3 */
+(function(){
+  const h = location.hash || "";
+  if(h.indexOf("#play") === 0){
+    const n = Number(h.replace("#play","")) || 1;
+    if(n >= 1 && n <= 3) startLevel(n);
+  }
+  if(h === "#drilltab") document.querySelector('#tabs button[data-tab="drill"]').click();
+  if(h === "#memtab") document.querySelector('#tabs button[data-tab="mem"]').click();
+  if(h === "#train1") startDrill(1);
+  if(h === "#train2") startDrill(2);
+})();
+
+</script>
+</body>
+</html>
