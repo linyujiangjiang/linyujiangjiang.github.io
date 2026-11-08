@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>溟的音色试听</title>
+<style>
+  :root{--ink:#14120f;--gold:#d6b26e;--paper:#efe9dd;--dim:#9a9082;}
+  body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 10%,#2a241c 0%,var(--ink) 55%);color:var(--paper);font-family:"KaiTi","STKaiti","Songti SC",serif;padding:48px 20px 64px;display:flex;flex-direction:column;align-items:center;}
+  h1{font-size:clamp(26px,5vw,40px);letter-spacing:.16em;color:var(--gold);font-weight:400;margin:0 0 8px;}
+  .sub{color:var(--dim);letter-spacing:.22em;font-size:13px;margin-bottom:34px;}
+  .list{width:min(640px,100%);display:flex;flex-direction:column;gap:12px;}
+  .item{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid rgba(214,178,110,.22);border-radius:12px;background:rgba(255,255,255,.03);}
+  .meta{flex:1;min-width:0;}
+  .name{font-size:16px;letter-spacing:.08em;}
+  .tag{font-size:12px;color:var(--dim);margin-top:3px;letter-spacing:.06em;}
+  audio{width:200px;flex:0 0 200px;}
+  @media(max-width:560px){.item{flex-direction:column;align-items:flex-start;}audio{width:100%;flex:1 1 auto;}}
+  .tip{margin-top:34px;color:#6f675c;font-size:12.5px;line-height:2;text-align:center;letter-spacing:.08em;}
+</style>
+</head>
+<body>
+  <h1>音色试听</h1>
+  <div class="sub">同一句话 · 九个声音</div>
+  <div class="list">
+    <div class="item"><div class="meta"><div class="name">晓晓</div><div class="tag">女 · 温柔，默认最自然</div></div><audio controls preload="none" src="./xiaoxiao.mp3"></audio></div>
+    <div class="item"><div class="meta"><div class="name">晓晓（放缓）</div><div class="tag">女 · 慢一点、低一点，适合念书</div></div><audio controls preload="none" src="./xiaoxiao_soft.mp3"></audio></div>
+    <div class="item"><div class="meta"><div class="name">晓伊</div><div class="tag">女 · 活泼</div></div><audio controls preload="none" src="./xiaoyi.mp3"></audio></div>
+    <div class="item"><div class="meta"><div class="name">云希</div><div class="tag">男 · 少年感</div></div><audio controls preload="none" src="./yunxi.mp3"></audio></div>
+    <div class="item"><div class="meta"><div class="name">云夏</div><div class="tag">男 · 少年（更软）</div></div><audio controls preload="none" src="./yunxia.mp3"></audio></div>
+    <div class="item"><div class="meta"><div class="name">云健</div><div class="tag">男 · 成熟</div></div><audio controls preload="none" src="./yunjian.mp3"></audio></div>
+    <div class="item"><div class="meta"><div class="name">云扬</div><div class="tag">男 · 播报腔</div></div><audio controls preload="none" src="./yunyang.mp3"></audio></div>
+    <div class="item"><div class="meta"><div class="name">晓臻</div><div class="tag">女 · 台湾腔</div></div><audio controls preload="none" src="./hsiaochen.mp3"></audio></div>
+    <div class="item"><div class="meta"><div class="name">小北</div><div class="tag">女 · 东北</div></div><audio controls preload="none" src="./xiaobei.mp3"></audio></div>
+  </div>
+  <div class="tip">选一个，或者告诉我「再试几个别的方向」</div>
+</body>
+</html>
