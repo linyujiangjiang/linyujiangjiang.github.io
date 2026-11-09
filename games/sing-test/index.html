@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>《关雎》· 晓晓唱 · 第一首小样</title>
+<style>
+  :root{--bg:#141210;--card:#1e1a16;--line:#3a322a;--gold:#d8b36a;--txt:#e8e0d4;--dim:#9a8f80}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 800px at 50% 0%,#221c15,#141210 60%);
+       color:var(--txt);font-family:"Noto Serif SC","Songti SC",serif;min-height:100vh;padding:40px 18px 80px}
+  .wrap{max-width:720px;margin:0 auto}
+  h1{font-size:30px;letter-spacing:.2em;color:var(--gold);text-align:center;margin:0 0 6px}
+  .sub{text-align:center;color:var(--dim);font-size:13px;letter-spacing:.15em;margin-bottom:34px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:18px 0}
+  .card h2{font-size:16px;color:var(--gold);margin:0 0 6px;letter-spacing:.12em;font-weight:600}
+  .card p{color:var(--dim);font-size:13px;line-height:1.9;margin:8px 0}
+  audio{width:100%;margin-top:10px;filter:sepia(.15)}
+  .lyric{font-size:15px;line-height:2.2;color:var(--txt);text-align:center;letter-spacing:.12em;margin:6px 0}
+  .tag{display:inline-block;font-size:11px;color:var(--gold);border:1px solid var(--line);
+       padding:2px 9px;border-radius:99px;margin-right:6px;letter-spacing:.1em}
+  .meta{color:var(--dim);font-size:12px;line-height:1.9;margin-top:16px;text-align:center}
+  footer{text-align:center;color:#6b6155;font-size:11px;margin-top:40px;letter-spacing:.1em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>关雎</h1>
+  <div class="sub">关关雎鸠 · 在河之洲 · 窈窕淑女 · 君子好逑</div>
+
+  <div class="card">
+    <h2>成品 · 唱 + 伴奏</h2>
+    <p>固定音色「晓晓·很软」念词 → TD-PSOLA 把每个字按旋律重排音高 → 古风分解和弦伴奏 → 混响。</p>
+    <audio controls src="guanju_demo.mp3"></audio>
+  </div>
+
+  <div class="card">
+    <h2>干声 · 只有人声</h2>
+    <p>同一版，去掉伴奏，方便听清「每个字是不是落在音符上」。</p>
+    <audio controls src="guanju_voice.wav"></audio>
+  </div>
+
+  <div class="card">
+    <h2>对照 · 同一段旁白（宣传片 v2）</h2>
+    <p>新音色重配的宣传片第一句。同一套音色与修音链，说话和唱歌是同一个「人」。</p>
+    <audio controls src="narration_01.wav"></audio>
+  </div>
+
+  <div class="card">
+    <h2>这一版的技术</h2>
+    <p><span class="tag">音色</span>zh-CN-XiaoxiaoNeural，rate -18%，pitch -15Hz</p>
+    <p><span class="tag">调音</span>自写 TD-PSOLA：自相关测基频 → 颗粒基音同步 → 按目标音符重排，同时做 1.4~2.6 倍时长拉伸</p>
+    <p><span class="tag">伴奏</span>numpy 合成正弦+泛音+衰减包络，C–Am–F–G 分解和弦，84 BPM</p>
+    <p><span class="tag">混音</span>指数衰减噪声混响 22%，峰值归一 0.92</p>
+    <p><span class="tag">音准</span>16 个音符实测平均偏差 <b style="color:var(--gold)">4.5 cents</b>（人耳可辨约 20~50 cents）</p>
+  </div>
+
+  <div class="meta">
+    作曲：原创小旋律 · 词：《诗经·关雎》（公版）<br>
+    下一步：录 10 分钟素材训 RVC，换成「像她」的歌声
+  </div>
+  <footer>MING · 2026-11</footer>
+</div>
+</body>
+</html>
