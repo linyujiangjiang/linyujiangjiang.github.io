@@ -474,6 +474,8 @@
 
 
 
+  #menuList{display:none}
+
   /* ================= 手机竖屏布局 ================= */
   .scene .inner{position:absolute;left:0;top:0;width:1920px;height:1080px}
 
@@ -582,7 +584,24 @@
     .credit{font-size:11px;margin-top:14px}
     #toast{font-size:14px;padding:9px 18px;top:6px;max-width:84vw;white-space:normal;text-align:center}
 
-    #menuFoot{font-size:12px;bottom:8px;left:14px;letter-spacing:.2em}
+    /* 竖屏主菜单：六个木牌按钮 */
+    #menu .menubg{object-fit:cover;object-position:42% 42%}
+    #menu:after{background:linear-gradient(180deg,rgba(10,7,4,.45) 0%,rgba(10,7,4,.15) 30%,
+      rgba(10,7,4,.55) 78%,rgba(10,7,4,.85) 100%)}
+    #menu .menudesk{display:none}
+    #scrollPane{display:none}
+    .drawer-hot{display:none}
+    #doctor{left:50%;right:auto;top:14px;bottom:auto;width:206px;height:265px;
+      margin-left:-103px;opacity:.92;filter:drop-shadow(0 10px 22px rgba(0,0,0,.6))}
+    #menuList{position:absolute;left:0;right:0;bottom:calc(8vh - 10px);display:flex;
+      flex-direction:column;gap:11px;padding:0 26px;z-index:30}
+    .mitem{padding:17px 10px;text-align:center;font-size:22px;letter-spacing:.26em;
+      color:#f2e6c8;background:linear-gradient(180deg,rgba(92,60,38,.94),rgba(46,28,18,.94));
+      border:2px solid rgba(201,162,92,.55);
+      box-shadow:0 5px 16px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,225,170,.18);
+      transition:transform .12s, background .12s}
+    .mitem:active{transform:scale(.985);background:linear-gradient(180deg,rgba(150,50,38,.95),rgba(96,28,22,.95))}
+    #menuFoot{font-size:11px;bottom:10px;left:14px;letter-spacing:.12em;opacity:.7}
     #menuVer{font-size:10px;left:14px;bottom:26px}
   }
 </style>
@@ -601,6 +620,7 @@
     </div>
     <div id="menuFoot">杏 林 问 诊 · 四 诊 辨 证</div>
     <div id="menuVer">v0.2</div>
+    <div id="menuList"></div>
   </div>
 
   <div id="game">
@@ -1524,6 +1544,16 @@ function buildMenu(){
     menuEl.insertBefore(d, scrollPane);
   });
 }
+function buildMenuList(){
+  const box = document.getElementById('menuList');
+  if(!box) return;
+  box.innerHTML = MENU_ITEMS.map(it =>
+    `<div class="mitem" data-act="${it.act}">${it.text}</div>`).join('');
+  box.querySelectorAll('.mitem').forEach(el=>{
+    el.addEventListener('click', ()=> doMenu(el.dataset.act));
+  });
+}
+
 function hintScroll(text){
   if(text === null){ scrollPane.classList.remove('on'); return; }
   scrollPane.classList.add('on');
@@ -1771,6 +1801,7 @@ addEventListener('keydown', e=>{
 });
 
 buildMenu();
+buildMenuList();
 if(/[?&]play=1/.test(location.search) && !gameEl.classList.contains('on')) enterGame(0, true);
 
 /* 调试/自动化测试钩子（不影响玩法） */
