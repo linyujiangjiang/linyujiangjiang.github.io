@@ -933,13 +933,18 @@ const dlg = $('#dialogue');
 
 /* 舞台永远是电脑版那张 1920×1080。
    手机竖着拿的时候不拆界面重排——整块顺时针转 90°，横着看就行。 */
+/* 舞台永远是电脑版那张 1920×1080。
+   竖屏时就整块顺时针转 90°——转手机看正，别拆界面。
+   尺寸用 documentElement 的，手机浏览器上 innerWidth 有时比实际布局视口大。 */
 function fit(){
-  const portrait = innerHeight > innerWidth;
-  if(portrait){
-    const k = Math.min(innerHeight/1920, innerWidth/1080);
+  const de = document.documentElement;
+  const vw = de.clientWidth || innerWidth;
+  const vh = de.clientHeight || innerHeight;
+  if(vh > vw){
+    const k = Math.min(vh / 1920, vw / 1080);
     stage.style.transform = `translate(-50%,-50%) rotate(90deg) scale(${k})`;
   }else{
-    const s = Math.min(innerWidth/1920, innerHeight/1080);
+    const s = Math.min(vw / 1920, vh / 1080);
     stage.style.transform = `translate(-50%,-50%) scale(${s})`;
   }
   stage.style.transformOrigin = 'center center';
