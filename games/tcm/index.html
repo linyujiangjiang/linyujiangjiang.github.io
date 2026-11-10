@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>杏林问诊 · 四诊辨证</title>
+<style>
+  :root{
+    --ink:#2a2219;
+    --ink2:#4c4033;
+    --ink3:#7a6a51;
+    --edge:#8b7350;
+    --edge2:#b8a075;
+    --zhu:#a83024;
+    --zhu-l:#c9503a;
+    --gold:#c9a25c;
+    --jade:#4a6b5e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html.nofx *,html.nofx *::before{animation:none!important;transition:none!important}
+  html,body{height:100%;overflow:hidden;background:#0d0b08;touch-action:manipulation;
+    font-family:"KaiTi","STKaiti","Kaiti SC","Songti SC","SimSun",serif;
+    -webkit-font-smoothing:antialiased;user-select:none}
+  #stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;
+    transform-origin:center center;overflow:hidden;background:#000}
+
+  /* ---------- 场景 ---------- */
+  .scene{position:absolute;inset:0}
+  .scene img{position:absolute;inset:0;width:100%;height:100%;display:block;
+    image-rendering:pixelated;-webkit-user-drag:none}
+  #patient{opacity:0;transition:opacity .5s ease;
+    filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+  #patient.in{opacity:1}
+  /* 立绘：站在诊桌后，被桌面层挡住腰部 */
+  #portrait{position:absolute;left:748px;top:4px;width:673px;height:970px;
+    opacity:0;transition:opacity .55s ease;pointer-events:none;
+    filter:drop-shadow(0 16px 28px rgba(18,12,6,.42))}
+  #portrait.in{opacity:1}
+  #hot{position:absolute;inset:0;width:100%;height:100%}
+  .hot{fill:rgba(255,225,150,0);cursor:pointer;transition:fill .12s}
+  .hot:hover{fill:rgba(255,215,130,.14)}
+  .hot.on{stroke:#f0cf8c;stroke-width:.8;stroke-dasharray:2 1.6;
+    fill:rgba(255,215,130,.07)}
+  /* 脉枕在桌面上，不像"身上的一部分"，给它一点常驻的呼吸提示 */
+  .hot[data-part="pulse"]:not(.on):not(:hover):not(.done){
+    stroke:rgba(240,207,140,.55);stroke-width:.4;stroke-dasharray:2.4 2.4;
+    animation:pulseHint 2.8s ease-in-out infinite}
+  @keyframes pulseHint{0%,100%{stroke-opacity:.18}50%{stroke-opacity:.85}}
+  .vignette{position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse 62% 66% at 50% 46%,
+        rgba(0,0,0,0) 40%, rgba(12,8,4,.46) 82%, rgba(12,8,4,.66) 100%),
+      linear-gradient(180deg, rgba(12,8,4,.30) 0%, rgba(12,8,4,0) 26%,
+        rgba(12,8,4,0) 62%, rgba(12,8,4,.42) 100%);
+  }
+
+  /* ---------- 纸面 ---------- */
+  .paper{
+    background:linear-gradient(178deg,#f6efdc 0%,#eee2c6 46%,#e2d3b0 100%);
+    border:3px solid var(--edge);
+    box-shadow:inset 0 0 0 3px rgba(255,250,235,.6),
+               inset 0 0 0 5px rgba(160,135,95,.2),
+               0 16px 40px rgba(0,0,0,.6);
+  }
+
+  /* ---------- 顶栏 ---------- */
+  #topbar{position:absolute;left:0;top:0;width:1200px;height:520px;padding:34px 0 0 62px;
+    pointer-events:none;
+    background:
+      radial-gradient(ellipse 880px 400px at 40px 0px,
+        rgba(10,8,5,.93) 0%, rgba(10,8,5,.80) 32%,
+        rgba(10,8,5,.44) 58%, rgba(10,8,5,.12) 80%, rgba(10,8,5,0) 100%)}
+  #topbar .brand{font-size:41px;letter-spacing:.3em;color:#f7edd5;
+    text-shadow:0 3px 14px rgba(0,0,0,.8)}
+  #topbar .brand em{font-style:normal;color:var(--gold);font-size:24px;
+    letter-spacing:.22em;margin-left:16px;vertical-align:3px;opacity:.95}
+  #topbar .who{margin-top:16px;font-size:23px;letter-spacing:.1em;color:#e9ddc4}
+  #topbar .who b{font-weight:normal;color:#ffe9b8}
+  #topbar .idx{display:inline-block;font-size:17px;letter-spacing:.22em;color:#150f09;
+    background:linear-gradient(180deg,#e2c384,#c9a25c);padding:3px 12px 3px 14px;
+    margin-right:16px;vertical-align:3px}
+  #topbar .chief{margin-top:7px;font-size:20px;color:#bfb096;letter-spacing:.05em}
+
+  /* ---------- 医案 ---------- */
+  #casebook{position:absolute;right:54px;top:52px;width:474px;height:888px;
+    padding:26px 24px 22px;display:flex;flex-direction:column}
+  .cb-head{display:flex;align-items:center;gap:16px}
+  .cb-head h2{font-size:30px;letter-spacing:.42em;color:var(--ink);font-weight:normal}
+  #four{margin-left:auto;display:flex;gap:7px}
+  .seal{width:42px;height:42px;display:flex;align-items:center;justify-content:center;
+    font-size:23px;color:#b7a687;border:2px solid rgba(150,125,90,.45);
+    transition:all .32s}
+  .seal.on{color:#fff3dc;border-color:var(--zhu);background:var(--zhu);
+    box-shadow:0 0 16px rgba(200,80,50,.5)}
+  .cb-sub{margin-top:14px;font-size:18px;color:var(--ink3);letter-spacing:.04em;
+    line-height:1.5;padding-bottom:12px;border-bottom:2px solid rgba(150,125,90,.28)}
+  #tags{flex:1;overflow-y:auto;margin-top:14px;padding-right:6px}
+  #tags::-webkit-scrollbar{width:6px}
+  #tags::-webkit-scrollbar-thumb{background:rgba(150,125,90,.4)}
+  .grp{margin-bottom:13px}
+  .grp-h{font-size:19px;color:var(--zhu);letter-spacing:.26em;margin-bottom:6px;
+    display:flex;align-items:center;gap:9px}
+  .grp-h span{font-size:14px;letter-spacing:.08em;color:var(--ink3)}
+  .grp-h:after{content:'';flex:1;height:1px;background:rgba(140,115,80,.28)}
+  .tag{font-size:20px;line-height:1.46;color:var(--ink2);padding:2px 0 2px 20px;
+    position:relative;letter-spacing:.02em;animation:tagIn .4s ease both}
+  .tag.new{animation:tagIn .4s ease both, tagGlow 1.5s ease both}
+  @keyframes tagGlow{
+    0%{background:rgba(200,150,60,.34)}
+    60%{background:rgba(200,150,60,.16)}
+    100%{background:transparent}}
+  .tag:before{content:'';position:absolute;left:4px;top:11px;width:7px;height:7px;
+    background:var(--gold);transform:rotate(45deg)}
+  @keyframes tagIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+  .empty{font-size:19px;color:#a9987c;letter-spacing:.1em;padding:16px 0;
+    line-height:1.8}
+  #dxbtn{margin-top:14px;height:68px;display:flex;align-items:center;
+    justify-content:center;cursor:pointer;
+    background:linear-gradient(180deg,#53766a,#3a554d);border:2px solid #2b403a;
+    color:#f3ecdc;font-size:27px;letter-spacing:.42em;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.1),0 6px 16px rgba(0,0,0,.3);
+    transition:all .16s}
+  #dxbtn:hover{filter:brightness(1.14)}
+  #dxbtn.warn{background:linear-gradient(180deg,#8a6a3e,#6b4f2c);border-color:#4f3a1e}
+
+  /* ---------- 对话 ---------- */
+  #dialogue{position:absolute;left:86px;bottom:50px;width:918px;
+    padding:18px 28px 16px;min-height:132px;max-height:470px;display:none;
+    flex-direction:column}
+  #dialogue.show{display:flex;animation:dlgIn .3s ease both}
+  @keyframes dlgIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  .d-head{display:flex;align-items:center;gap:16px;margin-bottom:8px}
+  #d-who{font-size:20px;letter-spacing:.26em;color:var(--zhu)}
+  #skipbtn{margin-left:auto;padding:6px 18px;font-size:18px;letter-spacing:.2em;
+    cursor:pointer;color:#4c4033;background:rgba(255,250,236,.65);
+    border:2px solid var(--edge2);font-family:inherit;transition:all .15s;line-height:1.2}
+  #skipbtn:hover{background:rgba(255,250,236,.98);border-color:#8b7350}
+  #askbtn{margin-left:8px;padding:6px 20px;font-size:19px;letter-spacing:.2em;
+    cursor:pointer;color:#fff0d4;background:linear-gradient(180deg,#b84632,#99301f);
+    border:2px solid #76201a;font-family:inherit;
+    box-shadow:0 3px 10px rgba(0,0,0,.25);transition:all .15s}
+  #askbtn:hover{filter:brightness(1.15)}
+  #askbtn.on{background:linear-gradient(180deg,#6b5a44,#52442f);border-color:#3e3222}
+  #d-text{font-size:26px;line-height:1.66;color:var(--ink);letter-spacing:.02em;
+    min-height:60px;white-space:pre-wrap}
+  #d-text .narr{color:#7d6c54}
+  #d-text .me{color:#3d5a52}
+  #d-hint{font-size:18px;color:var(--zhu);letter-spacing:.16em;opacity:0;
+    align-self:flex-end;margin-top:2px}
+  #d-hint.on{animation:blink 1.5s infinite}
+  @keyframes blink{0%,100%{opacity:.5}50%{opacity:1}}
+
+  /* ---------- 问诊列表 ---------- */
+  #q-list{display:none;overflow-y:auto;max-height:330px;padding:4px 2px}
+  #dialogue.asking #q-list{display:block}
+  #dialogue.asking #d-text,#dialogue.asking #d-hint,
+  #dialogue.asking #d-who{display:none}
+  #q-list::-webkit-scrollbar{width:6px}
+  #q-list::-webkit-scrollbar-thumb{background:rgba(150,125,90,.4)}
+  #q-list .q{font-size:23px;color:var(--ink2);padding:9px 14px;cursor:pointer;
+    border-left:3px solid transparent;transition:all .14s;letter-spacing:.02em;
+    display:flex;align-items:center}
+  #q-list .q:hover{background:rgba(180,150,100,.2);border-left-color:var(--zhu)}
+  #q-list .q.used{color:#a4957a}
+  #q-list .q .mk{margin-left:auto;font-size:15px;color:#a4957a;letter-spacing:.1em}
+
+  /* ---------- 舌象 ---------- */
+  #tonguecard{position:absolute;left:86px;bottom:296px;width:250px;padding:14px 14px 12px;
+    display:none;text-align:center;z-index:15}
+  #tonguecard.show{display:block;animation:dlgIn .3s ease both}
+  #tonguecard .cap{font-size:19px;color:var(--zhu);letter-spacing:.3em;
+    margin-bottom:4px}
+  #tonguecard svg{width:82%;height:auto;display:block;margin:0 auto}
+  #tonguecard .desc{font-size:17px;color:var(--ink3);margin-top:4px;line-height:1.45}
+
+  /* ---------- 弹层 ---------- */
+  #modal{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+    background:rgba(8,6,4,.66);z-index:60}
+  #modal.show{display:flex}
+  .sheet{width:1180px;max-height:940px;overflow-y:auto;padding:44px 52px;
+    position:relative;animation:sheetIn .34s cubic-bezier(.2,.9,.3,1) both}
+  .sheet::-webkit-scrollbar{width:8px}
+  .sheet::-webkit-scrollbar-thumb{background:rgba(150,125,90,.4)}
+  @keyframes sheetIn{from{opacity:0;transform:translateY(26px) scale(.97)}
+    to{opacity:1;transform:none}}
+  .sheet h3{font-size:35px;letter-spacing:.34em;color:var(--ink);font-weight:normal;
+    text-align:center}
+  .sheet .sub{text-align:center;font-size:20px;color:var(--ink3);margin-top:12px;
+    letter-spacing:.08em}
+  .opts{margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .opt{padding:22px 26px;cursor:pointer;background:rgba(255,250,236,.55);
+    border:2px solid var(--edge2);transition:all .16s}
+  .opt:hover{border-color:var(--zhu);background:rgba(255,246,228,.9);
+    transform:translateY(-2px);box-shadow:0 10px 22px rgba(120,90,50,.22)}
+  .opt b{display:block;font-size:27px;color:var(--ink);letter-spacing:.12em;
+    font-weight:normal}
+  .opt i{display:block;font-size:17px;color:var(--ink3);margin-top:6px;
+    font-style:normal;letter-spacing:.03em}
+  .opt.pick{border-color:var(--zhu);background:rgba(255,240,220,.95);
+    box-shadow:0 0 0 3px rgba(169,48,36,.16)}
+  .opt.pick b{color:var(--zhu)}
+  .result{margin-top:26px;font-size:21px;line-height:1.8;color:var(--ink2)}
+  .result .k{color:var(--zhu);letter-spacing:.14em;margin-top:20px;font-size:22px}
+  .result ul{margin:8px 0 0 24px}
+  .result li{margin:7px 0}
+  .result li b{color:var(--ink);font-weight:normal;letter-spacing:.04em}
+  .verdict{text-align:center;font-size:44px;letter-spacing:.34em}
+  .verdict.ok{color:var(--jade)}
+  .verdict.no{color:var(--zhu)}
+  .rx{margin-top:22px;padding:20px 26px;background:rgba(255,251,240,.6);
+    border-left:5px solid var(--jade);font-size:23px;line-height:1.8}
+  .rx b{color:var(--jade);letter-spacing:.16em;font-weight:normal;margin-right:12px}
+  .actions{margin-top:30px;display:flex;gap:18px;justify-content:center}
+  .btn{padding:15px 42px;font-size:24px;letter-spacing:.24em;cursor:pointer;
+    border:2px solid var(--edge);background:rgba(255,250,236,.6);color:var(--ink2);
+    font-family:inherit;transition:all .15s}
+  .btn:hover{background:rgba(255,250,236,.95);border-color:var(--zhu)}
+  .btn.primary{background:var(--zhu);border-color:#7d2318;color:#ffeacb}
+  .btn.primary:hover{filter:brightness(1.1)}
+
+  /* ---------- 提示 ---------- */
+  #toast{position:absolute;left:50%;top:34px;transform:translateX(-50%) translateY(-18px);
+    padding:14px 36px;font-size:22px;letter-spacing:.14em;color:#fff2d8;
+    background:rgba(38,28,18,.9);border:2px solid var(--gold);opacity:0;
+    transition:all .3s;pointer-events:none;z-index:80;white-space:nowrap}
+  #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  .tip{position:absolute;z-index:50;padding:7px 20px;font-size:20px;
+    letter-spacing:.14em;background:rgba(28,22,14,.92);color:#ffe9bc;
+    border:1px solid var(--gold);pointer-events:none;white-space:nowrap;
+    transform:translateX(-50%)}
+
+
+  /* ================= 手机横屏：整个舞台等比缩，但界面字号放大一圈 ================= */
+  @media (max-height: 560px){
+    #topbar{padding:22px 0 0 30px}
+    #topbar .brand{font-size:40px;letter-spacing:.2em}
+    #topbar .brand em{font-size:26px}
+    #topbar .who{font-size:26px;margin-top:10px}
+    #topbar .idx{font-size:20px;padding:3px 12px;margin-right:12px}
+    #topbar .chief{font-size:24px;margin-top:4px}
+    #backbtn{font-size:22px;padding:7px 18px;margin-left:18px}
+    /* 医案面板：缩窄，字放大 */
+    #casebook{right:14px;top:12px;width:380px;height:calc(100% - 24px);padding:18px 18px 14px}
+    #casebook h2{font-size:30px}
+    .cb-sub{font-size:22px;margin-top:8px}
+    #tags{margin-top:10px}
+    .grp-h{font-size:24px}
+    .grp-h span{font-size:18px}
+    .tag{font-size:26px;line-height:1.4;padding:1px 0 1px 24px}
+    .tag:before{top:14px;width:9px;height:9px}
+    .empty{font-size:24px;line-height:1.6}
+    .seal{width:52px;height:52px;font-size:27px}
+    #dxbtn{height:74px;font-size:30px;letter-spacing:.3em}
+    /* 对话框 */
+    #dialogue{left:14px;bottom:12px;width:1120px;padding:18px 24px 16px;min-height:190px}
+    .d-head{margin-bottom:8px}
+    #d-who{font-size:24px}
+    #skipbtn,#askbtn{font-size:22px;padding:7px 20px}
+    #d-text{font-size:32px;line-height:1.55;min-height:96px}
+    #d-hint{font-size:22px}
+    #q-list .q{font-size:28px;padding:8px 12px}
+    #tonguecard{width:250px;padding:10px}
+    #tonguecard .cap{font-size:20px}
+    #tonguecard .desc{font-size:17px}
+    /* 弹层 */
+    .sheet{width:92vw;max-height:96vh;padding:20px 24px}
+    .sheet h3{font-size:38px}
+    .sheet .sub{font-size:24px}
+    .opts{gap:16px;margin-top:18px}
+    .opt{padding:16px 18px}
+    .opt b{font-size:30px}
+    .opt i{font-size:20px}
+    .result{font-size:24px;line-height:1.65}
+    .result .k{font-size:26px;margin-top:12px}
+    .verdict{font-size:40px}
+    .rx{font-size:24px;padding:14px 16px}
+    .btn{padding:12px 30px;font-size:26px}
+    /* 候诊卡：手机上压矮，整张能塞进一屏 */
+    .picks{gap:10px;margin-top:10px}
+    .pcard{width:330px}
+    .pimg{height:126px}
+    .pinfo{padding:7px 10px 9px}
+    .pinfo b{font-size:24px}
+    .pinfo i{font-size:16px;margin-top:2px}
+    .pinfo p{font-size:16px;min-height:0;line-height:1.3;margin-top:3px}
+    .pdone{font-size:16px;margin-top:4px;padding-top:4px}
+    /* 存档槽 */
+    .slot{padding:12px 14px}
+    .slot-h b{font-size:24px}
+    .slot-h span{font-size:22px}
+    .mini{font-size:21px;padding:5px 14px}
+    .setrow .k{font-size:24px}
+    .setrow .v{font-size:22px}
+    .credit{font-size:17px}
+    #toast{font-size:26px;padding:14px 30px}
+    #menuFoot{font-size:26px;bottom:20px;left:30px}
+    #menuVer{font-size:18px;left:30px;bottom:4px}
+  }
+
+  /* 竖屏：不硬做布局，转过来就好 */
+  #rotate{display:none;position:fixed;inset:0;background:#0d0b08;z-index:999;
+    flex-direction:column;align-items:center;justify-content:center;gap:26px}
+  #rotate .ico{width:92px;height:92px;border:4px solid #c9a25c;position:relative;
+    animation:rot 2.4s ease-in-out infinite}
+  #rotate .ico:after{content:'';position:absolute;left:50%;top:50%;width:26px;height:70px;
+    margin:-35px 0 0 -13px;background:rgba(201,162,92,.28)}
+  @keyframes rot{0%,42%{transform:rotate(0)}58%,100%{transform:rotate(90deg)}}
+  #rotate .t{font-size:26px;letter-spacing:.24em;color:#e8dcc2}
+  #rotate .s{font-size:16px;letter-spacing:.1em;color:#8d7c62}
+  @media (max-aspect-ratio: 1/1){ #rotate{display:flex} }
+  /* ================= 主菜单 ================= */
+  #menu{position:absolute;inset:0;opacity:1;transition:opacity .45s ease}
+  #menu.off{opacity:0;pointer-events:none}
+  #menu .menubg{position:absolute;inset:0;width:100%;height:100%;
+    image-rendering:pixelated;display:block}
+  #menu .menudesk{position:absolute;inset:0;width:100%;height:100%;
+    image-rendering:pixelated;display:block;pointer-events:none}
+  #doctor{position:absolute;left:1000px;bottom:0;width:686px;height:880px;
+    pointer-events:none;filter:drop-shadow(0 12px 30px rgba(8,5,3,.5))}
+  #menu:after{content:'';position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse 66% 70% at 46% 44%,
+      rgba(0,0,0,0) 52%, rgba(10,7,4,.42) 100%)}
+
+  .drawer-hot{position:absolute;left:36px;width:696px;cursor:pointer;
+    transition:background .18s ease, box-shadow .18s ease}
+  .drawer-hot:hover{
+    background:linear-gradient(90deg,
+      rgba(255,214,140,.04) 0%, rgba(255,205,120,.22) 46%, rgba(255,214,140,.04) 100%);
+    box-shadow:inset 0 0 0 2px rgba(245,205,130,.42),
+               inset 0 0 70px rgba(255,190,90,.16)}
+
+  #scrollPane{position:absolute;left:774px;top:186px;width:168px;height:450px;
+    overflow:hidden;pointer-events:none}
+  #scrollPane .scrollPaper{position:absolute;inset:0;width:100%;height:100%;
+    display:block;opacity:0;transition:opacity .26s ease;
+    image-rendering:pixelated}
+  #scrollPane.on .scrollPaper{opacity:1}
+  #scrollText{position:absolute;inset:0;display:flex;align-items:center;
+    justify-content:center;writing-mode:vertical-rl;text-orientation:upright;
+    font-family:"STZhongsong","SimSun","Songti SC",serif;
+    font-weight:700;font-size:66px;line-height:1.12;letter-spacing:.04em;
+    color:#3a3128;opacity:0;transition:opacity .26s ease;white-space:nowrap;
+    padding-top:8px}
+  #scrollPane.on #scrollText{opacity:1}
+  #scrollText.big{font-size:82px;padding-top:0}
+
+  #menuFoot{position:absolute;left:64px;bottom:34px;text-align:left;
+    font-size:21px;letter-spacing:.38em;color:#d8c8a4;
+    text-shadow:0 2px 12px rgba(0,0,0,1),0 0 26px rgba(0,0,0,.9);pointer-events:none}
+  #menuVer{position:absolute;left:64px;bottom:12px;font-size:15px;
+    letter-spacing:.2em;color:#a8967a;
+    text-shadow:0 2px 10px rgba(0,0,0,1);pointer-events:none}
+
+  /* 设置里的音量条 / 存档槽 */
+  .setrow{display:flex;align-items:center;gap:18px;margin-top:30px;padding:0 6px}
+  .setrow .k{font-size:21px;letter-spacing:.16em;color:var(--ink2);white-space:nowrap}
+  .setrow .v{width:52px;text-align:right;font-size:19px;color:var(--ink3)}
+  .setrow input[type=range]{flex:1;-webkit-appearance:none;height:6px;
+    background:linear-gradient(90deg,#b8a075,#8b7350);outline:none}
+  .setrow input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;
+    width:22px;height:22px;background:#a83024;border:2px solid #7d2318;
+    box-shadow:0 2px 6px rgba(0,0,0,.3);cursor:pointer}
+  .slots{margin-top:22px;display:flex;flex-direction:column;gap:12px}
+  .slot{padding:14px 18px;background:rgba(255,250,236,.5);
+    border:2px solid var(--edge2);display:flex;align-items:center;gap:16px}
+  .slot-h{flex:1;display:flex;align-items:baseline;gap:14px;min-width:0}
+  .slot-h b{font-size:20px;letter-spacing:.16em;color:var(--zhu);font-weight:normal;
+    white-space:nowrap}
+  .slot-h span{font-size:18px;color:var(--ink2);letter-spacing:.03em;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .slot-h .dim{color:#a9987c}
+  .slot-b{display:flex;gap:8px}
+  .mini{padding:5px 14px;font-size:17px;letter-spacing:.1em;cursor:pointer;
+    font-family:inherit;color:var(--ink2);background:rgba(255,255,255,.6);
+    border:2px solid var(--edge2);transition:all .14s}
+  .mini:hover{background:#fff;border-color:var(--zhu);color:var(--zhu)}
+  .mini.warn:hover{border-color:#a83024;color:#a83024}
+  #backbtn{margin-left:26px;pointer-events:auto;cursor:pointer;font-family:inherit;
+    font-size:17px;letter-spacing:.14em;padding:6px 16px;color:#e9ddc4;
+    background:rgba(20,15,10,.55);border:1px solid rgba(201,162,92,.55);
+    vertical-align:6px;transition:all .15s}
+  #backbtn:hover{background:rgba(169,48,36,.85);border-color:#c9503a;color:#fff3dc}
+
+  /* 候诊：选病人 */
+  .picks{display:flex;gap:22px;justify-content:center;margin-top:28px}
+  .pcard{width:300px;cursor:pointer;background:rgba(255,250,236,.6);
+    border:2px solid var(--edge2);transition:all .18s;overflow:hidden}
+  .pcard:hover{border-color:var(--zhu);transform:translateY(-4px);
+    box-shadow:0 14px 30px rgba(90,65,35,.28)}
+  .pcard.done{cursor:default;opacity:.62;filter:grayscale(.55)}
+  .pcard.done:hover{transform:none;border-color:var(--edge2);box-shadow:none}
+  .pimg{height:300px;overflow:hidden;background:#20201c;position:relative}
+  .pimg img{width:100%;height:100%;object-fit:cover;object-position:50% 12%;display:block}
+  .pinfo{padding:14px 16px 18px;text-align:center}
+  .pinfo b{display:block;font-size:25px;letter-spacing:.16em;color:var(--ink);font-weight:normal}
+  .pinfo i{display:block;font-style:normal;font-size:16px;color:var(--ink3);
+    margin-top:5px;letter-spacing:.05em}
+  .pinfo p{margin-top:10px;font-size:17px;line-height:1.55;color:var(--ink2);
+    letter-spacing:.02em;min-height:52px}
+  .pdone{display:inline-block;margin-top:8px;font-size:16px;color:var(--zhu);
+    letter-spacing:.1em;border-top:1px solid rgba(168,48,36,.3);padding-top:8px}
+  .credit{margin-top:20px;text-align:center;font-size:15px;color:#9c8a6c;
+    letter-spacing:.04em;line-height:1.6}
+
+  /* 退出幕 */
+  #shutter{position:absolute;inset:0;background:rgba(8,6,4,.94);display:none;
+    flex-direction:column;align-items:center;justify-content:center;
+    z-index:90;cursor:pointer}
+  #shutter.on{display:flex;animation:fadeIn .8s ease both}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  #shutter .t{font-size:44px;letter-spacing:.5em;color:#d8c9a6;
+    text-shadow:0 0 30px rgba(0,0,0,.8)}
+  #shutter .s{margin-top:26px;font-size:20px;letter-spacing:.3em;color:#7d6f58}
+
+  #game{position:absolute;inset:0;display:none}
+  #game.on{display:block}
+
+  /* ================= 手机横屏：整个舞台等比缩，但界面字号放大一圈 ================= */
+  @media (max-height: 560px){
+    #topbar{padding:22px 0 0 30px}
+    #topbar .brand{font-size:40px;letter-spacing:.2em}
+    #topbar .brand em{font-size:26px}
+    #topbar .who{font-size:26px;margin-top:10px}
+    #topbar .idx{font-size:20px;padding:3px 12px;margin-right:12px}
+    #topbar .chief{font-size:24px;margin-top:4px}
+    #backbtn{font-size:22px;padding:7px 18px;margin-left:18px}
+    /* 医案面板：缩窄，字放大 */
+    #casebook{right:14px;top:12px;width:380px;height:calc(100% - 24px);padding:18px 18px 14px}
+    #casebook h2{font-size:30px}
+    .cb-sub{font-size:22px;margin-top:8px}
+    #tags{margin-top:10px}
+    .grp-h{font-size:24px}
+    .grp-h span{font-size:18px}
+    .tag{font-size:26px;line-height:1.4;padding:1px 0 1px 24px}
+    .tag:before{top:14px;width:9px;height:9px}
+    .empty{font-size:24px;line-height:1.6}
+    .seal{width:52px;height:52px;font-size:27px}
+    #dxbtn{height:74px;font-size:30px;letter-spacing:.3em}
+    /* 对话框 */
+    #dialogue{left:14px;bottom:12px;width:1120px;padding:18px 24px 16px;min-height:190px}
+    .d-head{margin-bottom:8px}
+    #d-who{font-size:24px}
+    #skipbtn,#askbtn{font-size:22px;padding:7px 20px}
+    #d-text{font-size:32px;line-height:1.55;min-height:96px}
+    #d-hint{font-size:22px}
+    #q-list .q{font-size:28px;padding:8px 12px}
+    #tonguecard{width:250px;padding:10px}
+    #tonguecard .cap{font-size:20px}
+    #tonguecard .desc{font-size:17px}
+    /* 弹层 */
+    .sheet{width:92vw;max-height:96vh;padding:20px 24px}
+    .sheet h3{font-size:38px}
+    .sheet .sub{font-size:24px}
+    .opts{gap:16px;margin-top:18px}
+    .opt{padding:16px 18px}
+    .opt b{font-size:30px}
+    .opt i{font-size:20px}
+    .result{font-size:24px;line-height:1.65}
+    .result .k{font-size:26px;margin-top:12px}
+    .verdict{font-size:40px}
+    .rx{font-size:24px;padding:14px 16px}
+    .btn{padding:12px 30px;font-size:26px}
+    /* 候诊卡：手机上压矮，整张能塞进一屏 */
+    .picks{gap:10px;margin-top:10px}
+    .pcard{width:330px}
+    .pimg{height:126px}
+    .pinfo{padding:7px 10px 9px}
+    .pinfo b{font-size:24px}
+    .pinfo i{font-size:16px;margin-top:2px}
+    .pinfo p{font-size:16px;min-height:0;line-height:1.3;margin-top:3px}
+    .pdone{font-size:16px;margin-top:4px;padding-top:4px}
+    /* 存档槽 */
+    .slot{padding:12px 14px}
+    .slot-h b{font-size:24px}
+    .slot-h span{font-size:22px}
+    .mini{font-size:21px;padding:5px 14px}
+    .setrow .k{font-size:24px}
+    .setrow .v{font-size:22px}
+    .credit{font-size:17px}
+    #toast{font-size:26px;padding:14px 30px}
+    #menuFoot{font-size:26px;bottom:20px;left:30px}
+    #menuVer{font-size:18px;left:30px;bottom:4px}
+  }
+
+  /* 竖屏：不硬做布局，转过来就好 */
+  #rotate{display:none;position:fixed;inset:0;background:#0d0b08;z-index:999;
+    flex-direction:column;align-items:center;justify-content:center;gap:26px}
+  #rotate .ico{width:92px;height:92px;border:4px solid #c9a25c;position:relative;
+    animation:rot 2.4s ease-in-out infinite}
+  #rotate .ico:after{content:'';position:absolute;left:50%;top:50%;width:26px;height:70px;
+    margin:-35px 0 0 -13px;background:rgba(201,162,92,.28)}
+  @keyframes rot{0%,42%{transform:rotate(0)}58%,100%{transform:rotate(90deg)}}
+  #rotate .t{font-size:26px;letter-spacing:.24em;color:#e8dcc2}
+  #rotate .s{font-size:16px;letter-spacing:.1em;color:#8d7c62}
+  @media (max-aspect-ratio: 1/1){ #rotate{display:flex} }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- ================= 主菜单 ================= -->
+  <div id="menu">
+    <img class="menubg" src="assets/bg_menu.png" alt="">
+    <img class="menudesk" src="assets/bg_menu_desk.png" alt="">
+    <img id="doctor" src="assets/doctor.png" alt="">
+    <div id="scrollPane">
+      <img class="scrollPaper" src="assets/menu_scroll.png" alt="">
+      <div id="scrollText">杏林</div>
+    </div>
+    <div id="menuFoot">杏 林 问 诊 · 四 诊 辨 证</div>
+    <div id="menuVer">v0.2</div>
+  </div>
+
+  <div id="game">
+  <!-- ===== 场景 ===== -->
+  <div class="scene"><div class="inner">
+    <img id="bg" src="assets/bg_clinic.png" alt="">
+    <img id="patient" src="assets/patient_man.png" alt="">
+    <img id="portrait" src="assets/portrait_liu.png" alt="">
+    <img id="bg-desk" src="assets/bg_clinic_desk.png" alt="">
+    <svg id="hot" viewBox="0 0 320 180">
+      <rect class="hot" data-part="neck"  x="138" y="70"  width="64" height="60"/>
+      <rect class="hot" data-part="face"  x="153" y="38"  width="34" height="22"/>
+      <rect class="hot" data-part="eyes"  x="156" y="50"  width="28" height="10"/>
+      <rect class="hot" data-part="mouth" x="160" y="59"  width="20" height="12"/>
+      <rect class="hot" data-part="pulse" x="168" y="143" width="82" height="33"/>
+    </svg>
+  </div></div>
+  <div class="vignette"></div>
+
+  <!-- ===== 顶栏 ===== -->
+  <div id="topbar">
+    <div class="brand">杏林问诊<em>四诊 · 辨证</em>
+      <button id="backbtn">← 回门厅</button>
+    </div>
+    <div class="who" id="t-who"></div>
+    <div class="chief" id="t-chief"></div>
+  </div>
+
+  <!-- ===== 医案 ===== -->
+  <div id="casebook" class="paper">
+    <div class="cb-head">
+      <h2>医案</h2>
+      <div id="four">
+        <div class="seal" data-src="望">望</div>
+        <div class="seal" data-src="闻">闻</div>
+        <div class="seal" data-src="问">问</div>
+        <div class="seal" data-src="切">切</div>
+      </div>
+    </div>
+    <div class="cb-sub" id="cb-sub"></div>
+    <div id="tags"><div class="empty">尚无所得。<br>可点病人面、目、舌、胸腹，再看腕后脉枕。</div></div>
+    <div id="dxbtn">辨 证</div>
+  </div>
+
+  <!-- ===== 舌象 ===== -->
+  <div id="tonguecard" class="paper">
+    <div class="cap">舌 象</div>
+    <div id="tongue-svg"></div>
+    <div class="desc" id="tongue-desc"></div>
+  </div>
+
+  <!-- ===== 对话 ===== -->
+  <div id="dialogue" class="paper">
+    <div class="d-head">
+      <span id="d-who"></span>
+      <button id="skipbtn">跳 过</button>
+      <button id="askbtn">问 诊</button>
+    </div>
+    <div id="d-text"></div>
+    <div id="q-list"></div>
+    <div id="d-hint">▸ 点这里，接着听</div>
+  </div>
+
+  </div><!-- /#game -->
+
+  <!-- ===== 弹层 ===== -->
+  <div id="modal"><div class="sheet paper" id="sheet"></div></div>
+  <div id="toast"></div>
+  <div id="shutter"><div class="t">今 日 闭 诊</div><div class="s">点一下，回到门前</div></div>
+  <div id="rotate"><div class="ico"></div><div class="t">请 横 过 来</div><div class="s">这间诊室是横着坐的</div></div>
+  <audio id="bgm" loop preload="auto">
+    <source src="assets/bgm_theme.mp3" type="audio/mpeg">
+    <source src="assets/bgm.wav" type="audio/wav">
+  </audio>
+</div>
+
+<script>
+/* =========================================================
+   杏林问诊 —— 四诊辨证原型
+   · 点病人不同部位 = 望 / 闻 / 切；点「问诊」= 问
+   · 四诊齐备后「辨证」，选证型 → 判分 + 讲解 + 方药
+   美术：assets/bg_clinic.png（诊所）、assets/patient_*.png（病人）
+   换美术：换图即可；热区见下方 PARTS（320x180 坐标系，×6 即舞台坐标）
+   ========================================================= */
+
+const PARTS = ['face','eyes','mouth','neck','pulse'];   // 见 svg 里的 rect
+
+/* ---------------- 病例数据 ---------------- */
+const CASES = [
+  {
+    id:'fenghan',
+    name:'马某', sex:'男', age:'十六', job:'药铺学徒',
+    img:'assets/patient_man.png',
+    portrait:'assets/portrait_ma.png',
+    hot:{ face:[147,40,50,50], eyes:[155,70,27,8], mouth:[164,84,14,7], neck:[146,92,54,46] },
+    chief:'恶寒发热三日，头项强痛，周身骨节疼痛',
+    greet:[
+      ['p','大夫，您给瞧瞧吧。三天前夜里替铺子里送货，回来就冷得钻心，裹上棉被也不济事，后来才发起热来。'],
+      ['narr','他捧着一碗热汤，鼻头冻得通红，把袖子卷起来搁在脉枕上等着。'],
+    ],
+    exam:{
+      face:{
+        src:'望', title:'望色',
+        lines:[
+          ['narr','你借着窗光，把他的面色仔细看了。'],
+          ['p','大夫，我脸上是不是很难看？'],
+          ['narr','面庞淡白，两颊没有血色；鼻头却冻得通红，嘴唇也淡得发白。'],
+        ],
+        tags:['面色淡白','鼻头通红','唇色淡'],
+      },
+      eyes:{
+        src:'望', title:'望神',
+        lines:[
+          ['narr','你注视他的双目。'],
+          ['narr','眼睑微垂，目光少神，说话时也不大愿意睁眼——神气已见疲乏。'],
+        ],
+        tags:['神疲','目少神'],
+      },
+      mouth:{
+        src:'望', title:'望舌',
+        lines:[
+          ['narr','你请他把舌头伸出来。'],
+          ['narr','舌质淡红，舌苔薄白，舌面润润的，像蒙了一层清水。'],
+        ],
+        tags:['舌质淡红','苔薄白而润'],
+        tongue:{ body:'淡红', coat:'薄白', wet:'润', desc:'舌淡红 · 苔薄白而润' },
+      },
+      neck:{
+        src:'闻', title:'闻诊',
+        lines:[
+          ['narr','你侧耳细听，又留意他身上有无异味。'],
+          ['narr','语声重浊，带着浓重的鼻音；一句话未完，又连打了两个喷嚏。'],
+          ['narr','气息清冷，没有酸腐、口臭之类的异味。'],
+        ],
+        tags:['语声重浊','时作喷嚏','无异常气味'],
+      },
+      pulse:{
+        src:'切', title:'切脉',
+        lines:[
+          ['narr','你把三指搭在他腕后的寸关尺上，先轻后重。'],
+          ['narr','脉来浮而紧张，轻按即得，重按稍减；指下如按绷紧的绳索——此谓「浮紧」。'],
+          ['p','大夫，我这脉……要紧么？'],
+        ],
+        tags:['脉浮紧'],
+      },
+    },
+    asks:[
+      { q:'身上到底怎么个不舒服？',
+        a:'三天前受了风寒，先是怕冷得厉害，裹着棉被还是冷。后来才发起热来。头后颈项疼得转不动，浑身骨节也都酸痛。',
+        tags:['恶寒','发热','头项强痛','身痛'] },
+      { q:'怕冷重，还是发热重？',
+        a:'我怕冷重。加衣盖被也不顶事。热是后来才起的，不算高。',
+        tags:['恶寒重，发热轻'] },
+      { q:'身上出汗么？',
+        a:'一点儿汗也没有，皮肤干干的。',
+        tags:['无汗'] },
+      { q:'嘴里苦不苦？想喝水么？',
+        a:'口里不苦，也不想喝水。',
+        tags:['口不渴'] },
+      { q:'鼻子、嗓子怎么样？',
+        a:'鼻子堵得慌，流清鼻涕，一个劲儿打喷嚏。嗓子倒不疼。',
+        tags:['鼻塞，流清涕','咽不痛'] },
+      { q:'胃口、大小便如何？',
+        a:'饭还吃得下，大小便都跟平常一样。',
+        tags:['二便正常'] },
+    ],
+    dx:{
+      q:'四诊既毕，此属何证？',
+      options:[
+        { id:'a', name:'风寒束表证', sub:'太阳伤寒 · 表实无汗' },
+        { id:'b', name:'风寒表虚证', sub:'太阳中风 · 表虚有汗' },
+        { id:'c', name:'风热犯表证', sub:'风热感冒' },
+        { id:'d', name:'湿邪困表证', sub:'外感湿邪' },
+      ],
+      answer:'a',
+      right:{
+        title:'风寒束表证（太阳伤寒表实证）',
+        points:[
+          ['恶寒重、发热轻','寒邪束表，卫阳被遏，阳气不能外达，故恶寒为其主要痛苦。'],
+          ['无汗、脉浮紧','寒性收引，腠理闭塞则无汗；寒主收引，经脉拘急则脉道紧张。'],
+          ['头项强痛、身疼','足太阳主一身之表，寒凝经脉，经气不利。'],
+          ['鼻塞流清涕、苔薄白','寒邪袭肺，肺气失宣，清涕自出。'],
+        ],
+        diff:[
+          ['表虚证','有汗出、脉浮缓；此人无汗而脉浮紧，是表实，不是表虚。'],
+          ['风热证','发热重、口渴、咽痛、脉浮数；此人不渴不咽痛，脉亦不数。'],
+          ['湿邪困表','舌苔白腻、身重如裹、头重如蒙；他苔薄白不腻，是寒不是湿。'],
+        ],
+        rule:'辨证眼目：恶寒重 ＋ 无汗 ＋ 脉浮紧，三者同见，即为表实。',
+        treat:'辛温解表，宣肺散寒',
+        formula:'麻黄汤（麻黄、桂枝、杏仁、炙甘草）',
+      },
+      wrong:{
+        b:'他一点汗也没有，脉又是浮紧而非浮缓——表虚证（桂枝汤证）本该有汗出、脉浮缓。',
+        c:'风热要点是发热重、口渴、咽痛、脉浮数。他不渴、不咽痛、脉不数，恶寒又重，寒热不符。',
+        d:'湿邪困表当见舌苔白腻、身重如裹、头重如蒙。他苔薄白不腻，并无湿象。',
+      },
+    },
+  },
+
+  /* ============ 第二案：脾气虚 ============ */
+  {
+    id:'pixu',
+    name:'周氏', sex:'女', age:'四十五', job:'布庄主母',
+    img:'assets/patient_woman_zhu.png',
+    portrait:'assets/portrait_zhu.png',
+    hot:{ face:[147,13,47,48], eyes:[156,41,28,9], mouth:[165,53,15,9], neck:[142,62,60,72] },
+    chief:'食少腹胀、大便稀溏半年，倦怠乏力',
+    greet:[
+      ['p','大夫，我这半年吃不下饭，吃一点肚子就胀，大便也不成形。人懒懒的，提不起精神。'],
+      ['narr','她把手腕搁在脉枕上。面色黄黄的，说话有气无力。'],
+    ],
+    exam:{
+      face:{
+        src:'望', title:'望色',
+        lines:[
+          ['narr','你细看她的面色。'],
+          ['narr','面黄而晦，像蒙了一层旧棉纸，两颊没有光泽——此谓「萎黄」，与黄疸那种鲜亮的黄不同。'],
+        ],
+        tags:['面色萎黄','唇色淡'],
+      },
+      eyes:{
+        src:'望', title:'望神',
+        lines:[
+          ['narr','你留意她的神态。'],
+          ['narr','神疲乏力，声气不足；问一句答一句，懒得多说。'],
+        ],
+        tags:['神疲乏力','少气懒言'],
+      },
+      mouth:{
+        src:'望', title:'望舌',
+        lines:[
+          ['narr','你请她伸出舌头。'],
+          ['narr','舌质淡胖，舌体铺满口腔，边上压着一圈齿痕；舌苔白而腻，水滑。'],
+        ],
+        tags:['舌淡胖','边有齿痕','苔白腻'],
+        tongue:{ body:'淡白', coat:'白腻', wet:'滑', desc:'舌淡胖 · 边有齿痕 · 苔白腻' },
+      },
+      neck:{
+        src:'闻', title:'闻诊',
+        lines:[
+          ['narr','你听她的语声，又留意口气。'],
+          ['narr','语声低微，一句话说不到底就要换气；口气清淡，没有酸腐之气。'],
+        ],
+        tags:['语声低微','气短'],
+      },
+      pulse:{
+        src:'切', title:'切脉',
+        lines:[
+          ['narr','你三指按脉，轻取重取都细细体会。'],
+          ['narr','脉来缓慢，应指软软的，一息四至——此为「缓弱」，鼓动无力。'],
+        ],
+        tags:['脉缓弱'],
+      },
+    },
+    asks:[
+      { q:'身上怎么个不舒服？',
+        a:'半年来吃不下饭，吃一点肚子就胀。大便稀，一天两三回。人也乏，走两步路就喘不上气。',
+        tags:['食少','食后腹胀','便溏','倦怠乏力'] },
+      { q:'胃口怎么样？',
+        a:'不想吃，闻着饭菜也没味。勉强吃两口，饭后肚子胀得难受。',
+        tags:['纳呆'] },
+      { q:'大便什么样的？',
+        a:'稀稀的，不成形，一天两三次。没有脓血，肛门也不烧得慌。',
+        tags:['大便稀溏，日二三次'] },
+      { q:'怕冷么？手脚凉不凉？',
+        a:'不怕冷，手脚也不凉。肚子不疼，揉一揉还舒服些。',
+        tags:['不畏寒','无腹痛'] },
+      { q:'嘴里苦不苦？想喝水么？',
+        a:'口里淡淡的，不苦，也不大想喝水。',
+        tags:['口淡不渴'] },
+      { q:'月事如何？',
+        a:'量少，颜色淡，两三天就干净了。',
+        tags:['月经量少色淡'] },
+    ],
+    dx:{
+      q:'四诊既毕，此属何证？',
+      options:[
+        { id:'a', name:'脾气虚证', sub:'脾虚湿困 · 运化失健' },
+        { id:'b', name:'脾阳虚证', sub:'中焦虚寒' },
+        { id:'c', name:'湿热蕴脾证', sub:'中焦湿热' },
+        { id:'d', name:'肝郁脾虚证', sub:'肝木乘土' },
+      ],
+      answer:'a',
+      right:{
+        title:'脾气虚证（脾虚湿困）',
+        points:[
+          ['食少、腹胀、便溏','脾主运化，脾气不足则水谷不化，故纳呆、食后作胀、大便稀溏。'],
+          ['面色萎黄、倦怠乏力、少气懒言','脾为气血生化之源，气虚则化源不足，肌肉四肢失养。'],
+          ['舌淡胖、边有齿痕、苔白腻','脾气虚则水湿不运，湿浊内停，舌体胖大受齿列压迫而成齿痕。'],
+          ['脉缓弱','气虚则脉道鼓动无力，故缓而弱。'],
+        ],
+        diff:[
+          ['脾阳虚证','当见畏寒肢冷、腹痛喜温喜按、下利清谷；她不怕冷、手足不凉、腹亦不痛。'],
+          ['湿热蕴脾证','当见苔黄腻、口苦、大便黏臭、肛门灼热；她苔白腻、口淡不渴、便质清稀。'],
+          ['肝郁脾虚证','当脉弦、胁胀、情绪不遂则加重；她脉缓弱不弦，无胁胀之症。'],
+        ],
+        rule:'辨证眼目：纳呆、腹胀、便溏 ＋ 舌淡胖齿痕 ＋ 脉缓弱，是脾气虚；再兼寒象，才是脾阳虚。',
+        treat:'健脾益气，和胃渗湿',
+        formula:'参苓白术散（人参、白术、茯苓、山药、白扁豆、莲子、薏苡仁、砂仁、桔梗、甘草）',
+      },
+      wrong:{
+        b:'脾阳虚当有畏寒肢冷、腹痛喜温喜按、下利清谷。她不怕冷、手足不凉、腹也不痛——阳分未虚。',
+        c:'湿热当见苔黄腻、口苦、大便黏臭、肛门灼热。她苔白腻、口淡不渴、大便清稀，是湿不是热。',
+        d:'肝郁脾虚当脉弦、胁胀、情绪激动则加重。她脉缓弱不弦，一味是虚，不见肝郁。',
+      },
+    },
+  },
+
+  /* ============ 第三案：肝气郁结 ============ */
+  {
+    id:'ganyu',
+    name:'柳氏', sex:'女', age:'二十四', job:'绣娘',
+    img:'assets/patient_woman_liu.png',
+    portrait:'assets/portrait_liu.png',
+    hot:{ face:[150,12,50,40], eyes:[167,33,28,9], mouth:[172,40,17,10], neck:[148,52,60,62] },
+    chief:'胸胁胀闷、情志抑郁、善太息二月',
+    greet:[
+      ['p','大夫……我也说不上哪儿疼，就是胸口、两胁这里胀得慌，老想叹气。'],
+      ['narr','她低着头，声音不大，隔一会儿便长长地叹一口气。'],
+    ],
+    exam:{
+      face:{
+        src:'望', title:'望色',
+        lines:[
+          ['narr','你端详她的面色。'],
+          ['narr','面色略青，两颧隐隐一层晦暗；唇色尚可，不淡不红。'],
+        ],
+        tags:['面色泛青','唇色正常'],
+      },
+      eyes:{
+        src:'望', title:'望神',
+        lines:[
+          ['narr','你与她对视。'],
+          ['narr','目光略滞，眉间舒展不开，一副郁郁不乐之相。'],
+        ],
+        tags:['目光略滞','郁郁不乐'],
+      },
+      mouth:{
+        src:'望', title:'望舌',
+        lines:[
+          ['narr','你请她伸舌。'],
+          ['narr','舌质淡红，舌苔薄白，舌体不胖不瘦，边无齿痕。'],
+        ],
+        tags:['舌淡红','苔薄白'],
+        tongue:{ body:'淡红', coat:'薄白', wet:'润', desc:'舌淡红 · 苔薄白' },
+      },
+      neck:{
+        src:'闻', title:'闻诊',
+        lines:[
+          ['narr','你听她的气息。'],
+          ['narr','说话间不时长声太息，一声接一声；并无痰鸣，也无口臭。'],
+        ],
+        tags:['时作太息','语声不扬'],
+      },
+      pulse:{
+        src:'切', title:'切脉',
+        lines:[
+          ['narr','你三指按脉。'],
+          ['narr','脉来端直而长，指下如按琴弦，绷得紧紧的——此为「弦脉」。'],
+        ],
+        tags:['脉弦'],
+      },
+    },
+    asks:[
+      { q:'哪儿不痛快？',
+        a:'胸口和两胁胀得慌，闷闷的。常忍不住叹气，叹完才松快一点。心里头也高兴不起来。',
+        tags:['胸胁胀闷','善太息','情志抑郁'] },
+      { q:'是从什么时候起的？',
+        a:'两个月前和婆家闹了一场别扭，打那以后就这样了。',
+        tags:['因情志不遂而起'] },
+      { q:'月事怎样？',
+        a:'经前乳房胀得疼，日子也忽前忽后，说不准。',
+        tags:['经前乳胀','月经先后不定'] },
+      { q:'嘴里苦不苦？头晕么？',
+        a:'口里不苦。有时觉得头晕，夜里也睡不踏实。',
+        tags:['口不苦','时有头晕','夜寐不实'] },
+      { q:'吃饭、消化呢？',
+        a:'胃口不好，吃不下多少。有时打嗝嗳气。',
+        tags:['纳差','嗳气'] },
+      { q:'怕冷还是怕热？',
+        a:'都不怕，衣裳穿得跟常人一样。',
+        tags:['不畏寒热'] },
+    ],
+    dx:{
+      q:'四诊既毕，此属何证？',
+      options:[
+        { id:'a', name:'肝气郁结证', sub:'肝失疏泄 · 气机郁滞' },
+        { id:'b', name:'肝火上炎证', sub:'肝经实火' },
+        { id:'c', name:'肝阳上亢证', sub:'阴虚阳亢' },
+        { id:'d', name:'心脾两虚证', sub:'气血不足' },
+      ],
+      answer:'a',
+      right:{
+        title:'肝气郁结证',
+        points:[
+          ['胸胁胀闷、善太息','肝主疏泄，情志不遂则气机郁滞；肝脉布两胁，故胀闷不舒，喜太息以展气机。'],
+          ['情志抑郁、因情志不遂而起','肝藏魂而主情志，郁则情志不遂、郁郁寡欢。'],
+          ['经前乳胀、月经先后不定','肝经循两胁、绕阴器，肝气郁滞则冲任失调。'],
+          ['脉弦','气郁则脉道紧张，如按琴弦，端直以长。'],
+          ['舌淡红、苔薄白','病在气分，尚未化火、生痰，故舌苔如常。'],
+        ],
+        diff:[
+          ['肝火上炎证','当见面红目赤、口苦、尿黄、脉弦数；她不口苦、不面红，脉亦不数。'],
+          ['肝阳上亢证','当见头晕胀痛、耳鸣、腰膝酸软、脉弦有力；她头晕轻浅，无腰膝酸软。'],
+          ['心脾两虚证','主症在心悸、失眠、食少、面色萎黄，脉细弱；她主症在胸胁胀满，脉弦不弱。'],
+        ],
+        rule:'辨证眼目：情志不遂 ＋ 胸胁胀满善太息 ＋ 脉弦，是肝气郁结；再见口苦面红脉数，才是化火。',
+        treat:'疏肝解郁，养血健脾',
+        formula:'逍遥散（柴胡、当归、白芍、白术、茯苓、甘草、薄荷、煨姜）',
+      },
+      wrong:{
+        b:'肝火当见面红目赤、口苦、尿黄、脉弦数。她不口苦、不面红，脉也不数——气郁尚未化火。',
+        c:'肝阳上亢以头晕胀痛、耳鸣腰酸、脉弦有力为主。她主症是胸胁胀满善太息，并无阳亢之象。',
+        d:'心脾两虚主症在心悸、失眠、食少、面色萎黄，脉细弱。她主症在胸胁胀满，脉弦而不弱。',
+      },
+    },
+  },
+];
+
+/* ---------------- 状态 ---------------- */
+const S = { ci:0, tags:[], found:{}, asked:{}, cur:null, mode:'exam',
+            typingSkip:null, log:[], guided:false };
+let typeSpeed = 22;          // 每字毫秒，设置里可调
+let bgmVol = 0.45;
+(function(){ try{ const v = localStorage.getItem('tcm_vol'); if(v !== null && !isNaN(+v)) bgmVol = Math.max(0, Math.min(1, +v)); }catch(e){} })();
+const bgmEl = document.getElementById('bgm');
+function applyBgm(){ if(bgmEl) bgmEl.volume = bgmVol; }
+function startBgm(){ if(!bgmEl) return; applyBgm(); if(bgmEl.paused) bgmEl.play().catch(()=>{}); }
+const FAST = /[?&](fast|shot=)/.test(location.search);
+const SHOT = (location.search.match(/shot=(\w+)/) || [])[1] || '';
+if(FAST) document.documentElement.classList.add('nofx');
+
+const $ = s => document.querySelector(s);
+const stage = $('#stage');
+const dlg = $('#dialogue');
+
+function fit(){
+  const s = Math.min(innerWidth/1920, innerHeight/1080);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+  stage.style.transformOrigin = 'center center';
+  stage.style.left = '50%'; stage.style.top = '50%';
+}
+addEventListener('resize', fit); fit();
+
+/* ---------------- 打字机（打完停下等点击） ---------------- */
+let typing = null, pendingNext = null, skipping = false;
+
+function say(who, text, onDone){
+  clearInterval(typing); typing = null;
+  pendingNext = null;
+  dlg.classList.add('show');
+  $('#d-who').textContent = who;
+  $('#askbtn').classList.remove('on');
+  const el = $('#d-text');
+  el.innerHTML = '';
+  const span = document.createElement('span');
+  span.className = who === '旁白' ? 'narr' : (who === '医者' ? 'me' : '');
+  el.appendChild(span);
+  const hint = $('#d-hint');
+  hint.classList.remove('on');
+  const raw = text;
+  const finish = ()=>{
+    clearInterval(typing); typing = null;
+    span.textContent = raw;
+    if(onDone) onDone();
+    if(!skipping) hint.classList.toggle('on', !!pendingNext);
+  };
+  S.typingSkip = finish;
+  if(FAST || skipping){ finish(); return; }
+  let i = 0;
+  typing = setInterval(()=>{
+    i += 1; span.textContent = raw.slice(0, i);
+    if(i >= raw.length){ clearInterval(typing); typing = null; finish(); }
+  }, typeSpeed);
+}
+
+/* 跳过：把这一组话一口气放完 */
+function skipGroup(){
+  if(!pendingNext && !typing) return;
+  skipping = true;
+  $('#d-hint').classList.remove('on');
+  if(typing && S.typingSkip) S.typingSkip();
+  const pump = ()=>{
+    if(!pendingNext){ skipping = false; return; }
+    const f = pendingNext; pendingNext = null; f();
+    setTimeout(pump, 0);
+  };
+  setTimeout(pump, 0);
+}
+$('#skipbtn').addEventListener('click', e=>{ e.stopPropagation(); skipGroup(); });
+dlg.addEventListener('click', e=>{
+  if(e.target.closest('#askbtn') || e.target.closest('#q-list')) return;
+  if($('#dialogue').classList.contains('asking')) return;
+  if(typing){ S.typingSkip(); return; }        // 正在打字：先看完整
+  if(pendingNext){ const f = pendingNext; pendingNext = null; f(); }
+});
+
+/* ---------------- 医案 ---------------- */
+const SRC_ORDER = ['望','闻','问','切'];
+function addTag(src, text){
+  if(S.tags.some(t=>t.text === text)) return;
+  S.tags.push({src, text});
+  renderTags(text);
+  lightSeal(src);
+}
+function renderTags(fresh){
+  const box = $('#tags');
+  if(!S.tags.length){
+    box.innerHTML = '<div class="empty">尚无所得。<br>可点病人面、目、舌、胸腹，再看腕后脉枕。</div>';
+    return;
+  }
+  let html = '';
+  SRC_ORDER.forEach(src=>{
+    const list = S.tags.filter(t=>t.src === src);
+    if(!list.length) return;
+    html += `<div class="grp"><div class="grp-h">${src}<span>${
+      {望:'望诊',闻:'闻诊',问:'问诊',切:'切诊'}[src]}</span></div>`;
+    list.forEach(t=>{ html += `<div class="tag">${t.text}</div>`; });
+    html += '</div>';
+  });
+  box.innerHTML = html;
+  if(fresh){
+    const els = box.querySelectorAll('.tag');
+    const last = els[els.length - 1];
+    if(last){
+      last.classList.add('new');
+      last.scrollIntoView({block:'nearest'});
+    }
+  }
+}
+function lightSeal(src){
+  document.querySelectorAll('.seal').forEach(e=>{
+    if(e.dataset.src === src) e.classList.add('on');
+  });
+}
+
+/* ---------------- 热区 ---------------- */
+const DEFAULT_HOT = {
+  neck:[138,70,64,60], face:[153,38,34,22], eyes:[156,50,28,10],
+  mouth:[160,59,20,12], pulse:[168,143,82,33]
+};
+function applyHot(over){
+  const h = Object.assign({}, DEFAULT_HOT, over || {});
+  Object.keys(h).forEach(k=>{
+    const r = document.querySelector(`.hot[data-part="${k}"]`);
+    if(!r) return;
+    const [x, y, w, hh] = h[k];
+    r.setAttribute('x', x); r.setAttribute('y', y);
+    r.setAttribute('width', w); r.setAttribute('height', hh);
+  });
+}
+
+const tipEl = document.createElement('div');
+tipEl.className = 'tip'; tipEl.style.display = 'none';
+stage.appendChild(tipEl);
+
+function showTip(text, rect){
+  const b = rect.getBoundingClientRect();
+  const sr = stage.getBoundingClientRect();
+  const scale = sr.width / 1920;
+  tipEl.textContent = text;
+  tipEl.style.display = 'block';
+  tipEl.style.left = ((b.left + b.width/2 - sr.left) / scale) + 'px';
+  tipEl.style.top  = ((b.top - sr.top) / scale - 44) + 'px';
+}
+function hideTip(){ tipEl.style.display = 'none'; }
+
+$('#hot').addEventListener('click', e=>{
+  const r = e.target.closest('.hot');
+  if(r) examine(r.dataset.part);
+});
+$('#hot').addEventListener('mouseover', e=>{
+  const r = e.target.closest('.hot');
+  if(!r) return;
+  const p = S.cur.exam[r.dataset.part];
+  if(!p) return;
+  r.classList.add('on');
+  showTip(p.title + (S.found[r.dataset.part] ? '（已诊）' : ''), r);
+});
+$('#hot').addEventListener('mouseout', e=>{
+  const r = e.target.closest('.hot');
+  if(!r) return;
+  r.classList.remove('on'); hideTip();
+});
+
+/* ---------------- 舌象（像素块绘制） ---------------- */
+function tongueSVG(t){
+  const CELL = 3, W = 62, H = 68;
+  const cx = 31, cy = 34, rx = 25, ry = 30;
+  const bodyMap = {'淡红':'#d98b84','淡白':'#e5b0a3','红':'#cf6a62','绛':'#b4504a','紫暗':'#9a6a7a','淡胖':'#dda49a'};
+  const coatMap = {'薄白':'#f7f2e4','白':'#f7f2e4','黄':'#e9d292','白腻':'#f1ead4','黄腻':'#e2c274','少苔':'#faf6ee'};
+  const body = bodyMap[t.body] || '#d98b84';
+  const coat = coatMap[t.coat] || '#f7f2e4';
+  const thick = (t.coat.indexOf('腻') >= 0 || t.coat.indexOf('厚') >= 0) ? 1 : 0.74;
+  const toRGB = h => h[0] === '#'
+    ? [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)]
+    : h.replace(/[^0-9,.]/g,'').split(',').map(Number);
+  const mix = (a,b,k)=>{
+    const A = toRGB(a), B = toRGB(b);
+    return 'rgb(' + Math.round(A[0]+(B[0]-A[0])*k) + ','
+                  + Math.round(A[1]+(B[1]-A[1])*k) + ','
+                  + Math.round(A[2]+(B[2]-A[2])*k) + ')';
+  };
+  const darkest = mix(body,'#4a2321',.50);
+  const dark    = mix(body,'#5a2c2a',.26);
+  const edge    = mix(body,'#5a2c2a',.12);
+  const coatFull= mix(coat, body, 0.18);
+  const out = [];
+  for(let y=0; y<H; y++){
+    let run = null, runX = 0;
+    const flush = (xEnd)=>{
+      if(run) out.push(`<rect x="${runX*CELL}" y="${y*CELL}" width="${(xEnd-runX)*CELL}" height="${CELL}" fill="${run}"/>`);
+    };
+    for(let x=0; x<=W; x++){
+      let col = null;
+      if(x < W){
+        const ax = x+0.5, ay = y+0.5;
+        const d = ((ax-cx)/rx)**2 + ((ay-cy)/ry)**2;
+        if(d <= 1){
+          if(d > 0.94) col = darkest;
+          else if(d > 0.86) col = dark;
+          else if(d > 0.79) col = edge;
+          else col = mix(body, coatFull, thick);
+          // 舌正中浅裂纹
+          if(Math.abs(ax-cx) < 0.8 && ay > cy-ry*0.34 && ay < cy+ry*0.30) col = dark;
+        }
+      }
+      if(col !== run){ flush(x); run = col; runX = x; }
+    }
+    flush(W);
+  }
+  // 舌面高光
+  out.push(`<rect x="${(cx-10)*CELL}" y="${(cy-13)*CELL}" width="${12*CELL}" height="${3*CELL}" fill="#ffffff" opacity=".16"/>`);
+  return `<svg viewBox="0 0 ${W*CELL} ${H*CELL}" shape-rendering="crispEdges">${out.join('')}</svg>`;
+}
+
+function showTongue(t){
+  $('#tongue-svg').innerHTML = tongueSVG(t);
+  $('#tongue-desc').textContent = t.desc;
+  $('#tonguecard').classList.add('show');
+}
+
+/* ---------------- 诊察 ---------------- */
+let tongueToken = 0;
+
+function examine(part){
+  if(S.mode !== 'exam') return;
+  const p = S.cur.exam[part];
+  if(!p) return;
+  setAsking(false);
+  tongueToken++;
+  $('#tonguecard').classList.remove('show');
+  hideTip();
+  if(S.found[part]){
+    const got = S.tags.filter(t=>p.tags.includes(t.text)).map(t=>t.text).join('、');
+    say('旁白', `这一处已经诊过了：${got}。`);
+    return;
+  }
+  S.found[part] = true;
+  const hr = document.querySelector(`.hot[data-part="${part}"]`);
+  if(hr) hr.classList.add('done');
+
+  // 症状立刻记进医案——不等对话点完，免得中途去点别处就丢了
+  p.tags.forEach(t=>addTag(p.src, t));
+
+  // 舌象稍等一下再弹，别抢在旁白前头
+  if(p.tongue){
+    const my = tongueToken;
+    setTimeout(()=>{ if(my === tongueToken) showTongue(p.tongue); }, 420);
+  }
+  playLines(p.lines);
+}
+
+function playLines(lines, done){
+  const nameOf = { p:S.cur.name, narr:'旁白', me:'医者' };
+  if(FAST){
+    const [who, txt] = lines[lines.length-1];
+    say(nameOf[who] || who, txt, ()=>{ if(done) done(); });
+    return;
+  }
+  let i = 0;
+  const step = ()=>{
+    if(i >= lines.length){ if(done) done(); return; }
+    const [who, txt] = lines[i++];
+    const isLast = i >= lines.length;
+    say(nameOf[who] || who, txt, ()=>{
+      if(isLast){ if(done) done(); }
+      else pendingNext = step;
+    });
+  };
+  step();
+}
+
+/* ---------------- 问诊 ---------------- */
+function setAsking(on){
+  if(on && typing && S.typingSkip) S.typingSkip();   // 先把当前这句播完
+  dlg.classList.toggle('asking', on);
+  $('#askbtn').classList.toggle('on', on);
+  $('#askbtn').textContent = on ? '收 起' : '问 诊';
+}
+$('#askbtn').addEventListener('click', ()=>{
+  if(S.mode !== 'exam') return;
+  const on = dlg.classList.contains('asking');
+  if(on){ setAsking(false); return; }
+  const c = S.cur;
+  $('#q-list').innerHTML = c.asks.map((a,i)=>
+    `<div class="q" data-i="${i}">${a.q}<span class="mk">${S.asked[i]?'已问':''}</span></div>`).join('');
+  $('#q-list').querySelectorAll('.q').forEach(el=>{
+    el.onclick = (ev)=>{
+      ev.stopPropagation();
+      const i = +el.dataset.i;
+      S.asked[i] = true;
+      setAsking(false);
+      $('#tonguecard').classList.remove('show');
+      const a = c.asks[i];
+      a.tags.forEach(t=>addTag('问', t));   // 听到了就先记下
+      say(c.name, a.a);
+    };
+  });
+  setAsking(true);
+});
+
+/* ---------------- 辨证 ---------------- */
+$('#dxbtn').addEventListener('click', ()=>{
+  if(S.mode !== 'exam') return;
+  const wang = ['face','eyes','mouth'].filter(k=>S.found[k]).length;
+  const lack = [];
+  if(wang < 2) lack.push('望');
+  if(!S.found.neck) lack.push('闻');
+  if(!S.found.pulse) lack.push('切');
+  if(!Object.values(S.asked).some(Boolean)) lack.push('问');
+  if(lack.length){
+    toast('四诊未备，还缺：' + lack.join('、'));
+    return;
+  }
+  openDx();
+});
+
+function openDx(){
+  const c = S.cur;
+  setAsking(false);
+  $('#modal').classList.add('show');
+  $('#sheet').innerHTML = `
+    <h3>辨 证</h3>
+    <div class="sub">${c.dx.q}</div>
+    <div class="opts">
+      ${c.dx.options.map(o=>`<div class="opt" data-id="${o.id}">
+        <b>${o.name}</b><i>${o.sub}</i></div>`).join('')}
+    </div>
+    <div class="actions"><button class="btn" id="m-close">先不辨，再诊诊</button></div>`;
+  $('#m-close').onclick = ()=> $('#modal').classList.remove('show');
+  $('#sheet').querySelectorAll('.opt').forEach(el=>{
+    el.onclick = ()=> judge(el.dataset.id);
+  });
+}
+
+function judge(id){
+  const c = S.cur;
+  const v = $('#sheet');
+  const opt = c.dx.options.find(o=>o.id === id);
+  if(id === c.dx.answer){
+    const r = c.dx.right;
+    v.innerHTML = `
+      <div class="verdict ok">辨 证 已 明</div>
+      <div class="sub">${r.title}</div>
+      <div class="result">
+        <div class="k">辨证要点</div>
+        <ul>${r.points.map(([a,b])=>`<li><b>${a}</b>　${b}</li>`).join('')}</ul>
+        <div class="k">鉴别之处</div>
+        <ul>${r.diff.map(([a,b])=>`<li><b>${a}</b>　${b}</li>`).join('')}</ul>
+        <div style="margin-top:16px;color:#7a6748;font-size:20px">${r.rule}</div>
+      </div>
+      <div class="rx">
+        <div><b>治法</b>${r.treat}</div>
+        <div><b>方药</b>${r.formula}</div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="m-next">下一位病人</button>
+      </div>`;
+    S.mode = 'done';
+    S.log.push({ name:S.cur.name, dx:r.title });
+    saveNow();
+    $('#m-next').onclick = ()=>{
+      $('#modal').classList.remove('show');
+      if(S.log.length >= CASES.length) showEnd();
+      else showPicker();
+    };
+  }else{
+    v.innerHTML = `
+      <div class="verdict no">未 中 要 领</div>
+      <div class="sub">你辨为：${opt.name}</div>
+      <div class="result">${c.dx.wrong[id] || ''}</div>
+      <div class="result" style="color:#8a7758;margin-top:18px">
+        再回过头看：恶寒与发热孰重、有汗无汗、脉之浮紧浮缓，这三处最要紧。
+      </div>
+      <div class="actions">
+        <button class="btn" id="m-again">退回去再看</button>
+        <button class="btn primary" id="m-back">重新辨证</button>
+      </div>`;
+    $('#m-again').onclick = ()=> $('#modal').classList.remove('show');
+    $('#m-back').onclick = ()=> openDx();
+  }
+}
+
+/* ---------------- toast ---------------- */
+let toastTimer = null;
+function toast(t){
+  const el = $('#toast');
+  el.textContent = t; el.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> el.classList.remove('on'), 2200);
+}
+
+/* ---------------- 收诊 ---------------- */
+function showEnd(){
+  $('#modal').classList.add('show');
+  $('#sheet').innerHTML = `
+    <h3>三 诊 已 毕</h3>
+    <div class="sub">表寒、中虚、气郁——一门四诊，看出三个路数</div>
+    <div class="result">
+      <ul>${S.log.map(l=>`<li><b>${l.name}</b>　${l.dx}</li>`).join('')}</ul>
+      <div style="margin-top:26px;color:#7a6748;font-size:20px;line-height:1.9">
+        证从四诊来：面色舌象看虚实，脉象定表里寒热，问诊补细节，闻诊辨声气。<br>
+        同一味「虚」，是气虚还是阳虚；同一处「热」，是表热还是里热——都要几诊合看，不能凭一处断。
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="m-restart">再诊一轮</button>
+    </div>`;
+  $('#m-restart').onclick = ()=>{
+    $('#modal').classList.remove('show');
+    S.log = []; startCase(0);
+  };
+}
+
+/* ---------------- 开始 ---------------- */
+function startCase(i){
+  S.ci = i; S.cur = CASES[i];
+  S.tags = []; S.found = {}; S.asked = {}; S.mode = 'exam';
+  $('#modal').classList.remove('show');
+  const c = S.cur;
+  // 人物：有立绘就用立绘，没有就用像素小人
+  const po = $('#portrait'), pt = $('#patient');
+  if(c.portrait){
+    po.src = c.portrait;
+    po.classList.remove('in'); pt.classList.remove('in');
+    pt.style.visibility = 'hidden';
+    if(FAST) po.classList.add('in');
+    else requestAnimationFrame(()=> setTimeout(()=> po.classList.add('in'), 60));
+  }else{
+    po.classList.remove('in');
+    pt.style.visibility = '';
+    pt.src = c.img;
+    if(FAST) pt.classList.add('in');
+    else requestAnimationFrame(()=> setTimeout(()=> pt.classList.add('in'), 60));
+  }
+  applyHot(c.hot);
+  $('#t-who').innerHTML =
+    `<span class="idx">第${['一','二','三','四','五'][i] || (i+1)}诊</span>`
+    + `${c.name}　${c.sex} · ${c.age}岁 · ${c.job}`;
+  $('#t-chief').textContent = '主诉：' + c.chief;
+  $('#cb-sub').textContent = `${c.name}，${c.sex}，${c.age}岁，${c.job}。`;
+  $('#tonguecard').classList.remove('show');
+  document.querySelectorAll('.seal').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('.hot').forEach(e=>e.classList.remove('done'));
+  renderTags();
+  setAsking(false);
+  playLines(c.greet);
+  if(i === 0 && !S.guided){
+    S.guided = true;
+    setTimeout(()=>{ if(!FAST) toast('点病人身上各处：面、目、口、胸腹、腕后脉枕'); }, 1400);
+  }
+  saveNow();
+}
+
+/* ================= 主菜单 ================= */
+const SAVE_KEY = 'tcm_saves_v2';
+const MENU_ITEMS = [
+  { act:'start',    text:'开始游戏' },
+  { act:'cont',     text:'继续游戏' },
+  { act:'case',     text:'医案' },
+  { act:'settings', text:'设置' },
+  { act:'save',     text:'存档' },
+  { act:'quit',     text:'退出游戏' },
+];
+const menuEl = $('#menu'), gameEl = $('#game');
+const scrollPane = $('#scrollPane'), scrollText = $('#scrollText');
+
+function buildMenu(){
+  const top = 132, rowH = 102;   // 百子柜六层抽屉（原生 rows = 22 + i*17，高 16，×6）
+  MENU_ITEMS.forEach((it, i)=>{
+    const d = document.createElement('div');
+    d.className = 'drawer-hot';
+    d.dataset.act = it.act;
+    d.style.top = (top + i * rowH) + 'px';
+    d.style.height = rowH + 'px';
+    d.addEventListener('mouseenter', ()=> hintScroll(it.text));
+    d.addEventListener('mouseleave', ()=> hintScroll(null));
+    d.addEventListener('click', ()=> doMenu(it.act));
+    menuEl.insertBefore(d, scrollPane);
+  });
+}
+function hintScroll(text){
+  if(text === null){ scrollPane.classList.remove('on'); return; }
+  scrollPane.classList.add('on');
+  if(scrollText.textContent !== text){
+    scrollText.textContent = text;
+    scrollText.classList.toggle('big', text.length <= 2);
+  }
+}
+function doMenu(act){
+  startBgm();
+  if(act === 'start'){ S.log = []; showPicker(); }
+  else if(act === 'cont'){
+    const s = loadSave();
+    if(!s){ toast('还没有存下的医案'); return; }
+    enterGame(Math.min(s.ci || 0, CASES.length - 1), false);
+  }
+  else if(act === 'case')     showArchive();
+  else if(act === 'settings') showSettings();
+  else if(act === 'save')     showSave();
+  else if(act === 'quit')     $('#shutter').classList.add('on');
+}
+function enterGame(ci, fresh){
+  startBgm();
+  menuEl.classList.add('off');
+  gameEl.classList.add('on');
+  if(fresh){ S.log = []; }
+  startCase(ci || 0);
+}
+function backToMenu(){
+  gameEl.classList.remove('on');
+  menuEl.classList.remove('off');
+  $('#modal').classList.remove('show');
+  $('#dialogue').classList.remove('show');
+  $('#tonguecard').classList.remove('show');
+  hintScroll(null);
+}
+
+/* ---- 存档（4 个槽：0 号自动，1~3 手动） ---- */
+const SLOT_N = 4;
+function readSlots(){
+  try{
+    const a = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
+    if(Array.isArray(a)){
+      const out = a.slice(0, SLOT_N);
+      while(out.length < SLOT_N) out.push(null);
+      return out;
+    }
+  }catch(e){}
+  return new Array(SLOT_N).fill(null);
+}
+function writeSlots(a){
+  try{ localStorage.setItem(SAVE_KEY, JSON.stringify(a)); }catch(e){}
+}
+function snap(){ return { ci:S.ci, log:S.log, at:Date.now() }; }
+function saveNow(){                       // 自动写 0 号槽
+  const a = readSlots();
+  a[0] = snap();
+  writeSlots(a);
+}
+function saveToSlot(i){
+  const a = readSlots();
+  a[i] = snap();
+  writeSlots(a);
+}
+function clearSlot(i){
+  const a = readSlots();
+  a[i] = null;
+  writeSlots(a);
+}
+function latestSlot(){
+  let best = null;
+  readSlots().forEach(s=>{ if(s && (!best || s.at > best.at)) best = s; });
+  return best;
+}
+function loadSave(){ return latestSlot(); }
+
+/* ---- 菜单里的几个弹层 ---- */
+function sheetClose(){ $('#modal').classList.remove('show'); }
+
+/* ---- 候诊：这几位在等着，先看哪个 ---- */
+function showPicker(){
+  const done = {};
+  S.log.forEach(l=>{ done[l.name] = l.dx; });
+  const left = CASES.filter(c=>!done[c.name]).length;
+  const cards = CASES.map((c, i)=>{
+    const isDone = !!done[c.name];
+    const src = c.portrait || c.img;
+    return `<div class="pcard ${isDone ? 'done' : ''}" data-i="${i}">
+      <div class="pimg"><img src="${src}" alt=""></div>
+      <div class="pinfo">
+        <b>${c.name}</b>
+        <i>${c.sex} · ${c.age}岁 · ${c.job}</i>
+        <p>${c.chief}</p>
+        ${isDone ? `<span class="pdone">已断 · ${done[c.name]}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  $('#modal').classList.add('show');
+  $('#sheet').innerHTML = `
+    <h3>候 诊</h3>
+    <div class="sub">${left ? `还有 ${left} 位在等着——先请哪一位进来？` : '都看完了'}</div>
+    <div class="picks">${cards}</div>
+    <div class="actions" style="margin-top:24px">
+      <button class="btn" id="m-close">回门厅</button>
+    </div>`;
+  $('#m-close').onclick = ()=>{ sheetClose(); backToMenu(); };
+  $('#sheet').querySelectorAll('.pcard:not(.done)').forEach(el=>{
+    el.onclick = ()=>{
+      const i = +el.dataset.i;
+      sheetClose();
+      enterGame(i, false);
+    };
+  });
+}
+
+function showArchive(){
+  const s = loadSave();
+  const log = (s && s.log) || S.log || [];
+  $('#modal').classList.add('show');
+  $('#sheet').innerHTML = `
+    <h3>医 案</h3>
+    <div class="sub">诊过的病人，断出的证</div>
+    <div class="result">
+      ${log.length
+        ? '<ul>' + log.map(l=>`<li><b>${l.name}</b>　${l.dx}</li>`).join('') + '</ul>'
+        : '<div style="text-align:center;color:#8a7758;padding:34px 0;font-size:21px">还没有断过案。先坐下接诊吧。</div>'}
+    </div>
+    <div class="actions"><button class="btn" id="m-close">合 上</button></div>`;
+  $('#m-close').onclick = sheetClose;
+}
+
+function showSettings(){
+  $('#modal').classList.add('show');
+  const cur = typeSpeed;
+  $('#sheet').innerHTML = `
+    <h3>设 置</h3>
+    <div class="sub">声音 · 文字快慢</div>
+    <div class="setrow">
+      <span class="k">背景音乐</span>
+      <input id="vol" type="range" min="0" max="100" value="${Math.round(bgmVol*100)}">
+      <span class="v" id="volv">${Math.round(bgmVol*100)}</span>
+    </div>
+    <div class="opts" style="grid-template-columns:1fr 1fr 1fr;margin-top:22px">
+      <div class="opt ${cur <= 12 ? 'pick' : ''}" data-sp="10"><b>快</b><i>一眼扫过</i></div>
+      <div class="opt ${cur > 12 && cur <= 24 ? 'pick' : ''}" data-sp="22"><b>常</b><i>默认</i></div>
+      <div class="opt ${cur > 24 ? 'pick' : ''}" data-sp="40"><b>慢</b><i>慢慢看</i></div>
+    </div>
+    <div class="actions" style="gap:24px">
+      <button class="btn" id="m-clear">清掉全部存档</button>
+      <button class="btn primary" id="m-close">好</button>
+    </div>
+    <div class="credit">音乐 Shenyang · Kevin MacLeod (incompetech.com) · CC BY 4.0</div>`;
+  const vol = $('#vol');
+  vol.oninput = ()=>{
+    bgmVol = +vol.value / 100;
+    applyBgm();
+    $('#volv').textContent = vol.value;
+    try{ localStorage.setItem('tcm_vol', String(bgmVol)); }catch(e){}
+  };
+  $('#sheet').querySelectorAll('.opt').forEach(el=>{
+    el.onclick = ()=>{
+      typeSpeed = +el.dataset.sp;
+      $('#sheet').querySelectorAll('.opt').forEach(o=>o.classList.remove('pick'));
+      el.classList.add('pick');
+    };
+  });
+  $('#m-clear').onclick = ()=>{
+    writeSlots(new Array(SLOT_N).fill(null));
+    toast('存档已清');
+  };
+  $('#m-close').onclick = sheetClose;
+}
+
+function showSave(){
+  const a = readSlots();
+  const CN = ['一','二','三','四','五'];
+  const inGame = gameEl.classList.contains('on');
+  const txt = (s)=>{
+    const who = CASES[s.ci] ? CASES[s.ci].name : '';
+    const when = new Date(s.at).toLocaleString('zh-CN',{hour12:false, month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit'});
+    return `第${CN[s.ci] || (s.ci+1)}诊 · ${who}　已断${(s.log||[]).length}例　${when}`;
+  };
+  const rows = a.map((s, i)=>{
+    const label = i === 0 ? '自动' : `存档 ${i}`;
+    return `<div class="slot">
+      <div class="slot-h"><b>${label}</b>${s ? `<span>${txt(s)}</span>` : '<span class="dim">空</span>'}</div>
+      <div class="slot-b">
+        ${s ? `<button class="mini" data-load="${i}">读</button>` : ''}
+        ${!inGame || i === 0 ? '' : `<button class="mini" data-save="${i}">存入</button>`}
+        ${s ? `<button class="mini warn" data-del="${i}">删</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  $('#modal').classList.add('show');
+  $('#sheet').innerHTML = `
+    <h3>存 档</h3>
+    <div class="sub">0 号自动存，1~3 随便存</div>
+    <div class="slots">${rows}</div>
+    <div class="actions"><button class="btn" id="m-close">合 上</button></div>`;
+  $('#m-close').onclick = sheetClose;
+  $('#sheet').querySelectorAll('[data-load]').forEach(b=>{
+    b.onclick = ()=>{
+      const s = readSlots()[+b.dataset.load];
+      if(!s) return;
+      sheetClose();
+      enterGame(s.ci, false);
+    };
+  });
+  $('#sheet').querySelectorAll('[data-save]').forEach(b=>{
+    b.onclick = ()=>{
+      saveToSlot(+b.dataset.save);
+      toast('已存入 ' + b.dataset.save + ' 号');
+      showSave();
+    };
+  });
+  $('#sheet').querySelectorAll('[data-del]').forEach(b=>{
+    b.onclick = ()=>{
+      clearSlot(+b.dataset.del);
+      showSave();
+    };
+  });
+}
+
+/* ---- 退出幕 ---- */
+$('#shutter').addEventListener('click', ()=>{
+  $('#shutter').classList.remove('on');
+  backToMenu();
+});
+
+/* ---- 回门厅按钮 ---- */
+$('#backbtn').addEventListener('click', e=>{ e.stopPropagation(); backToMenu(); });
+
+/* ---- 快捷键：S 存档 / 空格 跳过 / Esc 回菜单 ---- */
+addEventListener('keydown', e=>{
+  if((e.key === 's' || e.key === 'S') && gameEl.classList.contains('on')
+     && !$('#modal').classList.contains('show')){
+    e.preventDefault(); showSave(); return;
+  }
+  if(e.key === ' ' && gameEl.classList.contains('on')){
+    e.preventDefault(); skipGroup(); return;
+  }
+  if(e.key !== 'Escape') return;
+  if($('#modal').classList.contains('show')){ sheetClose(); return; }
+  if(gameEl.classList.contains('on')) backToMenu();
+});
+
+buildMenu();
+if(/[?&]play=1/.test(location.search) && !gameEl.classList.contains('on')) enterGame(0, true);
+
+/* 调试/自动化测试钩子（不影响玩法） */
+window.__DBG = {
+  typing: ()=> !!typing,
+  pending: ()=> !!pendingNext,
+  state: ()=> ({ tags:S.tags.length, found:Object.keys(S.found),
+                 asked:Object.keys(S.asked), mode:S.mode, ci:S.ci }),
+};
+
+/* ---------------- 截图/调试钩子 ---------------- */
+function allExam(){
+  ['face','eyes','mouth','neck','pulse'].forEach(k=>{
+    S.found[k] = true;
+    S.cur.exam[k].tags.forEach(t=>addTag(S.cur.exam[k].src, t));
+    if(S.cur.exam[k].tongue) showTongue(S.cur.exam[k].tongue);
+  });
+}
+function runShot(){
+  if(SHOT === 'pick'){ S.log = []; showPicker(); return; }
+  if(SHOT === 'case2'){ startCase(1); }
+  else if(SHOT === 'case3'){ startCase(2); }
+  else if(SHOT === 'ask'){ $('#askbtn').click(); }
+  if(SHOT === 'exam'){ allExam(); say(S.cur.name, '大夫，您看我这……'); }
+  if(SHOT === 'tongue'){
+    S.found.mouth = true;
+    S.cur.exam.mouth.tags.forEach(t=>addTag('望', t));
+    showTongue(S.cur.exam.mouth.tongue);
+    say('旁白', '舌质淡红，舌苔薄白，舌面润润的，像蒙了一层清水。');
+  }
+  if(SHOT === 'dx'){
+    allExam();
+    [0,1,2].forEach(i=>{ S.asked[i] = true;
+      S.cur.asks[i].tags.forEach(t=>addTag('问', t)); });
+    openDx();
+  }
+  if(SHOT === 'right'){ S.mode = 'exam'; allExam(); openDx(); judge('a'); }
+  if(SHOT === 'wrong'){ S.mode = 'exam'; allExam(); openDx(); judge('b'); }
+  if(SHOT === 'flow'){
+    S.mode = 'exam'; allExam(); openDx(); judge('a');
+    setTimeout(()=>{ const b = document.getElementById('m-next'); if(b) b.click(); }, 30);
+  }
+  if(SHOT === 'clicktest'){
+    setTimeout(()=>{
+      const out = document.createElement('div');
+      out.id = 'testout';
+      const a = $('#d-text').textContent, hintA = $('#d-hint').classList.contains('on');
+      dlg.click();                       // 第一句已打完 → 应进第二句
+      const mid = $('#d-text').textContent;
+      const out2 = document.createElement('div');
+      out.textContent = 'A=' + a + ' |hintA=' + hintA + ' |afterClick=' + mid;
+      document.body.appendChild(out);
+      setTimeout(()=>{
+        const b = $('#d-text').textContent;
+        out2.id = 'testout2';
+        out2.textContent = 'B=' + b + ' |hintB=' + $('#d-hint').classList.contains('on');
+        document.body.appendChild(out2);
+      }, 1800);
+    }, 2400);
+  }
+}
+if(SHOT){
+  if(SHOT !== 'menu' && SHOT !== 'pick' && !gameEl.classList.contains('on')) enterGame(0, true);
+  if(document.readyState === 'complete') runShot();
+  else addEventListener('load', runShot);
+}
+</script>
+</body>
+</html>
