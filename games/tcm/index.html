@@ -297,17 +297,7 @@
     #menuVer{font-size:18px;left:30px;bottom:4px}
   }
 
-  /* 竖屏：不硬做布局，转过来就好 */
-  #rotate{display:none;position:fixed;inset:0;background:#0d0b08;z-index:999;
-    flex-direction:column;align-items:center;justify-content:center;gap:26px}
-  #rotate .ico{width:92px;height:92px;border:4px solid #c9a25c;position:relative;
-    animation:rot 2.4s ease-in-out infinite}
-  #rotate .ico:after{content:'';position:absolute;left:50%;top:50%;width:26px;height:70px;
-    margin:-35px 0 0 -13px;background:rgba(201,162,92,.28)}
-  @keyframes rot{0%,42%{transform:rotate(0)}58%,100%{transform:rotate(90deg)}}
-  #rotate .t{font-size:26px;letter-spacing:.24em;color:#e8dcc2}
-  #rotate .s{font-size:16px;letter-spacing:.1em;color:#8d7c62}
-  @media (max-aspect-ratio: 1/1){ #rotate{display:flex} }
+
   /* ================= 主菜单 ================= */
   #menu{position:absolute;inset:0;opacity:1;transition:opacity .45s ease}
   #menu.off{opacity:0;pointer-events:none}
@@ -482,17 +472,7 @@
     #menuVer{font-size:18px;left:30px;bottom:4px}
   }
 
-  /* 竖屏：不硬做布局，转过来就好 */
-  #rotate{display:none;position:fixed;inset:0;background:#0d0b08;z-index:999;
-    flex-direction:column;align-items:center;justify-content:center;gap:26px}
-  #rotate .ico{width:92px;height:92px;border:4px solid #c9a25c;position:relative;
-    animation:rot 2.4s ease-in-out infinite}
-  #rotate .ico:after{content:'';position:absolute;left:50%;top:50%;width:26px;height:70px;
-    margin:-35px 0 0 -13px;background:rgba(201,162,92,.28)}
-  @keyframes rot{0%,42%{transform:rotate(0)}58%,100%{transform:rotate(90deg)}}
-  #rotate .t{font-size:26px;letter-spacing:.24em;color:#e8dcc2}
-  #rotate .s{font-size:16px;letter-spacing:.1em;color:#8d7c62}
-  @media (max-aspect-ratio: 1/1){ #rotate{display:flex} }
+
 </style>
 </head>
 <body>
@@ -578,7 +558,6 @@
   <div id="modal"><div class="sheet paper" id="sheet"></div></div>
   <div id="toast"></div>
   <div id="shutter"><div class="t">今 日 闭 诊</div><div class="s">点一下，回到门前</div></div>
-  <div id="rotate"><div class="ico"></div><div class="t">请 横 过 来</div><div class="s">这间诊室是横着坐的</div></div>
   <audio id="bgm" loop preload="auto">
     <source src="assets/bgm_theme.mp3" type="audio/mpeg">
     <source src="assets/bgm.wav" type="audio/wav">
