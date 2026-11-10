@@ -582,7 +582,9 @@
     .setrow .k{font-size:14px}
     .setrow .v{font-size:13px;width:36px}
     .credit{font-size:11px;margin-top:14px}
-    #toast{font-size:14px;padding:9px 18px;top:6px;max-width:84vw;white-space:normal;text-align:center}
+    #toast{font-size:13px;padding:8px 16px;top:26vh;left:50%;max-width:80vw;
+      white-space:nowrap;text-align:center;transform:translateX(-50%) translateY(-14px)}
+    #toast.on{transform:translateX(-50%) translateY(0)}
 
     /* 竖屏主菜单：六个木牌按钮 */
     #menu .menubg{object-fit:cover;object-position:42% 42%}
@@ -1510,9 +1512,10 @@ function startCase(i){
   renderTags();
   setAsking(false);
   playLines(c.greet);
+  setTimeout(fit, 30);
   if(i === 0 && !S.guided){
     S.guided = true;
-    setTimeout(()=>{ if(!FAST) toast('点病人身上各处：面、目、口、胸腹、腕后脉枕'); }, 1400);
+    setTimeout(()=>{ if(!FAST) toast('点病人身上：面、目、口、胸腹、腕后脉枕'); }, 1400);
   }
   saveNow();
 }
@@ -1581,6 +1584,8 @@ function enterGame(ci, fresh){
   gameEl.classList.add('on');
   if(fresh){ S.log = []; }
   startCase(ci || 0);
+  // 游戏层刚显示出来，场景才量得到尺寸——重算一次缩放
+  requestAnimationFrame(()=> setTimeout(fit, 0));
 }
 function backToMenu(){
   gameEl.classList.remove('on');
