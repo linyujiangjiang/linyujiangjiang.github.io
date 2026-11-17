@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
@@ -311,13 +311,48 @@
     background:radial-gradient(ellipse 66% 70% at 46% 44%,
       rgba(0,0,0,0) 52%, rgba(10,7,4,.42) 100%)}
 
-  .drawer-hot{position:absolute;left:36px;width:696px;cursor:pointer;
-    transition:background .18s ease, box-shadow .18s ease}
+  /* 六层抽屉：一直淡淡描着边，告诉人这里能点 */
+  .drawer-hot{position:absolute;left:36px;width:696px;cursor:pointer;box-sizing:border-box;
+    border:1px solid rgba(232,201,138,.20);
+    transition:background .18s ease, box-shadow .18s ease, border-color .18s ease}
   .drawer-hot:hover{
     background:linear-gradient(90deg,
-      rgba(255,214,140,.04) 0%, rgba(255,205,120,.22) 46%, rgba(255,214,140,.04) 100%);
-    box-shadow:inset 0 0 0 2px rgba(245,205,130,.42),
+      rgba(255,214,140,.05) 0%, rgba(255,205,120,.24) 46%, rgba(255,214,140,.05) 100%);
+    border-color:rgba(245,205,130,.6);
+    box-shadow:inset 0 0 0 1px rgba(245,205,130,.45),
                inset 0 0 70px rgba(255,190,90,.16)}
+  /* 点过一下、字已经亮出来的那一层 */
+  .drawer-hot.armed{
+    background:linear-gradient(90deg,
+      rgba(255,214,140,.10) 0%, rgba(255,205,120,.34) 46%, rgba(255,214,140,.10) 100%);
+    border-color:rgba(255,214,140,.95);
+    box-shadow:inset 0 0 0 2px rgba(255,225,150,.9),
+               inset 0 0 90px rgba(255,190,90,.28)}
+  .drawer-hot .go{position:absolute;right:16px;top:50%;transform:translateY(-50%);
+    font-size:20px;letter-spacing:.1em;color:#ffe6b0;opacity:0;transition:opacity .18s}
+  .drawer-hot.armed .go{opacity:1}
+
+  /* 新手引导 */
+  #tutorial{position:absolute;left:52px;top:198px;width:376px;padding:16px 18px 14px;z-index:22;
+    display:none;box-sizing:border-box;
+    background:linear-gradient(178deg,#f5eed9 0%,#ece0c2 46%,#e0d0ac 100%);
+    border:3px solid #8b7350;
+    box-shadow:inset 0 0 0 3px rgba(255,250,235,.6), 0 14px 34px rgba(0,0,0,.6);
+    color:#4c4033}
+  #tutorial.on{display:block}
+  #tutorial h4{font-size:20px;letter-spacing:.2em;color:#a83024;font-weight:normal;margin-bottom:8px}
+  #tutorial .step{display:flex;gap:9px;align-items:center;padding:3px 0;font-size:17px;color:#5a4a32;
+    line-height:1.4}
+  #tutorial .step i{width:15px;height:15px;border:1px solid #b8a075;flex:none;
+    background:rgba(255,250,236,.7);
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-style:normal;color:#8b7350}
+  #tutorial .step.done{color:#7a8a62}
+  #tutorial .step.done i{background:#6e8c55;border-color:#4f6b3c;color:#fff}
+  #tutorial .step.done span{opacity:.72;text-decoration:line-through}
+  #tutorial .tut-tip{margin-top:8px;font-size:14px;color:#7a6a51;line-height:1.55;word-break:break-word}
+  #tutorial .tut-close{margin-top:10px;text-align:center;font-size:16px;color:#a83024;cursor:pointer;
+    border:1px solid #b8a075;background:rgba(255,250,236,.7);padding:6px 0;letter-spacing:.1em}
+  #tutorial .tut-close:hover{background:#fff;border-color:#a83024}
 
   #scrollPane{position:absolute;left:774px;top:186px;width:168px;height:450px;
     overflow:hidden;pointer-events:none}
@@ -539,6 +574,9 @@
     <div id="dxbtn">辨 证</div>
   </div>
 
+  <!-- ===== 新手引导 ===== -->
+  <div id="tutorial"></div>
+
   <!-- ===== 舌象 ===== -->
   <div id="tonguecard" class="paper">
     <div class="cap">舌 象</div>
@@ -588,7 +626,7 @@ const CASES = [
     name:'马某', sex:'男', age:'十六', job:'药铺学徒',
     img:'assets/patient_man.png',
     portrait:'assets/portrait_ma.png',
-    hot:{ face:[147,40,50,50], eyes:[155,70,27,8], mouth:[164,84,14,7], neck:[146,92,54,46] },
+    hot:{ face:[148,41,49,48], eyes:[156,70,30,9], mouth:[166,84,14,8], neck:[146,90,54,48] },
     chief:'恶寒发热三日，头项强痛，周身骨节疼痛',
     greet:[
       ['p','大夫，您给瞧瞧吧。三天前夜里替铺子里送货，回来就冷得钻心，裹上棉被也不济事，后来才发起热来。'],
@@ -700,7 +738,7 @@ const CASES = [
     name:'周氏', sex:'女', age:'四十五', job:'布庄主母',
     img:'assets/patient_woman_zhu.png',
     portrait:'assets/portrait_zhu.png',
-    hot:{ face:[147,13,47,48], eyes:[156,41,28,9], mouth:[165,53,15,9], neck:[142,62,60,72] },
+    hot:{ face:[147,13,48,52], eyes:[155,41,35,9], mouth:[167,56,14,8], neck:[145,66,58,42] },
     chief:'食少腹胀、大便稀溏半年，倦怠乏力',
     greet:[
       ['p','大夫，我这半年吃不下饭，吃一点肚子就胀，大便也不成形。人懒懒的，提不起精神。'],
@@ -809,7 +847,7 @@ const CASES = [
     name:'柳氏', sex:'女', age:'二十四', job:'绣娘',
     img:'assets/patient_woman_liu.png',
     portrait:'assets/portrait_liu.png',
-    hot:{ face:[150,12,50,40], eyes:[167,33,28,9], mouth:[172,40,17,10], neck:[148,52,60,62] },
+    hot:{ face:[156,8,50,48], eyes:[169,34,30,9], mouth:[178,46,14,8], neck:[155,54,60,50] },
     chief:'胸胁胀闷、情志抑郁、善太息二月',
     greet:[
       ['p','大夫……我也说不上哪儿疼，就是胸口、两胁这里胀得慌，老想叹气。'],
@@ -1167,6 +1205,7 @@ function examine(part){
     return;
   }
   S.found[part] = true;
+  updateTutorial();
   const hr = document.querySelector(`.hot[data-part="${part}"]`);
   if(hr) hr.classList.add('done');
 
@@ -1224,6 +1263,7 @@ $('#askbtn').addEventListener('click', ()=>{
       $('#tonguecard').classList.remove('show');
       const a = c.asks[i];
       a.tags.forEach(t=>addTag('问', t));   // 听到了就先记下
+      updateTutorial();
       say(c.name, a.a);
     };
   });
@@ -1289,6 +1329,7 @@ function judge(id){
       </div>`;
     S.mode = 'done';
     S.log.push({ name:S.cur.name, dx:r.title });
+    updateTutorial();
     saveNow();
     $('#m-next').onclick = ()=>{
       $('#modal').classList.remove('show');
@@ -1377,9 +1418,8 @@ function startCase(i){
   setAsking(false);
   playLines(c.greet);
   setTimeout(fit, 30);
-  if(i === 0 && !S.guided){
-    S.guided = true;
-    setTimeout(()=>{ if(!FAST) toast('点病人身上：面、目、口、胸腹、腕后脉枕'); }, 1400);
+  if(S.log.length === 0){
+    showTutorial();
   }
   saveNow();
 }
@@ -1405,11 +1445,32 @@ function buildMenu(){
     d.dataset.act = it.act;
     d.style.top = (top + i * rowH) + 'px';
     d.style.height = rowH + 'px';
-    d.addEventListener('mouseenter', ()=> hintScroll(it.text));
-    d.addEventListener('mouseleave', ()=> hintScroll(null));
-    d.addEventListener('click', ()=> doMenu(it.act));
+    d.innerHTML = '<span class="go">再点一下</span>';
+    d.addEventListener('mouseenter', ()=> { if(!armed) hintScroll(it.text); });
+    d.addEventListener('mouseleave', ()=> { if(!armed) hintScroll(null); });
+    d.addEventListener('click', ()=> armDrawer(it, d));
     menuEl.insertBefore(d, scrollPane);
   });
+}
+
+/* 抽屉两段式：第一下亮字，第二下才进去 */
+let armed = null;
+function armDrawer(it, el){
+  if(armed === it.act){                 // 第二下：执行
+    armed = null;
+    el.classList.remove('armed');
+    hintScroll(null);
+    doMenu(it.act);
+    return;
+  }
+  document.querySelectorAll('.drawer-hot.armed').forEach(e=> e.classList.remove('armed'));
+  armed = it.act;
+  el.classList.add('armed');
+  hintScroll(it.text);
+}
+function clearArmed(){
+  armed = null;
+  document.querySelectorAll('.drawer-hot.armed').forEach(e=> e.classList.remove('armed'));
 }
 function buildMenuList(){
   const box = document.getElementById('menuList');
@@ -1419,6 +1480,56 @@ function buildMenuList(){
   box.querySelectorAll('.mitem').forEach(el=>{
     el.addEventListener('click', ()=> doMenu(el.dataset.act));
   });
+}
+
+/* ---- 新手引导：第一次接诊时在左边列一张四诊清单 ---- */
+const TUT_KEY = 'tcm_tutorial_v1';
+const TUT_STEPS = [
+  ['face','点脸 · 望面色'],
+  ['eyes','点眼睛 · 望神'],
+  ['mouth','点嘴 · 望舌'],
+  ['neck','点胸腹 · 闻声息'],
+  ['pulse','点腕后脉枕 · 切脉'],
+  ['ask','点「问诊」问一句'],
+  ['dx','点「辨证」断证']
+];
+let tutOn = false;
+function showTutorial(){
+  const box = document.getElementById('tutorial');
+  if(!box) return;
+  try{ if(localStorage.getItem(TUT_KEY) === '1') return; }catch(e){}
+  box.innerHTML = '<h4>先这样玩</h4>' +
+    TUT_STEPS.map(s => '<div class="step" data-k="' + s[0] + '"><i></i><span>' + s[1] + '</span></div>').join('') +
+    '<div class="tut-tip">点病人身上各处，症状自己会记到右边「医案」。四诊齐了才能辨证。</div>' +
+    '<div class="tut-close" id="tut-close">知道了，开始</div>';
+  box.classList.add('on');
+  tutOn = true;
+  document.getElementById('tut-close').onclick = hideTutorial;
+  updateTutorial();
+}
+function hideTutorial(){
+  const box = document.getElementById('tutorial');
+  if(box) box.classList.remove('on');
+  tutOn = false;
+  try{ localStorage.setItem(TUT_KEY, '1'); }catch(e){}
+}
+function updateTutorial(){
+  if(!tutOn) return;
+  const box = document.getElementById('tutorial');
+  if(!box) return;
+  const done = {
+    face: !!S.found.face, eyes: !!S.found.eyes, mouth: !!S.found.mouth,
+    neck: !!S.found.neck, pulse: !!S.found.pulse,
+    ask: Object.keys(S.asked).length > 0,
+    dx: (S.mode === 'done')
+  };
+  let all = true;
+  box.querySelectorAll('.step').forEach(el=>{
+    const k = el.dataset.k;
+    if(done[k]){ el.classList.add('done'); el.querySelector('i').textContent = '✓'; }
+    else all = false;
+  });
+  if(all) setTimeout(hideTutorial, 900);
 }
 
 function hintScroll(text){
@@ -1458,6 +1569,10 @@ function backToMenu(){
   $('#dialogue').classList.remove('show');
   $('#tonguecard').classList.remove('show');
   hintScroll(null);
+  clearArmed();
+  const tb = document.getElementById('tutorial');
+  if(tb) tb.classList.remove('on');
+  tutOn = false;
 }
 
 /* ---- 存档（4 个槽：0 号自动，1~3 手动） ---- */
