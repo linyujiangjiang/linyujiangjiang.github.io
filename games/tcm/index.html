@@ -41,6 +41,10 @@
   .hot:hover{fill:rgba(255,215,130,.14)}
   .hot.on{stroke:#f0cf8c;stroke-width:.8;stroke-dasharray:2 1.6;
     fill:rgba(255,215,130,.07)}
+  /* 没诊过的地方一直描着极淡的虚线：手机不会悬停，得让人看见能点哪 */
+  .hot:not(.done):not(.on):not(:hover){
+    stroke:rgba(242,212,150,.30);stroke-width:.34;stroke-dasharray:2.2 2.6}
+  .hot.done:not(.on){stroke:rgba(150,180,130,.10)}
   /* 脉枕在桌面上，不像"身上的一部分"，给它一点常驻的呼吸提示 */
   .hot[data-part="pulse"]:not(.on):not(:hover):not(.done){
     stroke:rgba(240,207,140,.55);stroke-width:.4;stroke-dasharray:2.4 2.4;
