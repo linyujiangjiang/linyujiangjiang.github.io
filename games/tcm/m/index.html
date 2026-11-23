@@ -532,7 +532,7 @@
       <div id="scrollText">杏林</div>
     </div>
     <div id="menuFoot">杏 林 问 诊 · 四 诊 辨 证</div>
-    <div id="menuVer">v1.0 · 手机版</div>
+    <div id="menuVer">v1.1 · 手机版</div>
     <div id="menuList"></div>
   </div>
 
@@ -628,8 +628,8 @@ const CASES = [
   {
     id:'fenghan',
     name:'马某', sex:'男', age:'十六', job:'药铺学徒',
-    img:'assets/patient_man.png',
-    portrait:'assets/portrait_ma.png',
+    img:'../assets/patient_man.png',
+    portrait:'../assets/portrait_ma.png',
     hot:{ face:[148,41,49,48], eyes:[156,70,30,9], mouth:[166,84,14,8], neck:[146,90,54,48] },
     chief:'恶寒发热三日，头项强痛，周身骨节疼痛',
     greet:[
@@ -740,8 +740,8 @@ const CASES = [
   {
     id:'pixu',
     name:'周氏', sex:'女', age:'四十五', job:'布庄主母',
-    img:'assets/patient_woman_zhu.png',
-    portrait:'assets/portrait_zhu.png',
+    img:'../assets/patient_woman_zhu.png',
+    portrait:'../assets/portrait_zhu.png',
     hot:{ face:[147,13,48,52], eyes:[155,41,35,9], mouth:[167,56,14,8], neck:[145,66,58,42] },
     chief:'食少腹胀、大便稀溏半年，倦怠乏力',
     greet:[
@@ -849,8 +849,8 @@ const CASES = [
   {
     id:'ganyu',
     name:'柳氏', sex:'女', age:'二十四', job:'绣娘',
-    img:'assets/patient_woman_liu.png',
-    portrait:'assets/portrait_liu.png',
+    img:'../assets/patient_woman_liu.png',
+    portrait:'../assets/portrait_liu.png',
     hot:{ face:[156,8,50,48], eyes:[169,34,30,9], mouth:[178,46,14,8], neck:[155,54,60,50] },
     chief:'胸胁胀闷、情志抑郁、善太息二月',
     greet:[
@@ -1225,7 +1225,7 @@ function examine(part){
 }
 
 function playLines(lines, done){
-  const nameOf = { p:S.cur.name, narr:'旁白', me:'医者' };
+  const nameOf = { p:(S.cur && S.cur.name) || '病人', narr:'旁白', me:'医者' };
   if(FAST){
     const [who, txt] = lines[lines.length-1];
     say(nameOf[who] || who, txt, ()=>{ if(done) done(); });
@@ -1431,7 +1431,7 @@ function startCase(i){
 /* ================= 主菜单 ================= */
 const SAVE_KEY = 'tcm_saves_v2';
 const MENU_ITEMS = [
-  { act:'start',    text:'开始游戏' },
+  { act:'start',    text:'故事模式' },
   { act:'cont',     text:'继续游戏' },
   { act:'case',     text:'医案' },
   { act:'settings', text:'设置' },
@@ -1536,6 +1536,51 @@ function updateTutorial(){
   if(all) setTimeout(hideTutorial, 900);
 }
 
+/* ================= 故事模式：开场 ================= */
+const STORY_OPEN = [
+  ['旁白', '药铺后堂，日头刚过房梁。师父把案上的脉枕往前推了推。'],
+  ['师父', '坐吧。今日不同往时——从今儿起，前面这张案，归你。'],
+  ['徒儿', '……我？'],
+  ['师父', '你跟我三年，抓药、碾药、晒药，手上没出过错。可那是医道的末节。'],
+  ['师父', '会抓方子不算大夫。得先会看人。'],
+  ['徒儿', '那我该从哪儿学起？'],
+  ['师父', '四诊。望、闻、问、切。'],
+  ['师父', '望，是看。面色、眼神、舌苔，全写在脸上。'],
+  ['师父', '闻，是听。声气粗不粗，是叹气还是咳，是馊还是腥。'],
+  ['师父', '问，是问。哪儿难受，多久了，吃得下睡得好不好，二便通不通。'],
+  ['师父', '切，是摸脉。腕后寸关尺，三指搭上去，浮沉迟数，虚实寒热。'],
+  ['师父', '四样凑齐，心里才有影儿。再把影儿跟书上的证对上——那才叫辨证。'],
+  ['师父', '今日头一位，是个少年。他进来，你先别开口，先看。'],
+  ['徒儿', '……记下了。']
+];
+
+function playStory(){
+  S.log = [];
+  S.story = true;
+  menuEl.classList.add('off');
+  gameEl.classList.add('on');
+  const po = $('#portrait'), pt = $('#patient');
+  po.style.visibility = 'hidden';
+  pt.style.visibility = 'hidden';
+  $('#t-who').innerHTML = '<span class="idx">序</span>药铺后堂 · 寅时';
+  $('#t-chief').textContent = '师父说：先会看人，再谈开方。';
+  $('#cb-sub').textContent = '尚未开诊。';
+  $('#tags').innerHTML = '<div class="empty">师父还没让你动手。<br>听他说完。</div>';
+  $('#dxbtn').style.opacity = '.35';
+  $('#dxbtn').style.pointerEvents = 'none';
+  $('#hot').style.opacity = '0';
+  fit();
+  playLines(STORY_OPEN, ()=>{
+    po.style.visibility = '';
+    pt.style.visibility = 'hidden';
+    $('#dxbtn').style.opacity = '';
+    $('#dxbtn').style.pointerEvents = '';
+    $('#hot').style.opacity = '';
+    S.story = false;
+    startCase(0);
+  });
+}
+
 function hintScroll(text){
   if(text === null){ scrollPane.classList.remove('on'); return; }
   scrollPane.classList.add('on');
@@ -1546,7 +1591,7 @@ function hintScroll(text){
 }
 function doMenu(act){
   startBgm();
-  if(act === 'start'){ S.log = []; showPicker(); }
+  if(act === 'start'){ playStory(); return; }
   else if(act === 'cont'){
     const s = loadSave();
     if(!s){ toast('还没有存下的医案'); return; }
