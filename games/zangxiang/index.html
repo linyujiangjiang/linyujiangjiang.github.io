@@ -904,6 +904,35 @@ const BGM = {
   }
 };
 
+/* ================= 背景音乐（B 站曲目，本地 m4a） ================= */
+const AUDIO = {
+  els: {}, cur: null,
+  rate(){ return Math.min(1, volume * 0.5); },
+  pack(url){
+    if(!this.els[url]){
+      const a = new Audio(url);
+      a.preload = 'auto';
+      a.volume = this.rate();
+      a.addEventListener('timeupdate', ()=>{
+        if(a.currentTime > 115){ try{ a.currentTime = 0.2; }catch(e){} }
+      });
+      this.els[url] = a;
+    }
+    return this.els[url];
+  },
+  play(name){
+    const url = name === 'author' ? 'bgm/author.m4a' : 'bgm/bgm.m4a';
+    Object.keys(this.els).forEach(u=>{ if(u !== url) this.els[u].pause(); });
+    const a = this.pack(url);
+    this.cur = a;
+    a.volume = this.rate();
+    const p = a.play();
+    if(p && p.catch) p.catch(()=>{});
+  },
+  stop(){ Object.keys(this.els).forEach(u=>this.els[u].pause()); },
+  setVolume(){ Object.keys(this.els).forEach(u=>{ this.els[u].volume = this.rate(); }); }
+};
+
 /* ================= 关卡准备 ================= */
 function configFor(mode, idx){
   if(mode === 'hell') return HELL;
@@ -1154,8 +1183,8 @@ function beginLevel(){
 function showPreview(){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
-  BGM.stop();
-  BGM.play('menu');
+  AUDIO.stop();
+  AUDIO.play('menu');
   panel.classList.remove('wide');
   renderBoard();
   renderZangList();
@@ -1245,8 +1274,8 @@ function reviewHTML(){
 function showResult(win){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
-  BGM.stop();
-  BGM.play('menu');
+  AUDIO.stop();
+  AUDIO.play('menu');
   const isLast = S.mode === 'level' && S.levelIdx >= LEVELS.length - 1;
   panel.innerHTML = `
     <div class="eyebrow">${win ? 'CLEARED' : 'TIME UP'}</div>
@@ -1332,7 +1361,7 @@ function showAuthor(){
   });
   $('toTitle').onclick = ()=> showTitle();
   $('toHell').onclick = ()=> startLevel(0, 'hell');
-  BGM.play('author');
+  AUDIO.play('author');
 }
 
 /* ---- 屌炸天通关 ---- */
@@ -1357,15 +1386,15 @@ function showHellResult(isRecord){
   overlay.classList.remove('hidden');
   panel.dataset.state = 'hellResult';
   $('toTitle').onclick = ()=> showTitle();
-  BGM.play('hell');
+  AUDIO.play('menu');
 }
 
 /* ================= 标题与菜单 ================= */
 function showTitle(){
   authorScreen.classList.add('hidden');
   panel.classList.remove('wide');
-  BGM.stop();
-  BGM.play('menu');
+  AUDIO.stop();
+  AUDIO.play('menu');
   overlay.classList.add('hidden');
   stopTimer();
   S.running = false;
@@ -1427,8 +1456,8 @@ let loadToken = 0;
 function showLoading(done){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
-  BGM.stop();
-  BGM.play('menu');
+  AUDIO.stop();
+  AUDIO.play('menu');
   const token = ++loadToken;
   overlay.classList.remove('hidden');
   panel.dataset.state = 'loading';
@@ -1445,7 +1474,7 @@ function showLoading(done){
 function showRecite(){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
-  BGM.stop();
+  AUDIO.stop();
   const cards = Object.keys(ZANG).map(k=>{
     const items = ZANG[k].terms.map(t => `<li>${t}</li>`).join('');
     return `<div class="r"><h3>${ZANG[k].name}<small>${ZANG[k].hint}</small></h3><ul>${items}</ul></div>`;
@@ -1468,7 +1497,7 @@ function showRecite(){
 function showSettings(){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
-  BGM.stop();
+  AUDIO.stop();
   const unlocked = isHellUnlocked();
   const save = loadSave();
   panel.classList.remove('wide');
@@ -1500,7 +1529,7 @@ function showSettings(){
     vr.oninput = ()=>{
       volume = Math.max(0, Math.min(1, Number(vr.value) / 100));
       try{ localStorage.setItem('zx.vol', String(volume)); }catch(e){}
-      BGM.setVolume();
+      AUDIO.setVolume();
       const vv = $('volVal'); if(vv) vv.textContent = vr.value;
     };
   }
@@ -1517,7 +1546,7 @@ function showSettings(){
 function showExit(){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
-  BGM.stop();
+  AUDIO.stop();
   panel.classList.remove('wide');
   panel.innerHTML = `
     <div class="bye">
