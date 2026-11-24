@@ -1541,6 +1541,7 @@ function showSettings(){
       volume = Math.max(0, Math.min(1, Number(vr.value) / 100));
       try{ localStorage.setItem('zx.vol', String(volume)); }catch(e){}
       AUDIO.setVolume();
+      SFX.ui();
       const vv = $('volVal'); if(vv) vv.textContent = vr.value;
     };
   }
@@ -1599,8 +1600,16 @@ document.addEventListener('pointerdown', (e)=>{
   const el = e.target.closest('.btn, .menu-item');
   if(el && !el.disabled) SFX.ui();
 });
-/* 手机/浏览器会拦自动播放：每次点都试着重启 BGM */
-document.addEventListener('pointerdown', ()=>{ AUDIO.resume(); }, { passive: true });
+/* 手机/浏览器会拦自动播放：每次点都试着重启 BGM 和音频上下文 */
+function unlockAudio(){
+  try{
+    if(SFX.ctx && SFX.ctx.state === 'suspended') SFX.ctx.resume();
+  }catch(e){}
+  AUDIO.resume();
+}
+['pointerdown', 'touchstart', 'click'].forEach(ev=>{
+  document.addEventListener(ev, unlockAudio, { passive: true });
+});
 /* 作者的话字体：页面加载后异步拉一份，不挡首屏 */
 window.addEventListener('load', ()=> setTimeout(ensureAuthorFont, 700));
 
