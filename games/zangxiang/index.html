@@ -255,6 +255,7 @@
     content:"";position:absolute;inset:clamp(14px,2.4vw,30px);
     border:1px solid rgba(178,55,42,.22);pointer-events:none;
   }
+  #titleScreen.hidden{display:none}
   #titleScreen::after{
     content:"";position:absolute;inset:calc(clamp(14px,2.4vw,30px) + 8px);
     border:1px solid rgba(120,95,55,.13);pointer-events:none;
@@ -370,7 +371,7 @@
   }
   .btn.hell:hover{background:linear-gradient(180deg,#a12c1e,#7c1d10);transform:translateY(-1px)}
 
-  .preview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:16px 0 4px}
+  .preview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:10px;margin:16px 0 4px}
   .pv{
     border:1px solid rgba(150,120,72,.3);border-radius:2px;
     background:rgba(255,252,244,.6);
@@ -1314,6 +1315,7 @@ async function runSelfTest(){
 
     const tiles = [...document.querySelectorAll('.tile')];
     ok('第 1 关 10 块', tiles.length === 10, 'n=' + tiles.length);
+    ok('进入棋盘后标题屏隐藏', titleScreen.classList.contains('hidden'));
     const by = {};
     tiles.forEach(t => (by[t.dataset.zang] = by[t.dataset.zang] || []).push(t));
     ok('每脏 2 块（偶数）', Object.values(by).every(a => a.length === 2), Object.entries(by).map(([k,a])=>k+':'+a.length).join(' '));
