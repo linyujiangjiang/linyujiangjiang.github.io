@@ -906,8 +906,9 @@ const BGM = {
 
 /* ================= 背景音乐（B 站曲目，本地 m4a） ================= */
 const AUDIO = {
-  els: {}, cur: null,
+  els: {}, cur: null, want: null,
   rate(){ return Math.min(1, volume * 0.5); },
+  url(name){ return name === 'author' ? 'bgm/author.m4a' : 'bgm/bgm.m4a'; },
   pack(url){
     if(!this.els[url]){
       const a = new Audio(url);
@@ -921,7 +922,8 @@ const AUDIO = {
     return this.els[url];
   },
   play(name){
-    const url = name === 'author' ? 'bgm/author.m4a' : 'bgm/bgm.m4a';
+    this.want = name;
+    const url = this.url(name);
     Object.keys(this.els).forEach(u=>{ if(u !== url) this.els[u].pause(); });
     const a = this.pack(url);
     this.cur = a;
@@ -929,7 +931,16 @@ const AUDIO = {
     const p = a.play();
     if(p && p.catch) p.catch(()=>{});
   },
-  stop(){ Object.keys(this.els).forEach(u=>this.els[u].pause()); },
+  resume(){
+    if(!this.want) return;
+    const a = this.pack(this.url(this.want));
+    if(a.paused){
+      a.volume = this.rate();
+      const p = a.play();
+      if(p && p.catch) p.catch(()=>{});
+    }
+  },
+  stop(){ this.want = null; Object.keys(this.els).forEach(u=>this.els[u].pause()); },
   setVolume(){ Object.keys(this.els).forEach(u=>{ this.els[u].volume = this.rate(); }); }
 };
 
@@ -1588,6 +1599,8 @@ document.addEventListener('pointerdown', (e)=>{
   const el = e.target.closest('.btn, .menu-item');
   if(el && !el.disabled) SFX.ui();
 });
+/* 手机/浏览器会拦自动播放：每次点都试着重启 BGM */
+document.addEventListener('pointerdown', ()=>{ AUDIO.resume(); }, { passive: true });
 /* 作者的话字体：页面加载后异步拉一份，不挡首屏 */
 window.addEventListener('load', ()=> setTimeout(ensureAuthorFont, 700));
 
