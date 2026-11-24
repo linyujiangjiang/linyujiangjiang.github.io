@@ -369,6 +369,36 @@
     background:linear-gradient(180deg,rgba(239,229,208,0) 0%,rgba(239,229,208,.92) 42%,rgba(239,229,208,.99) 100%);
   }
 
+  /* ---------- 手机版（?mobile=1） ---------- */
+  html.m #hud{padding:8px 10px;gap:9px}
+  html.m .brand .s{display:none}
+  html.m .stats{gap:9px;font-size:11px}
+  html.m .clock{font-size:15px}
+  html.m #main{padding:12px 10px 26px;gap:14px;min-height:0}
+  html.m #board{gap:7px;padding:10px}
+  html.m .tile{min-height:70px;padding:10px 4px;font-size:14px;letter-spacing:.03em}
+  html.m .tile[data-len="7"]{font-size:12.5px}
+  html.m .tile[data-len="8"]{font-size:11.5px}
+  html.m #side{flex-direction:column;gap:10px;position:static}
+  html.m .card{padding:11px 12px}
+  html.m .menu-item{padding:15px 10px;font-size:16.5px}
+  html.m #titleScreen{padding-top:6vh;gap:22px;flex-direction:column;justify-content:flex-start}
+  html.m .ts-title{font-size:clamp(46px,16vw,74px)}
+  html.m .ts-seal{width:46px;height:46px;font-size:23px}
+  html.m .ts-menu{width:min(320px,88vw)}
+  html.m .panel{padding:20px 16px 18px;max-height:calc(100vh - 24px)}
+  html.m .panel h1{font-size:22px}
+  html.m .as-inner h1{font-size:38px}
+  html.m .as-body p{font-size:16px;line-height:2;margin-bottom:18px}
+  html.m .as-actions{padding:40px 14px 22px}
+  html.m .as-actions .btn{padding:12px 18px;font-size:14px;letter-spacing:.12em}
+  html.m .btn{padding:12px 20px;font-size:14.5px}
+  html.m .preview-grid{grid-template-columns:1fr 1fr}
+  html.m .recite-grid{grid-template-columns:1fr 1fr}
+  html.m .setting-row{flex-wrap:wrap;gap:10px}
+  html.m .setting-row .btn{margin-left:0}
+  html.m #titleScreen .ts-quote{display:none}
+
   /* ---------- 遮罩 ---------- */
   #overlay{
     position:fixed;inset:0;z-index:50;
@@ -469,6 +499,8 @@
   .setting-row b{font-size:14px;letter-spacing:.14em;display:block;margin-bottom:4px;font-weight:600}
   .setting-row small{font-size:11px;color:var(--ink3);letter-spacing:.05em}
   .setting-row .btn{margin-left:auto;padding:8px 20px;font-size:13px;letter-spacing:.16em;flex:none}
+  .setting-row input[type="range"]{margin-left:auto;width:150px;accent-color:var(--cinnabar)}
+  .vol-val{font-size:12px;color:var(--ink3);width:32px;text-align:right;font-variant-numeric:tabular-nums}
 
   /* 背诵 */
   .panel.wide{width:min(1000px,100%)}
@@ -509,6 +541,9 @@
     .clock{font-size:16px}
   }
 </style>
+<script>
+if(/[?&]mobile=1/.test(location.search)) document.documentElement.classList.add('m');
+</script>
 </head>
 <body>
 
@@ -526,6 +561,7 @@
     <div class="stat">得分<b id="hudScore">0</b></div>
     <div class="stat combo" id="hudCombo">连击 —</div>
     <div class="clock" id="hudClock">—</div>
+    <button class="btn-mini" id="btnRestart">重来</button>
     <button class="btn-mini" id="btnQuit">回首页</button>
   </div>
 </header>
@@ -668,6 +704,14 @@ function fmtClock(sec){
   return `${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`;
 }
 
+/* ================= 音量 ================= */
+let volume = (()=>{
+  const raw = localStorage.getItem('zx.vol');
+  if(raw === null) return 0.8;
+  const v = Number(raw);
+  return isNaN(v) ? 0.8 : Math.max(0, Math.min(1, v));
+})();
+
 /* ================= 音效 ================= */
 const SFX = {
   ctx:null, on:true,
@@ -686,7 +730,7 @@ const SFX = {
     const o = ctx.createOscillator(), g = ctx.createGain();
     o.type = type; o.frequency.setValueAtTime(freq, t);
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(gain, t+0.012);
+    g.gain.linearRampToValueAtTime(gain * volume, t+0.012);
     g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
     o.connect(g); g.connect(ctx.destination);
     o.start(t); o.stop(t+dur+0.02);
@@ -732,6 +776,27 @@ const BGM_TRACKS = {
       [['B3', .92, 'triangle', .04]],
       [['D4', .92, 'triangle', .038]],
       [['B3', .92, 'triangle', .036]]
+    ]
+  },
+  menu: {
+    bpm: 52,
+    bars: [
+      [['A2', 4.0, 'sine', .07], ['A3', 2.0, 'triangle', .044]],
+      [['C4', 2.0, 'triangle', .04]],
+      [['E4', 2.0, 'triangle', .038]],
+      [['C4', 2.0, 'triangle', .036]],
+      [['F2', 4.0, 'sine', .07], ['F3', 2.0, 'triangle', .044]],
+      [['A3', 2.0, 'triangle', .04]],
+      [['C4', 2.0, 'triangle', .038]],
+      [['A3', 2.0, 'triangle', .036]],
+      [['C3', 4.0, 'sine', .07], ['C4', 2.0, 'triangle', .044]],
+      [['E4', 2.0, 'triangle', .04]],
+      [['G4', 2.0, 'triangle', .038]],
+      [['E4', 2.0, 'triangle', .036]],
+      [['G2', 4.0, 'sine', .07], ['G3', 2.0, 'triangle', .044]],
+      [['B3', 2.0, 'triangle', .04]],
+      [['D4', 2.0, 'triangle', .038]],
+      [['B3', 2.0, 'triangle', .036]]
     ]
   },
   hell: {
@@ -791,7 +856,7 @@ const BGM = {
     const t = ctx.currentTime;
     this.master.gain.cancelScheduledValues(t);
     this.master.gain.setValueAtTime(0.0001, t);
-    this.master.gain.exponentialRampToValueAtTime(1, t + 1.6);
+    this.master.gain.exponentialRampToValueAtTime(Math.max(0.0002, 0.95 * volume), t + 1.6);
     this.timer = setInterval(()=>this.tick(), 45);
   },
 
@@ -819,6 +884,13 @@ const BGM = {
     g.connect(this.master);
     if(this.delay) g.connect(this.delay);
     o.start(t); o.stop(t + dur + 0.1);
+  },
+
+  setVolume(){
+    if(!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.master.gain.cancelScheduledValues(t);
+    this.master.gain.setTargetAtTime(Math.max(0.0001, 0.95 * volume), t, 0.15);
   },
 
   stop(quick){
@@ -861,7 +933,7 @@ function prepare(cfg){
 }
 
 function renderBoard(){
-  const narrow = window.innerWidth < 620;
+  const narrow = window.innerWidth < 620 || document.documentElement.classList.contains('m');
   const cols = narrow ? Math.min(S.cfg.cols, 4) : S.cfg.cols;
   boardEl.style.setProperty('--cols', cols);
   boardEl.classList.toggle('tight', !!S.cfg.hell);
@@ -1017,7 +1089,7 @@ function reject(i,j){
   setTimeout(()=>{
     a.el.classList.remove('bad'); b.el.classList.remove('bad');
     S.locked = false;
-    if(S.mode !== 'zen' && S.time <= 0) endGame(false);
+    if(S.mode === 'level' && S.time <= 0) endGame(false);
   }, 430);
 }
 
@@ -1066,8 +1138,11 @@ hintBtn.addEventListener('click', ()=>{
 /* ================= 开局 ================= */
 function beginLevel(){
   updateHUD();
+  const rb = $('btnRestart');
+  if(rb) rb.style.display = '';
   hintBtn.textContent = `提示 ×${S.hints}`;
   hintBtn.disabled = false;
+  hintBtn.style.display = S.mode === 'hell' ? 'none' : '';
   $('ruleText').innerHTML = S.mode === 'level'
     ? '点两个属于<b>同一脏腑</b>的方块，就能消掉。<br>不必相同——「主血」与「在志为喜」都归<b>心</b>。<br>点错扣 5 秒，连击清零。'
     : '点两个属于<b>同一脏腑</b>的方块，就能消掉。<br>不必相同——「主血」与「在志为喜」都归<b>心</b>。<br>错点只记次数，不扣时间。';
@@ -1080,6 +1155,7 @@ function showPreview(){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
   BGM.stop();
+  BGM.play('menu');
   panel.classList.remove('wide');
   renderBoard();
   renderZangList();
@@ -1170,6 +1246,7 @@ function showResult(win){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
   BGM.stop();
+  BGM.play('menu');
   const isLast = S.mode === 'level' && S.levelIdx >= LEVELS.length - 1;
   panel.innerHTML = `
     <div class="eyebrow">${win ? 'CLEARED' : 'TIME UP'}</div>
@@ -1288,6 +1365,7 @@ function showTitle(){
   authorScreen.classList.add('hidden');
   panel.classList.remove('wide');
   BGM.stop();
+  BGM.play('menu');
   overlay.classList.add('hidden');
   stopTimer();
   S.running = false;
@@ -1350,6 +1428,7 @@ function showLoading(done){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
   BGM.stop();
+  BGM.play('menu');
   const token = ++loadToken;
   overlay.classList.remove('hidden');
   panel.dataset.state = 'loading';
@@ -1397,6 +1476,11 @@ function showSettings(){
     <div class="eyebrow">SETTINGS</div>
     <h1>设置</h1>
     <div class="setting-row">
+      <div><b>音量</b><small>音效与背景音乐</small></div>
+      <input type="range" id="volRange" min="0" max="100" step="1" value="${Math.round(volume * 100)}">
+      <span class="vol-val" id="volVal">${Math.round(volume * 100)}</span>
+    </div>
+    <div class="setting-row">
       <div><b>清空存档</b><small>${save ? `现在存档在第 ${save.level + 1} 关` : '现在没有存档'}</small></div>
       <button class="btn ghost" id="clearBtn" ${save ? '' : 'disabled'}>清空</button>
     </div>
@@ -1411,6 +1495,15 @@ function showSettings(){
   overlay.classList.remove('hidden');
   panel.dataset.state = 'settings';
   $('backTitle').onclick = ()=> showTitle();
+  const vr = $('volRange');
+  if(vr){
+    vr.oninput = ()=>{
+      volume = Math.max(0, Math.min(1, Number(vr.value) / 100));
+      try{ localStorage.setItem('zx.vol', String(volume)); }catch(e){}
+      BGM.setVolume();
+      const vv = $('volVal'); if(vv) vv.textContent = vr.value;
+    };
+  }
   const clearBtn = $('clearBtn');
   if(clearBtn) clearBtn.onclick = ()=>{
     if(!confirm('清空存档？关卡进度会回到第一关。')) return;
@@ -1450,6 +1543,12 @@ function startLevel(idx, mode){
 }
 
 /* ================= 杂项 ================= */
+$('btnRestart').addEventListener('click', ()=>{
+  if(!S.cfg) return;
+  if(S.running && !confirm('重新开始本关？计时会重新算。')) return;
+  startLevel(S.levelIdx, S.mode);
+});
+
 $('btnQuit').addEventListener('click', ()=>{
   if(S.running || S.done > 0){ if(!confirm('回首页？本关进度不保留。')) return; }
   showTitle();
@@ -1465,7 +1564,7 @@ window.addEventListener('load', ()=> setTimeout(ensureAuthorFont, 700));
 
 window.addEventListener('resize', ()=>{
   if(!S.running) return;
-  const narrow = window.innerWidth < 620;
+  const narrow = window.innerWidth < 620 || document.documentElement.classList.contains('m');
   const cols = narrow ? Math.min(S.cfg.cols, 4) : S.cfg.cols;
   boardEl.style.setProperty('--cols', cols);
 });
