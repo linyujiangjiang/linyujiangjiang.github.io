@@ -703,6 +703,135 @@ const SFX = {
   fail(){ this.beep(220,.3,'sine',.05); this.beep(165,.42,'sine',.045,.16); },
 };
 
+/* ================= BGM（WebAudio 合成，无版权） ================= */
+const NOTE_FREQ = {
+  A2:110.00, B2:123.47,
+  C3:130.81, D3:146.83, E3:164.81, F3:174.61, G3:196.00, A3:220.00, B3:246.94,
+  C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00, A4:440.00, B4:493.88,
+  C5:523.25, D5:587.33, E5:659.25, G5:783.99
+};
+
+/* 每拍一个数组，元素是 [音名, 时值(拍), 波形, 音量] */
+const BGM_TRACKS = {
+  author: {
+    bpm: 56,
+    bars: [
+      [['C3', 3.6, 'sine', .075], ['C4', .92, 'triangle', .045]],
+      [['E4', .92, 'triangle', .04]],
+      [['G4', .92, 'triangle', .038]],
+      [['E4', .92, 'triangle', .036]],
+      [['A2', 3.6, 'sine', .075], ['A3', .92, 'triangle', .045]],
+      [['C4', .92, 'triangle', .04]],
+      [['E4', .92, 'triangle', .038]],
+      [['C4', .92, 'triangle', .036]],
+      [['F2', 3.6, 'sine', .075], ['F3', .92, 'triangle', .045]],
+      [['A3', .92, 'triangle', .04]],
+      [['C4', .92, 'triangle', .038]],
+      [['A3', .92, 'triangle', .036]],
+      [['G2', 3.6, 'sine', .075], ['G3', .92, 'triangle', .045]],
+      [['B3', .92, 'triangle', .04]],
+      [['D4', .92, 'triangle', .038]],
+      [['B3', .92, 'triangle', .036]]
+    ]
+  },
+  hell: {
+    bpm: 78,
+    bars: [
+      [['C3', 3.6, 'sine', .08], ['C4', .92, 'triangle', .05], ['E4', .92, 'triangle', .04]],
+      [['G4', .92, 'triangle', .045], ['C5', .92, 'triangle', .038]],
+      [['E5', .92, 'triangle', .04]],
+      [['G4', .92, 'triangle', .038]],
+      [['G2', 3.6, 'sine', .08], ['G3', .92, 'triangle', .05], ['B3', .92, 'triangle', .04]],
+      [['D4', .92, 'triangle', .045], ['G4', .92, 'triangle', .038]],
+      [['B4', .92, 'triangle', .04]],
+      [['D5', .92, 'triangle', .038]],
+      [['A2', 3.6, 'sine', .08], ['A3', .92, 'triangle', .05], ['C4', .92, 'triangle', .04]],
+      [['E4', .92, 'triangle', .045], ['A4', .92, 'triangle', .038]],
+      [['C5', .92, 'triangle', .04]],
+      [['E5', .92, 'triangle', .038]],
+      [['F2', 3.6, 'sine', .08], ['F3', .92, 'triangle', .05], ['A3', .92, 'triangle', .04]],
+      [['C4', .92, 'triangle', .045], ['F4', .92, 'triangle', .038]],
+      [['A4', .92, 'triangle', .04]],
+      [['C5', .92, 'triangle', .038]]
+    ]
+  }
+};
+
+const BGM = {
+  ctx:null, master:null, delay:null, timer:null, nextTime:0, step:0, cfg:null, on:false,
+
+  init(){
+    if(this.ctx) return this.ctx;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return null;
+    this.ctx = new AC();
+    this.master = this.ctx.createGain();
+    this.master.gain.value = 0.0001;
+    this.master.connect(this.ctx.destination);
+    const d = this.ctx.createDelay(1.4);
+    d.delayTime.value = 0.32;
+    const fb = this.ctx.createGain(); fb.gain.value = 0.26;
+    const wet = this.ctx.createGain(); wet.gain.value = 0.3;
+    d.connect(fb); fb.connect(d); d.connect(wet); wet.connect(this.master);
+    this.delay = d;
+    return this.ctx;
+  },
+
+  play(name){
+    const track = BGM_TRACKS[name];
+    if(!track) return;
+    const ctx = this.init();
+    if(!ctx) return;
+    if(ctx.state === 'suspended') ctx.resume();
+    if(this.on) this.stop(true);
+    this.cfg = track;
+    this.step = 0;
+    this.on = true;
+    this.nextTime = ctx.currentTime + 0.12;
+    const t = ctx.currentTime;
+    this.master.gain.cancelScheduledValues(t);
+    this.master.gain.setValueAtTime(0.0001, t);
+    this.master.gain.exponentialRampToValueAtTime(1, t + 1.6);
+    this.timer = setInterval(()=>this.tick(), 45);
+  },
+
+  tick(){
+    if(!this.on || !this.ctx || !this.cfg) return;
+    const spb = 60 / this.cfg.bpm;
+    while(this.nextTime < this.ctx.currentTime + 0.3){
+      const beat = this.cfg.bars[this.step % this.cfg.bars.length];
+      for(const n of beat) this.note(n[0], this.nextTime, n[1] * spb, n[2], n[3]);
+      this.nextTime += spb;
+      this.step++;
+    }
+  },
+
+  note(name, t, dur, type, gain){
+    const f = NOTE_FREQ[name];
+    if(!f) return;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = type || 'triangle';
+    o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain, t + 0.05);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g);
+    g.connect(this.master);
+    if(this.delay) g.connect(this.delay);
+    o.start(t); o.stop(t + dur + 0.1);
+  },
+
+  stop(quick){
+    this.on = false;
+    if(this.timer){ clearInterval(this.timer); this.timer = null; }
+    if(!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.master.gain.cancelScheduledValues(t);
+    this.master.gain.setValueAtTime(Math.max(0.0001, this.master.gain.value), t);
+    this.master.gain.exponentialRampToValueAtTime(0.0001, t + (quick ? 0.12 : 1.1));
+  }
+};
+
 /* ================= 关卡准备 ================= */
 function configFor(mode, idx){
   if(mode === 'hell') return HELL;
@@ -950,6 +1079,7 @@ function beginLevel(){
 function showPreview(){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
+  BGM.stop();
   panel.classList.remove('wide');
   renderBoard();
   renderZangList();
@@ -1039,6 +1169,7 @@ function reviewHTML(){
 function showResult(win){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
+  BGM.stop();
   const isLast = S.mode === 'level' && S.levelIdx >= LEVELS.length - 1;
   panel.innerHTML = `
     <div class="eyebrow">${win ? 'CLEARED' : 'TIME UP'}</div>
@@ -1124,6 +1255,7 @@ function showAuthor(){
   });
   $('toTitle').onclick = ()=> showTitle();
   $('toHell').onclick = ()=> startLevel(0, 'hell');
+  BGM.play('author');
 }
 
 /* ---- 屌炸天通关 ---- */
@@ -1148,12 +1280,14 @@ function showHellResult(isRecord){
   overlay.classList.remove('hidden');
   panel.dataset.state = 'hellResult';
   $('toTitle').onclick = ()=> showTitle();
+  BGM.play('hell');
 }
 
 /* ================= 标题与菜单 ================= */
 function showTitle(){
   authorScreen.classList.add('hidden');
   panel.classList.remove('wide');
+  BGM.stop();
   overlay.classList.add('hidden');
   stopTimer();
   S.running = false;
@@ -1215,6 +1349,7 @@ let loadToken = 0;
 function showLoading(done){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
+  BGM.stop();
   const token = ++loadToken;
   overlay.classList.remove('hidden');
   panel.dataset.state = 'loading';
@@ -1225,12 +1360,13 @@ function showLoading(done){
       <p class="tip">${pickTip()}</p>
     </div>
   `;
-  setTimeout(()=>{ if(token === loadToken) done(); }, 2150);
+  setTimeout(()=>{ if(token === loadToken) done(); }, 1850);
 }
 
 function showRecite(){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
+  BGM.stop();
   const cards = Object.keys(ZANG).map(k=>{
     const items = ZANG[k].terms.map(t => `<li>${t}</li>`).join('');
     return `<div class="r"><h3>${ZANG[k].name}<small>${ZANG[k].hint}</small></h3><ul>${items}</ul></div>`;
@@ -1253,6 +1389,7 @@ function showRecite(){
 function showSettings(){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
+  BGM.stop();
   const unlocked = isHellUnlocked();
   const save = loadSave();
   panel.classList.remove('wide');
@@ -1287,6 +1424,7 @@ function showSettings(){
 function showExit(){
   authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
+  BGM.stop();
   panel.classList.remove('wide');
   panel.innerHTML = `
     <div class="bye">
