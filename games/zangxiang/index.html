@@ -1595,21 +1595,52 @@ $('btnQuit').addEventListener('click', ()=>{
   showTitle();
 });
 
-/* 按键音：所有按钮与菜单项 */
-document.addEventListener('pointerdown', (e)=>{
-  const el = e.target.closest('.btn, .menu-item');
+/* 按键音 + 音频解锁：微信 X5 内核不一定发 pointerdown，所以 touchstart/mousedown 一起听 */
+let lastPressAt = 0;
+function onPressStart(e){
+  const now = Date.now();
+  if(now - lastPressAt < 100) return;
+  lastPressAt = now;
+  const el = e.target && e.target.closest ? e.target.closest('.btn, .menu-item') : null;
+  unlockAudio();
   if(el && !el.disabled) SFX.ui();
-});
-/* 手机/浏览器会拦自动播放：每次点都试着重启 BGM 和音频上下文 */
+}
+
 function unlockAudio(){
   try{
-    if(SFX.ctx && SFX.ctx.state === 'suspended') SFX.ctx.resume();
+    const AC = SFX.ensure();
+    if(AC){
+      if(AC.state === 'suspended') AC.resume();
+      if(!AC._unlocked){
+        const b = AC.createBuffer(1, 1, 22050);
+        const s = AC.createBufferSource();
+        s.buffer = b;
+        s.connect(AC.destination);
+        s.start(0);
+        AC._unlocked = true;
+      }
+    }
   }catch(e){}
   AUDIO.resume();
 }
-['pointerdown', 'touchstart', 'click'].forEach(ev=>{
-  document.addEventListener(ev, unlockAudio, { passive: true });
+
+['pointerdown', 'touchstart', 'mousedown'].forEach(ev=>{
+  document.addEventListener(ev, onPressStart, { passive: true });
 });
+
+/* 微信 iOS：桥就绪时先跟微信要一次网络环境，等于把音频环境点开 */
+(function(){
+  function wxInit(){
+    try{
+      if(window.WeixinJSBridge && WeixinJSBridge.invoke){
+        WeixinJSBridge.invoke('getNetworkType', {}, function(){});
+      }
+    }catch(e){}
+  }
+  if(window.WeixinJSBridge) wxInit();
+  document.addEventListener('WeixinJSBridgeReady', wxInit, false);
+})();
+
 /* 作者的话字体：页面加载后异步拉一份，不挡首屏 */
 window.addEventListener('load', ()=> setTimeout(ensureAuthorFont, 700));
 
