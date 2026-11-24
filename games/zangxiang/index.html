@@ -322,6 +322,53 @@
     .ts-quote{display:none}
   }
 
+  /* ---------- 作者的话：滚动字幕 ---------- */
+  #authorScreen{
+    position:fixed;inset:0;z-index:45;overflow:hidden;
+    background:
+      radial-gradient(1100px 700px at 50% 0%, #fdf8ec 0%, rgba(253,248,236,0) 60%),
+      repeating-linear-gradient(0deg, rgba(150,120,72,.05) 0 1px, transparent 1px 26px),
+      #efe5d0;
+  }
+  #authorScreen::before{
+    content:"";position:absolute;inset:clamp(14px,2.4vw,30px);
+    border:1px solid rgba(178,55,42,.2);pointer-events:none;z-index:3;
+  }
+  #authorScreen.hidden{display:none}
+  .as-viewport{
+    position:absolute;inset:0;overflow:hidden;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 76%,transparent 100%);
+            mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 76%,transparent 100%);
+  }
+  .as-track{position:absolute;left:0;right:0;top:0;will-change:transform}
+  .as-inner{
+    max-width:920px;margin:0 auto;padding:0 26px;
+    text-align:center;
+    font-family:"LXGW WenKai","Kaiti SC","KaiTi","STKaiti","Songti SC",serif;
+  }
+  .as-eyebrow{font-size:12px;letter-spacing:.5em;color:var(--cinnabar);margin-bottom:14px}
+  .as-inner h1{
+    font-size:clamp(42px,6.4vw,70px);
+    letter-spacing:.34em;font-weight:400;margin:0 0 38px;color:var(--ink);
+    text-shadow:0 1px 0 rgba(255,255,255,.6);
+  }
+  .as-body p{
+    font-size:clamp(18px,2.15vw,24px);
+    line-height:2.2;color:var(--ink);margin:0 0 26px;
+    text-indent:2em;text-align:left;letter-spacing:.04em;
+    text-wrap:pretty;
+  }
+  .as-sign{
+    text-align:right;font-size:clamp(16px,1.9vw,21px);
+    color:var(--cinnabar);letter-spacing:.22em;margin:34px 0 0;
+  }
+  .as-actions{
+    position:absolute;left:0;right:0;bottom:0;z-index:4;
+    display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+    padding:62px 24px 34px;
+    background:linear-gradient(180deg,rgba(239,229,208,0) 0%,rgba(239,229,208,.92) 42%,rgba(239,229,208,.99) 100%);
+  }
+
   /* ---------- 遮罩 ---------- */
   #overlay{
     position:fixed;inset:0;z-index:50;
@@ -503,6 +550,7 @@
 </main>
 
 <div id="titleScreen" class="hidden"></div>
+<div id="authorScreen" class="hidden"></div>
 
 <div id="overlay" class="hidden">
   <div class="panel" id="panel"></div>
@@ -644,6 +692,7 @@ const SFX = {
     o.start(t); o.stop(t+dur+0.02);
   },
   tap(){ this.beep(760, .05, 'triangle', .035); },
+  ui(){ this.beep(1040, .035, 'triangle', .026); this.beep(1560, .045, 'sine', .012, .009); },
   good(combo){
     const base = 520 + Math.min(combo,6)*30;
     this.beep(base, .09, 'sine', .05);
@@ -899,6 +948,7 @@ function beginLevel(){
 }
 
 function showPreview(){
+  authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
   panel.classList.remove('wide');
   renderBoard();
@@ -987,6 +1037,7 @@ function reviewHTML(){
 }
 
 function showResult(win){
+  authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
   const isLast = S.mode === 'level' && S.levelIdx >= LEVELS.length - 1;
   panel.innerHTML = `
@@ -1018,34 +1069,66 @@ function showResult(win){
 }
 
 /* ---- 通关基础四关后的作者的话 ---- */
+let authorFontLoaded = false;
+function ensureAuthorFont(){
+  if(authorFontLoaded) return;
+  authorFontLoaded = true;
+  const l = document.createElement('link');
+  l.rel = 'stylesheet';
+  l.href = 'https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/lxgwwenkai-regular.css';
+  document.head.appendChild(l);
+}
+
 function showAuthor(){
   titleScreen.classList.add('hidden');
-  panel.innerHTML = `
-    <div class="eyebrow">AUTHOR'S NOTE</div>
-    <h1>作者的话</h1>
-    <div class="author-body">
-      <p>终于！林某战胜了短视频和游戏，努力发奋，终于完成了小游戏</p>
-      <p>如是，所有用心完成游戏的同志，都将免于在课堂因不会背而被残酷的镇压</p>
-      <p>此时此刻，你应该已经通关了基础模式，你努力学习的态度令人动容，希望希夏有帮助到你</p>
-      <p>接下来，可以试试看屌炸天模式</p>
-      <p>据我所知，我做的游戏难度完全足以应付未来课堂上索要面对的，尤其是你能通关屌炸天模式之后</p>
-      <p>后面我还在制作更多游戏，感谢大家对林某的支持和厚爱，我们要一起努力，共同进步</p>
-      <p>希望大家长乐忘忧，万事称意</p>
-      <p class="sign">————林希夏</p>
+  overlay.classList.add('hidden');
+  authorScreen.classList.remove('hidden');
+  authorScreen.innerHTML = `
+    <div class="as-viewport">
+      <div class="as-track" id="asTrack">
+        <div class="as-inner">
+          <div class="as-eyebrow">AUTHOR'S NOTE</div>
+          <h1>作者的话</h1>
+          <div class="as-body">
+            <p>终于！林某战胜了短视频和游戏，努力发奋，终于完成了小游戏</p>
+            <p>如是，所有用心完成游戏的同志，都将免于在课堂因不会背而被残酷的镇压</p>
+            <p>此时此刻，你应该已经通关了基础模式，你努力学习的态度令人动容，希望希夏有帮助到你</p>
+            <p>接下来，可以试试看屌炸天模式</p>
+            <p>据我所知，我做的游戏难度完全足以应付未来课堂上索要面对的，尤其是你能通关屌炸天模式之后</p>
+            <p>后面我还在制作更多游戏，感谢大家对林某的支持和厚爱，我们要一起努力，共同进步</p>
+            <p>希望大家长乐忘忧，万事称意</p>
+          </div>
+          <p class="as-sign">————林希夏</p>
+        </div>
+      </div>
     </div>
-    <div class="btns">
+    <div class="as-actions">
       <button class="btn" id="toTitle">我们的目标是星辰大海</button>
       <button class="btn hell" id="toHell">去闯屌炸天</button>
     </div>
   `;
-  overlay.classList.remove('hidden');
-  panel.dataset.state = 'author';
+  requestAnimationFrame(()=>{
+    const track = $('asTrack');
+    if(!track) return;
+    const vh = window.innerHeight;
+    const h = track.offsetHeight;
+    if(window.__authorStill){
+      track.style.transform = 'translateY(' + Math.round(vh * 0.2) + 'px)';
+      return;
+    }
+    const dur = Math.max(16000, Math.round((vh + h) / 0.08));
+    track.animate(
+      [{ transform: 'translateY(' + vh + 'px)' }, { transform: 'translateY(' + (-h) + 'px)' }],
+      { duration: dur, easing: 'linear', fill: 'forwards' }
+    );
+  });
   $('toTitle').onclick = ()=> showTitle();
   $('toHell').onclick = ()=> startLevel(0, 'hell');
 }
 
 /* ---- 屌炸天通关 ---- */
 function showHellResult(isRecord){
+  authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
   panel.innerHTML = `
     <div class="eyebrow">ALL CLEAR · 屌炸天</div>
@@ -1069,6 +1152,7 @@ function showHellResult(isRecord){
 
 /* ================= 标题与菜单 ================= */
 function showTitle(){
+  authorScreen.classList.add('hidden');
   panel.classList.remove('wide');
   overlay.classList.add('hidden');
   stopTimer();
@@ -1129,6 +1213,7 @@ function showTitle(){
 
 let loadToken = 0;
 function showLoading(done){
+  authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
   const token = ++loadToken;
   overlay.classList.remove('hidden');
@@ -1140,10 +1225,11 @@ function showLoading(done){
       <p class="tip">${pickTip()}</p>
     </div>
   `;
-  setTimeout(()=>{ if(token === loadToken) done(); }, 1150);
+  setTimeout(()=>{ if(token === loadToken) done(); }, 2150);
 }
 
 function showRecite(){
+  authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
   const cards = Object.keys(ZANG).map(k=>{
     const items = ZANG[k].terms.map(t => `<li>${t}</li>`).join('');
@@ -1165,6 +1251,7 @@ function showRecite(){
 }
 
 function showSettings(){
+  authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
   const unlocked = isHellUnlocked();
   const save = loadSave();
@@ -1198,6 +1285,7 @@ function showSettings(){
 }
 
 function showExit(){
+  authorScreen.classList.add('hidden');
   titleScreen.classList.add('hidden');
   panel.classList.remove('wide');
   panel.innerHTML = `
@@ -1229,6 +1317,14 @@ $('btnQuit').addEventListener('click', ()=>{
   showTitle();
 });
 
+/* 按键音：所有按钮与菜单项 */
+document.addEventListener('pointerdown', (e)=>{
+  const el = e.target.closest('.btn, .menu-item');
+  if(el && !el.disabled) SFX.ui();
+});
+/* 作者的话字体：页面加载后异步拉一份，不挡首屏 */
+window.addEventListener('load', ()=> setTimeout(ensureAuthorFont, 700));
+
 window.addEventListener('resize', ()=>{
   if(!S.running) return;
   const narrow = window.innerWidth < 620;
@@ -1242,7 +1338,7 @@ window.addEventListener('resize', ()=>{
   const sc = q.get('screen');
   if(sc === 'title'){ showTitle(); return; }
   if(sc === 'loading'){ showLoading(()=>{}); return; }
-  if(sc === 'author'){ showAuthor(); return; }
+  if(sc === 'author'){ window.__authorStill = 1; showAuthor(); return; }
   if(sc === 'recite'){ showRecite(); return; }
   if(sc === 'settings'){ showSettings(); return; }
   if(sc === 'exit'){ showExit(); return; }
