@@ -233,6 +233,94 @@
   #hintBtn:hover:not(:disabled){background:rgba(78,110,93,.08)}
   #hintBtn:disabled{opacity:.4;cursor:default}
 
+  /* ---------- 开始界面（全屏） ---------- */
+  #titleScreen{
+    position:fixed;inset:0;z-index:40;
+    display:flex;flex-wrap:wrap;
+    align-items:center;justify-content:center;
+    gap:clamp(28px,7vw,120px);
+    padding:clamp(24px,5vw,64px);
+    overflow:auto;
+    background:
+      radial-gradient(1100px 700px at 32% 8%, #fdf8ec 0%, rgba(253,248,236,0) 58%),
+      radial-gradient(820px 620px at 82% 92%, rgba(186,158,106,.2), transparent 62%),
+      radial-gradient(620px 520px at 6% 18%, rgba(96,74,42,.07), transparent 66%),
+      radial-gradient(700px 560px at 92% 72%, rgba(96,74,42,.055), transparent 66%),
+      radial-gradient(560px 460px at 10% 86%, rgba(78,110,93,.07), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(150,120,72,.05) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(90deg, rgba(150,120,72,.04) 0 1px, transparent 1px 26px),
+      #efe5d0;
+  }
+  #titleScreen::before{
+    content:"";position:absolute;inset:clamp(14px,2.4vw,30px);
+    border:1px solid rgba(178,55,42,.22);pointer-events:none;
+  }
+  #titleScreen::after{
+    content:"";position:absolute;inset:calc(clamp(14px,2.4vw,30px) + 8px);
+    border:1px solid rgba(120,95,55,.13);pointer-events:none;
+  }
+  .ts-head{display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;z-index:1}
+  .ts-seal{
+    width:clamp(44px,4.4vw,58px);height:clamp(44px,4.4vw,58px);
+    display:grid;place-items:center;
+    background:var(--cinnabar);color:#fdf3e2;
+    font-size:clamp(22px,2.2vw,29px);font-weight:700;
+    border-radius:2px;
+    box-shadow:0 10px 26px rgba(140,40,26,.24), inset 0 0 0 1px rgba(255,255,255,.22);
+  }
+  .ts-title{
+    writing-mode:vertical-rl;text-orientation:upright;
+    font-size:clamp(58px,10.2vw,124px);
+    letter-spacing:.06em;font-weight:600;line-height:.98;
+    color:var(--ink);margin:0;
+    text-shadow:0 1px 0 rgba(255,255,255,.55);
+  }
+  .ts-sub{font-size:12.5px;letter-spacing:.46em;color:var(--ink3);margin:0}
+  .ts-menu{
+    display:flex;flex-direction:column;
+    width:clamp(238px,27vw,330px);
+    border-top:1px solid rgba(178,55,42,.2);
+    position:relative;z-index:1;
+  }
+  .ts-menu .menu-item{padding:15px 12px}
+  .ts-menu .menu-item .num{
+    font-size:12px;color:var(--cinnabar);opacity:.5;
+    letter-spacing:0;width:20px;flex:none;font-weight:600;
+  }
+  .ts-menu .menu-item:hover:not(:disabled) .num{opacity:1}
+  .ts-foot{
+    position:absolute;left:0;right:0;bottom:clamp(26px,4.6vh,48px);
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+    font-size:11px;letter-spacing:.26em;color:var(--ink3);
+    pointer-events:none;
+  }
+  .ts-five{display:flex;gap:11px}
+  .ts-five i{width:9px;height:9px;border-radius:50%;display:block}
+  .ts-five i:nth-child(1){background:#4e7d63}
+  .ts-five i:nth-child(2){background:#b2372a}
+  .ts-five i:nth-child(3){background:#c9a227}
+  .ts-five i:nth-child(4){background:#eae2cf;box-shadow:0 0 0 1px rgba(120,95,55,.45)}
+  .ts-five i:nth-child(5){background:#2b2620}
+  .ts-rule{width:44px;height:1px;background:rgba(178,55,42,.26)}
+  .ts-quote{
+    position:absolute;top:50%;transform:translateY(-50%);
+    writing-mode:vertical-rl;text-orientation:upright;
+    font-size:clamp(10px,0.95vw,13px);
+    letter-spacing:.34em;line-height:2.1;
+    color:rgba(110,88,52,.46);
+    pointer-events:none;user-select:none;
+  }
+  .ts-quote.left{left:clamp(34px,5.2vw,96px)}
+  .ts-quote.right{right:clamp(34px,5.2vw,96px);color:rgba(178,55,42,.4)}
+  @media (max-width:760px){
+    #titleScreen{flex-direction:column;justify-content:flex-start;padding-top:9vh;gap:24px}
+    .ts-head{gap:12px}
+    .ts-title{font-size:clamp(50px,17vw,82px)}
+    .ts-menu{width:min(310px,86vw)}
+    .ts-foot{bottom:16px}
+    .ts-quote{display:none}
+  }
+
   /* ---------- 遮罩 ---------- */
   #overlay{
     position:fixed;inset:0;z-index:50;
@@ -413,6 +501,8 @@
   </aside>
 </main>
 
+<div id="titleScreen" class="hidden"></div>
+
 <div id="overlay" class="hidden">
   <div class="panel" id="panel"></div>
 </div>
@@ -453,6 +543,7 @@ const TIPS = [
   '好好学习，天天向上',
   '真的会有人看这些吗',
   '林某希望得到更多建议 >w<',
+  '屌炸天模式用电脑体验更佳',
 ];
 
 /* 存档 / 解锁 */
@@ -478,6 +569,7 @@ function pickTip(){
 /* ================= DOM ================= */
 const $ = id => document.getElementById(id);
 const boardEl = $('board');
+const titleScreen = $('titleScreen');
 const overlay = $('overlay');
 const panel = $('panel');
 const hudLevel = $('hudLevel');
@@ -806,6 +898,7 @@ function beginLevel(){
 }
 
 function showPreview(){
+  titleScreen.classList.add('hidden');
   panel.classList.remove('wide');
   renderBoard();
   renderZangList();
@@ -893,6 +986,7 @@ function reviewHTML(){
 }
 
 function showResult(win){
+  titleScreen.classList.add('hidden');
   const isLast = S.mode === 'level' && S.levelIdx >= LEVELS.length - 1;
   panel.innerHTML = `
     <div class="eyebrow">${win ? 'CLEARED' : 'TIME UP'}</div>
@@ -924,6 +1018,7 @@ function showResult(win){
 
 /* ---- 通关基础四关后的作者的话 ---- */
 function showAuthor(){
+  titleScreen.classList.add('hidden');
   panel.innerHTML = `
     <div class="eyebrow">AUTHOR'S NOTE</div>
     <h1>作者的话</h1>
@@ -950,6 +1045,7 @@ function showAuthor(){
 
 /* ---- 屌炸天通关 ---- */
 function showHellResult(isRecord){
+  titleScreen.classList.add('hidden');
   panel.innerHTML = `
     <div class="eyebrow">ALL CLEAR · 屌炸天</div>
     <h1>九十个，全清了</h1>
@@ -973,6 +1069,7 @@ function showHellResult(isRecord){
 /* ================= 标题与菜单 ================= */
 function showTitle(){
   panel.classList.remove('wide');
+  overlay.classList.add('hidden');
   stopTimer();
   S.running = false;
   S.locked = true;
@@ -990,26 +1087,33 @@ function showTitle(){
 
   const save = loadSave();
   const unlocked = isHellUnlocked();
-  const best = (()=>{ try{ return JSON.parse(localStorage.getItem('zx.best') || '{}'); }catch(e){ return {}; } })();
   const hellBest = Number(localStorage.getItem('zx.hellBest') || 0);
+  const best = (()=>{ try{ return JSON.parse(localStorage.getItem('zx.best') || '{}'); }catch(e){ return {}; } })();
 
-  panel.innerHTML = `
-    <div class="eyebrow">ZANG XIANG · 藏象</div>
-    <h1>藏 象</h1>
-    <p class="sub">同脏 · 相消</p>
-    <div class="menu">
-      <button class="menu-item" data-act="play">闯关模式</button>
-      <button class="menu-item" data-act="continue" ${save ? '' : 'disabled'}>继续游戏<small>${save ? `第 ${save.level + 1} 关` : '还没有存档'}</small></button>
-      <button class="menu-item" data-act="hell" ${unlocked ? '' : 'disabled'}>屌炸天模式<small>${unlocked ? (hellBest ? '最好 ' + fmtClock(hellBest) : '九十个词，一次全清') : '通关基础四关后解锁'}</small></button>
-      <button class="menu-item" data-act="recite">背诵模式<small>九十个词，平铺温习</small></button>
-      <button class="menu-item" data-act="settings">设置</button>
-      <button class="menu-item" data-act="exit">退出游戏</button>
+  titleScreen.innerHTML = `
+    <div class="ts-quote left">《素问·五脏别论》<br>五脏者，所以藏<br>精神血气魂魄者也</div>
+    <div class="ts-quote right">藏象何如？</div>
+    <div class="ts-head">
+      <div class="ts-seal">藏</div>
+      <h1 class="ts-title">藏象</h1>
+      <p class="ts-sub">同脏 · 相消</p>
     </div>
-    <div class="note">${best.best ? `最高分 ${best.best}` : '还没开局。四关走完，九十个词就全见过了。'}</div>
+    <nav class="ts-menu">
+      <button class="menu-item" data-act="play"><span class="num">壹</span>闯关模式</button>
+      <button class="menu-item" data-act="continue" ${save ? '' : 'disabled'}><span class="num">贰</span>继续游戏<small>${save ? `第 ${save.level + 1} 关` : '还没有存档'}</small></button>
+      <button class="menu-item" data-act="hell" ${unlocked ? '' : 'disabled'}><span class="num">叁</span>屌炸天模式<small>${unlocked ? (hellBest ? '最好 ' + fmtClock(hellBest) : '九十个词，一次全清') : '通关基础四关后解锁'}</small></button>
+      <button class="menu-item" data-act="recite"><span class="num">肆</span>背诵模式<small>九十个词</small></button>
+      <button class="menu-item" data-act="settings"><span class="num">伍</span>设置</button>
+      <button class="menu-item" data-act="exit"><span class="num">陆</span>退出游戏</button>
+    </nav>
+    <div class="ts-foot">
+      <div class="ts-five"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="ts-rule"></div>
+      <span>${best.best ? '最高分 ' + best.best : '四关 · 九十个词'} · 林希夏</span>
+    </div>
   `;
-  overlay.classList.remove('hidden');
-  panel.dataset.state = 'title';
-  panel.querySelectorAll('.menu-item').forEach(btn=>{
+  titleScreen.classList.remove('hidden');
+  titleScreen.querySelectorAll('.menu-item').forEach(btn=>{
     btn.onclick = ()=>{
       const act = btn.dataset.act;
       if(act === 'play') startLevel(0, 'level');
@@ -1024,6 +1128,7 @@ function showTitle(){
 
 let loadToken = 0;
 function showLoading(done){
+  titleScreen.classList.add('hidden');
   const token = ++loadToken;
   overlay.classList.remove('hidden');
   panel.dataset.state = 'loading';
@@ -1038,6 +1143,7 @@ function showLoading(done){
 }
 
 function showRecite(){
+  titleScreen.classList.add('hidden');
   const cards = Object.keys(ZANG).map(k=>{
     const items = ZANG[k].terms.map(t => `<li>${t}</li>`).join('');
     return `<div class="r"><h3>${ZANG[k].name}<small>${ZANG[k].hint}</small></h3><ul>${items}</ul></div>`;
@@ -1058,6 +1164,7 @@ function showRecite(){
 }
 
 function showSettings(){
+  titleScreen.classList.add('hidden');
   const unlocked = isHellUnlocked();
   const save = loadSave();
   panel.classList.remove('wide');
@@ -1090,6 +1197,7 @@ function showSettings(){
 }
 
 function showExit(){
+  titleScreen.classList.add('hidden');
   panel.classList.remove('wide');
   panel.innerHTML = `
     <div class="bye">
@@ -1268,7 +1376,7 @@ async function runSelfTest(){
     // 8. 菜单与各页面
     showTitle();
     ok('标题页 6 个菜单项', document.querySelectorAll('.menu-item').length === 6, 'n=' + document.querySelectorAll('.menu-item').length);
-    ok('标题页状态正确', panel.dataset.state === 'title');
+    ok('标题屏铺满', !titleScreen.classList.contains('hidden') && titleScreen.offsetHeight > 400);
     showAuthor();
     ok('作者的话有「星辰大海」', (document.querySelector('#toTitle')?.textContent || '').includes('星辰大海'));
     ok('作者的话有「去闯屌炸天」', (document.querySelector('#toHell')?.textContent || '').includes('屌炸天'));
@@ -1278,7 +1386,7 @@ async function runSelfTest(){
     ok('设置有「清空存档」', !!document.querySelector('#clearBtn'));
     ok('设置有「解锁屌炸天」', !!document.querySelector('#unlockBtn'));
     showTitle();
-    ok('能回到标题页', panel.dataset.state === 'title');
+    ok('能回到标题页', !titleScreen.classList.contains('hidden') && overlay.classList.contains('hidden'));
     ok('无 JS 异常', true);
   }catch(e){
     log.push('EXCEPTION  ' + (e && e.stack || e));
