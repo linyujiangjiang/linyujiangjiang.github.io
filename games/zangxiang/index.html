@@ -640,6 +640,7 @@ if(/[?&]mobile=1/.test(location.search)) document.documentElement.classList.add(
 <div id="dropScreen" class="hidden">
   <div class="ds-top">
     <span class="t">把这些词，拖到它该去的脏腑上</span>
+    <span class="lv" id="dsLv">第 1 关</span>
     <span class="meta">已归 <b id="dsRight">0</b> · 剩 <b id="dsLeft">10</b> · 错 <b id="dsMiss">0</b></span>
   </div>
   <div class="ds-tray" id="dsTray"></div>
@@ -1463,7 +1464,25 @@ function showHellResult(isRecord){
 }
 
 /* ================= 归位模式（拖卡片到脏腑） ================= */
-const DS = { cards: [], right: 0, miss: 0, total: 0, startAt: 0, drag: null };
+const DS = { cards: [], right: 0, miss: 0, total: 0, startAt: 0, drag: null, levelIdx: 0 };
+
+/* 四关把 90 个词切完，每个词只出现一次（和闯关模式的切法一致） */
+const DS_LEVELS = [
+  { take: { xin: 2, gan: 2, pi: 2, fei: 2, shen: 2 } },
+  { take: { xin: 4, gan: 4, pi: 4, fei: 4, shen: 4 } },
+  { take: { xin: 4, gan: 4, pi: 6, fei: 6, shen: 6 } },
+  { take: { xin: 4, gan: 6, pi: 8, fei: 8, shen: 8 } }
+];
+
+function dsTerms(idx, k){
+  const take = DS_LEVELS[idx].take[k] || 0;
+  let from = 0;
+  for(let i = 0; i < idx; i++) from += (DS_LEVELS[i].take[k] || 0);
+  return ZANG[k].terms.slice(from, from + take);
+}
+
+/* 恶燥 / 喜润恶燥：肺与肾都算对 */
+const DS_ALSO = { '恶燥': ['fei'], '喜润恶燥': ['shen'] };
 
 function showDrop(){
   titleScreen.classList.add('hidden');
@@ -1471,23 +1490,24 @@ function showDrop(){
   authorScreen.classList.add('hidden');
   dropScreen.classList.remove('hidden');
   AUDIO.play('menu');
+  DS.levelIdx = 0;
   startDropRound();
 }
 
 function startDropRound(){
+  const idx = DS.levelIdx;
   DS.right = 0; DS.miss = 0;
   DS.startAt = Date.now();
   const picks = [];
   Object.keys(ZANG).forEach(k=>{
-    const terms = sample(ZANG[k].terms, 2);
-    terms.forEach(t => picks.push({ term: t, zang: k }));
+    dsTerms(idx, k).forEach(t => picks.push({ term: t, zang: k }));
   });
   shuffle(picks);
   DS.cards = picks;
   DS.total = picks.length;
   const tray = $('dsTray');
   tray.innerHTML = picks.map((c,i)=>
-    `<button class="ds-card" data-i="${i}" data-zang="${c.zang}">${c.term}</button>`
+    `<button class="ds-card" data-i="${i}" data-zang="${c.zang}" data-term="${c.term}">${c.term}</button>`
   ).join('');
   $('dsZones').innerHTML = Object.keys(ZANG).map(k=>
     `<div class="ds-zone" data-zang="${k}"><div class="dz-name">${ZANG[k].name}</div><div class="dz-count">0</div></div>`
@@ -1495,22 +1515,27 @@ function startDropRound(){
   $('dsLeft').textContent = picks.length;
   $('dsRight').textContent = 0;
   $('dsMiss').textContent = 0;
+  $('dsLv').textContent = '第 ' + (idx + 1) + ' 关 / 共 ' + DS_LEVELS.length + ' 关';
 }
 
 function dropFinish(){
   const secs = Math.round((Date.now() - DS.startAt) / 1000);
+  const last = DS.levelIdx >= DS_LEVELS.length - 1;
   panel.innerHTML = `
     <div class="eyebrow">GUI WEI</div>
-    <h1>全归位了</h1>
+    <h1>${last ? '四关全归位' : '第 ' + (DS.levelIdx + 1) + ' 关 · 归完了'}</h1>
     <div class="result-score">${DS.right}/${DS.total}</div>
     <p class="sub">用时 ${fmtClock(secs)}${DS.miss ? `，放错 ${DS.miss} 次` : '，一次没错'}</p>
     <div class="btns">
-      <button class="btn" id="againDrop">再来一轮</button>
+      ${last ? '' : '<button class="btn" id="nextDrop">下一关</button>'}
+      <button class="btn ghost" id="againDrop">重来本关</button>
       <button class="btn ghost" id="toTitle">回标题</button>
     </div>
   `;
   overlay.classList.remove('hidden');
   panel.dataset.state = 'drop';
+  const nd = $('nextDrop');
+  if(nd) nd.onclick = ()=>{ DS.levelIdx++; overlay.classList.add('hidden'); startDropRound(); };
   $('againDrop').onclick = ()=>{ overlay.classList.add('hidden'); startDropRound(); };
   $('toTitle').onclick = ()=> showTitle();
 }
@@ -1557,7 +1582,9 @@ function dropFinish(){
     const zone = el && el.closest ? el.closest('.ds-zone') : null;
     DS.drag = null;
     if(!zone) return;
-    if(zone.dataset.zang === card.dataset.zang){
+    const alt = DS_ALSO[card.dataset.term] || [];
+    const okZone = zone.dataset.zang === card.dataset.zang || alt.indexOf(zone.dataset.zang) >= 0;
+    if(okZone){
       card.classList.add('done');
       setTimeout(()=>{ if(card.parentNode) card.remove(); }, 320);
       DS.right++;
