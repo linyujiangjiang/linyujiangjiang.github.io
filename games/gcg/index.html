@@ -268,6 +268,7 @@ function audio(){
 function beep(freq, dur, type, vol){
   const ac = audio(); if(!ac) return;
   try{
+    if(ac.state === 'suspended'){ ac.resume(); }
     const o = ac.createOscillator(), g = ac.createGain();
     o.type = type||'sine';
     o.frequency.setValueAtTime(freq, ac.currentTime);
@@ -278,7 +279,7 @@ function beep(freq, dur, type, vol){
   }catch(e){}
 }
 const SFX = {
-  shoot(){ beep(880, .05, 'square', .012); },
+  shoot(){ beep(980, .035, 'square', .006); },
   hit(){ beep(220, .07, 'sawtooth', .028); },
   boom(){ beep(90, .22, 'triangle', .05); },
   swit(){ beep(1200, .09, 'sine', .035); },
