@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0b0a14">
+<title>双生视界 · 自制版</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{width:100%;height:100%;overflow:hidden;background:#07060e;color:#e8e4f4;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    user-select:none;touch-action:manipulation}
+  #app{position:relative;width:100%;height:100%;overflow:hidden}
+
+  .screen{position:absolute;inset:0;display:none;flex-direction:column;opacity:0;transition:opacity .35s ease}
+  .screen.on{display:flex;opacity:1}
+
+  /* ============ 标题页 ============ */
+  #boot{align-items:center;justify-content:center;background:radial-gradient(120% 80% at 50% 30%,#1b1638 0%,#0b0a14 58%,#05040a 100%)}
+  #boot .halo{position:absolute;width:78vmin;height:78vmin;border-radius:50%;
+    background:radial-gradient(circle,rgba(124,233,255,.16),transparent 62%);
+    filter:blur(6px);animation:breathe 5s ease-in-out infinite}
+  @keyframes breathe{0%,100%{transform:scale(1);opacity:.75}50%{transform:scale(1.08);opacity:1}}
+  #boot .inner{position:relative;text-align:center;padding:0 8vw}
+  #boot h1{font-size:clamp(34px,11vw,62px);letter-spacing:.16em;font-weight:700;
+    background:linear-gradient(180deg,#fff 0%,#7ce9ff 46%,#ff7fb2 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 26px rgba(124,233,255,.35))}
+  #boot .sub{margin-top:14px;font-size:clamp(11px,3.2vw,14px);letter-spacing:.42em;color:#7b7796}
+  #boot .tag{margin-top:26px;font-size:clamp(12px,3.4vw,15px);line-height:2;color:#a9a3c4}
+  #boot .start{margin-top:44px;display:inline-block;padding:15px 46px;border-radius:999px;
+    font-size:clamp(15px,4.2vw,18px);letter-spacing:.28em;color:#0b0a14;font-weight:700;
+    background:linear-gradient(120deg,#7ce9ff,#b9a4ff 55%,#ff7fb2);
+    box-shadow:0 8px 34px rgba(124,233,255,.32);animation:pulse 2.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 8px 34px rgba(124,233,255,.26)}50%{box-shadow:0 8px 46px rgba(255,127,178,.42)}}
+  #boot .foot{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:11px;letter-spacing:.2em;color:#4c4863}
+
+  /* ============ 咖啡馆 ============ */
+  #cafe{background:linear-gradient(180deg,#0d0b1c 0%,#131031 42%,#0a0817 100%)}
+  #cafe .topbar{display:flex;align-items:center;justify-content:space-between;
+    padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 10px;font-size:13px;letter-spacing:.08em}
+  #cafe .topbar .l{color:#8d87ab}
+  #cafe .topbar .r{color:#ffd479;font-weight:600}
+  #cafe .topbar .r b{font-size:16px}
+
+  #cafeStageWrap{position:relative;flex:1 1 auto;min-height:170px;overflow:hidden}
+  #cafeStage{position:absolute;inset:0;width:100%;height:100%}
+  .neon{position:absolute;left:50%;top:12%;transform:translateX(-50%);
+    font-size:11px;letter-spacing:.5em;color:rgba(124,233,255,.55);
+    text-shadow:0 0 14px rgba(124,233,255,.8);pointer-events:none}
+
+  #cafeInfo{padding:2px 18px 0;flex:0 0 auto}
+  #cafeName{font-size:clamp(19px,5.4vw,24px);letter-spacing:.1em;font-weight:700}
+  #cafeName small{font-size:11px;letter-spacing:.22em;color:#6f6a8c;margin-left:10px;font-weight:400}
+  #cafeLine{margin-top:8px;min-height:44px;font-size:clamp(12.5px,3.5vw,14.5px);line-height:1.75;color:#b6b0d0}
+  .affWrap{margin-top:10px;display:flex;align-items:center;gap:10px}
+  .affBar{flex:1;height:6px;border-radius:6px;background:rgba(255,255,255,.09);overflow:hidden}
+  .affFill{height:100%;width:0%;border-radius:6px;background:linear-gradient(90deg,#7ce9ff,#ff7fb2);transition:width .5s ease}
+  .affNum{font-size:11px;color:#7d7899;letter-spacing:.06em;min-width:52px;text-align:right}
+
+  #tabs{display:flex;gap:10px;padding:14px 18px 8px;flex:0 0 auto}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:9px 4px 8px;
+    border-radius:16px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07);
+    transition:all .25s ease}
+  .tab.on{background:rgba(124,233,255,.10);border-color:rgba(124,233,255,.5);box-shadow:0 0 22px rgba(124,233,255,.16)}
+  .tab svg{width:38px;height:38px;border-radius:50%;display:block}
+  .tab span{font-size:11px;letter-spacing:.08em;color:#9a94b8}
+  .tab.on span{color:#e8e4f4}
+
+  #cafeBtns{display:flex;gap:12px;padding:6px 18px calc(env(safe-area-inset-bottom,0px) + 16px);flex:0 0 auto;margin-top:auto}
+  .btn{flex:1;padding:16px 10px;border-radius:18px;text-align:center;font-size:clamp(14px,3.8vw,16px);
+    letter-spacing:.2em;font-weight:600;border:1px solid transparent;transition:transform .12s ease}
+  .btn:active{transform:scale(.97)}
+  .btn.primary{background:linear-gradient(120deg,#7ce9ff,#a99bff 60%,#ff7fb2);color:#0a0814;
+    box-shadow:0 8px 28px rgba(124,233,255,.26)}
+  .btn.ghost{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#c9c3e0}
+
+  /* ============ 战斗 ============ */
+  #battle{background:#05040a}
+  #cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+  #hud{position:absolute;inset:0;pointer-events:none;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 0}
+  #hud .row{display:flex;justify-content:space-between;align-items:flex-start}
+  .hpBox{width:44%;max-width:190px}
+  .hpLabel{font-size:10px;letter-spacing:.24em;color:#8b86a8;margin-bottom:5px}
+  .hpOuter{height:8px;border-radius:8px;background:rgba(255,255,255,.1);overflow:hidden;
+    border:1px solid rgba(255,255,255,.12)}
+  .hpFill{height:100%;width:100%;border-radius:8px;
+    background:linear-gradient(90deg,#ff5f8f,#ff9fc3);transition:width .18s linear}
+  #scoreBox{text-align:right;font-size:11px;letter-spacing:.14em;color:#8b86a8}
+  #scoreBox b{display:block;font-size:20px;color:#e8e4f4;letter-spacing:.02em;margin-top:2px}
+
+  #bossBar{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top,0px) + 60px);
+    opacity:0;transition:opacity .4s ease}
+  #bossBar.on{opacity:1}
+  #bossBar .bl{font-size:10px;letter-spacing:.3em;color:#ff9bb8;margin-bottom:5px;text-align:center}
+  #bossBar .bo{height:7px;border-radius:7px;background:rgba(255,255,255,.1);overflow:hidden}
+  #bossBar .bf{height:100%;width:100%;background:linear-gradient(90deg,#ff5f8f,#ffd479);transition:width .15s linear}
+
+  #squad{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);
+    display:flex;justify-content:center;gap:16px;pointer-events:auto}
+  .slot{position:relative;width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:rgba(12,10,24,.7);border:2px solid rgba(255,255,255,.16);transition:all .2s ease}
+  .slot svg{width:38px;height:38px;border-radius:50%}
+  .slot.on{border-color:#7ce9ff;box-shadow:0 0 24px rgba(124,233,255,.5);transform:translateY(-6px) scale(1.06)}
+  .slot .cd{position:absolute;inset:-2px;border-radius:50%;background:rgba(5,4,10,.72);
+    display:flex;align-items:center;justify-content:center;font-size:13px;color:#a49fc0}
+  .slot.ready .cd{display:none}
+
+  #toast{position:absolute;left:0;right:0;top:34%;text-align:center;font-size:clamp(15px,4.4vw,19px);
+    letter-spacing:.24em;color:#7ce9ff;opacity:0;transition:opacity .3s ease;text-shadow:0 0 20px rgba(124,233,255,.7)}
+
+  /* ============ 结算 ============ */
+  #result{align-items:center;justify-content:center;background:radial-gradient(120% 80% at 50% 40%,#1a1533 0%,#08070f 70%)}
+  #result .card{width:min(84vw,420px);padding:34px 26px 28px;border-radius:26px;text-align:center;
+    background:rgba(22,19,40,.82);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(14px)}
+  #resTitle{font-size:clamp(24px,7vw,32px);letter-spacing:.3em;font-weight:700}
+  #resSub{margin-top:10px;font-size:12px;letter-spacing:.2em;color:#8a84a6}
+  #resStats{margin:26px 0 8px;display:flex;justify-content:space-around}
+  #resStats div{font-size:11px;letter-spacing:.14em;color:#7d7899}
+  #resStats b{display:block;font-size:22px;color:#e8e4f4;margin-top:6px;letter-spacing:.02em}
+  #resBack{margin-top:26px}
+
+  /* ============ 对话层 ============ */
+  #talk{position:absolute;inset:0;display:none;z-index:40;background:rgba(4,3,9,.72);backdrop-filter:blur(3px)}
+  #talk.on{display:block}
+  #talk .box{position:absolute;left:0;right:0;bottom:0;padding:24px 20px calc(env(safe-area-inset-bottom,0px) + 26px);
+    background:linear-gradient(to bottom,rgba(16,13,30,.94),rgba(8,7,16,.98));
+    border-top:1px solid rgba(124,233,255,.18)}
+  #talk .who{font-size:12px;letter-spacing:.26em;color:#7ce9ff;margin-bottom:12px}
+  #talk .txt{font-size:clamp(14px,4vw,16.5px);line-height:1.95;color:#ddd8ef;min-height:96px}
+  #talk .hint{margin-top:14px;text-align:right;font-size:11px;color:#5d5878;letter-spacing:.18em}
+
+  #flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:60;transition:opacity .18s ease}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- 标题 -->
+  <section id="boot" class="screen on">
+    <div class="halo"></div>
+    <div class="inner">
+      <h1>双生视界</h1>
+      <div class="sub">FAN-MADE · 自制版</div>
+      <div class="tag">晶体历 · 第七年<br>公主岛的咖啡馆，还亮着灯</div>
+      <div class="start" id="btnStart">进 店</div>
+    </div>
+    <div class="foot">自制 · 非商业 · 只为你一个人开</div>
+  </section>
+
+  <!-- 咖啡馆 -->
+  <section id="cafe" class="screen">
+    <div class="topbar">
+      <div class="l">咖啡馆 · 第 <span id="dayNum">1</span> 天</div>
+      <div class="r">晶币 <b id="coinNum">0</b></div>
+    </div>
+    <div id="cafeStageWrap">
+      <canvas id="cafeStage"></canvas>
+      <div class="neon">CAFE · 24H</div>
+    </div>
+    <div id="cafeInfo">
+      <div id="cafeName">艾莉<small>ALI</small></div>
+      <div id="cafeLine"></div>
+      <div class="affWrap">
+        <div class="affBar"><div class="affFill" id="affFill"></div></div>
+        <div class="affNum" id="affNum">好感 0</div>
+      </div>
+    </div>
+    <div id="tabs"></div>
+    <div id="cafeBtns">
+      <div class="btn ghost" id="btnGift">送 礼</div>
+      <div class="btn primary" id="btnSortie">出 击</div>
+    </div>
+  </section>
+
+  <!-- 战斗 -->
+  <section id="battle" class="screen">
+    <canvas id="cv"></canvas>
+    <div id="hud">
+      <div class="row">
+        <div class="hpBox">
+          <div class="hpLabel">SYNC</div>
+          <div class="hpOuter"><div class="hpFill" id="hpFill"></div></div>
+        </div>
+        <div id="scoreBox">SCORE<b id="scoreNum">0</b></div>
+      </div>
+      <div id="bossBar"><div class="bl">晶 骸 · 母 体</div><div class="bo"><div class="bf" id="bossFill"></div></div></div>
+      <div id="toast"></div>
+      <div id="squad"></div>
+    </div>
+  </section>
+
+  <!-- 结算 -->
+  <section id="result" class="screen">
+    <div class="card">
+      <div id="resTitle">清 扫 完 成</div>
+      <div id="resSub">CLEAR</div>
+      <div id="resStats">
+        <div>得分<b id="resScore">0</b></div>
+        <div>击破<b id="resKill">0</b></div>
+        <div>好感<b id="resAff">+0</b></div>
+      </div>
+      <div class="btn primary" id="resBack">回 到 店 里</div>
+    </div>
+  </section>
+
+  <!-- 对话 -->
+  <div id="talk">
+    <div class="box">
+      <div class="who" id="talkWho">艾莉</div>
+      <div class="txt" id="talkTxt"></div>
+      <div class="hint">点一下继续 ▸</div>
+    </div>
+  </div>
+
+  <div id="flash"></div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* =========================================================
+   0. 基础
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const clamp = (v,a,b)=> v<a?a:(v>b?b:v);
+const rnd = (a,b)=> a + Math.random()*(b-a);
+const TAU = Math.PI*2;
+
+const SAVE_KEY = 'gcg_save_v1';
+
+const GIRLS = [
+  { id:'ali',  name:'艾莉', en:'ALI',   color:'#ff7fb2', hair:'#ffa6cd', skin:'#ffe0ec',
+    weapon:'扇形散射', line:['欢迎回来，店长。今天的晶体浓度……还算平稳。','诶？你又盯着我看。……算了，反正也不讨厌。','出击之前，先让我把咖啡喝完嘛。'],
+    power:1 },
+  { id:'qianxia', name:'千夏', en:'QIANXIA', color:'#7ce9ff', hair:'#9fe7ff', skin:'#dff5ff',
+    weapon:'直线穿刺', line:['报告：装备检查完毕，随时可以出发。','店长，你袖口歪了。——别动，我来。','我不太会说好听的。但我会站在你前面。'],
+    power:1.1 },
+  { id:'ling', name:'铃',   en:'LING',  color:'#ffd479', hair:'#ffe6a8', skin:'#fff1d6',
+    weapon:'重炮轰击', line:['诶嘿，今天也一起把那些晶骸打飞吧！','店长店长，你猜我今天在厨房发现了什么？','……其实我有点怕黑。但是有你在就不怕。'],
+    power:1.25 }
+];
+
+let save = {
+  coins: 0,
+  day: 1,
+  aff: { ali:0, qianxia:0, ling:0 },
+  cur: 'ali',
+  best: 0
+};
+try{
+  const raw = localStorage.getItem(SAVE_KEY);
+  if(raw){ const o = JSON.parse(raw); save = Object.assign(save, o); save.aff = Object.assign({ali:0,qianxia:0,ling:0}, o.aff||{}); }
+}catch(e){}
+function persist(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }catch(e){} }
+
+function girlById(id){ return GIRLS.find(g=>g.id===id) || GIRLS[0]; }
+
+/* =========================================================
+   1. 音效（WebAudio 合成，无外部资源）
+   ========================================================= */
+let AC = null;
+function audio(){
+  if(!AC){ try{ AC = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ AC = null; } }
+  return AC;
+}
+function beep(freq, dur, type, vol){
+  const ac = audio(); if(!ac) return;
+  try{
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type||'sine';
+    o.frequency.setValueAtTime(freq, ac.currentTime);
+    g.gain.setValueAtTime(vol==null?0.03:vol, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + dur);
+    o.connect(g); g.connect(ac.destination);
+    o.start(); o.stop(ac.currentTime + dur);
+  }catch(e){}
+}
+const SFX = {
+  shoot(){ beep(880, .05, 'square', .012); },
+  hit(){ beep(220, .07, 'sawtooth', .028); },
+  boom(){ beep(90, .22, 'triangle', .05); },
+  swit(){ beep(1200, .09, 'sine', .035); },
+  lose(){ beep(140, .5, 'sawtooth', .05); },
+  win(){ beep(660, .12, 'sine', .04); setTimeout(()=>beep(990,.18,'sine',.04), 120); }
+};
+
+/* =========================================================
+   2. 头像 SVG
+   ========================================================= */
+function avatarSVG(g, size){
+  const s = size || 72;
+  return `<svg viewBox="0 0 100 100" width="${s}" height="${s}" xmlns="http://www.w3.org/2000/svg">
+    <defs><radialGradient id="bg_${g.id}" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="${g.color}" stop-opacity=".34"/>
+      <stop offset="100%" stop-color="#0b0a14" stop-opacity=".9"/>
+    </radialGradient></defs>
+    <circle cx="50" cy="50" r="49" fill="url(#bg_${g.id})"/>
+    <path d="M22 58c0-16 12-28 28-28s28 12 28 28v18c0 8-6 13-13 13H35c-7 0-13-5-13-13z" fill="${g.hair}"/>
+    <ellipse cx="50" cy="55" rx="19" ry="21" fill="${g.skin}"/>
+    <path d="M30 46c2-11 10-17 20-17s18 6 20 17c-6-5-12-7-20-7s-14 2-20 7z" fill="${g.hair}"/>
+    <ellipse cx="42" cy="55" rx="3.4" ry="4.4" fill="#2b2140"/>
+    <ellipse cx="58" cy="55" rx="3.4" ry="4.4" fill="#2b2140"/>
+    <circle cx="43.2" cy="53.4" r="1.2" fill="#fff"/>
+    <circle cx="59.2" cy="53.4" r="1.2" fill="#fff"/>
+    <path d="M46 64q4 3 8 0" stroke="#c08a9c" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <ellipse cx="35" cy="62" rx="4" ry="2.2" fill="${g.color}" opacity=".38"/>
+    <ellipse cx="65" cy="62" rx="4" ry="2.2" fill="${g.color}" opacity=".38"/>
+  </svg>`;
+}
+
+/* =========================================================
+   3. 画面：咖啡馆立绘
+   ========================================================= */
+const cafeCv = $('#cafeStage');
+const cctx = cafeCv.getContext('2d');
+let cafeDpr = 1, cafeW = 0, cafeH = 0;
+
+function resizeCafe(){
+  const r = cafeCv.getBoundingClientRect();
+  cafeDpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  cafeW = Math.max(1, r.width); cafeH = Math.max(1, r.height);
+  cafeCv.width = Math.round(cafeW * cafeDpr);
+  cafeCv.height = Math.round(cafeH * cafeDpr);
+}
+window.addEventListener('resize', resizeCafe);
+
+/* Q 版立绘 */
+function drawGirl(ctx, cx, cy, scale, g, t, mood){
+  const s = scale;
+  const bob = Math.sin(t*1.6)*2.2*s;
+  ctx.save();
+  ctx.translate(cx, cy + bob);
+
+  // 身后光晕
+  const gr = ctx.createRadialGradient(0,-10*s,4*s, 0,-10*s,86*s);
+  gr.addColorStop(0, g.color+'55');
+  gr.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = gr;
+  ctx.beginPath(); ctx.arc(0,-10*s,86*s,0,TAU); ctx.fill();
+
+  // 双马尾
+  ctx.fillStyle = g.hair;
+  const sway = Math.sin(t*2.1)*3*s;
+  ctx.beginPath();
+  ctx.ellipse(-30*s, 26*s, 11*s, 34*s, 0.22, 0, TAU);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(30*s, 26*s, 11*s, 34*s, -0.22, 0, TAU);
+  ctx.fill();
+
+  // 身体（制服）
+  ctx.beginPath();
+  ctx.moveTo(-27*s, 176*s);
+  ctx.quadraticCurveTo(-32*s, 48*s, 0, 40*s);
+  ctx.quadraticCurveTo(32*s, 48*s, 27*s, 176*s);
+  ctx.closePath();
+  const bg2 = ctx.createLinearGradient(0,40*s,0,176*s);
+  bg2.addColorStop(0, '#2f2950');
+  bg2.addColorStop(1, '#120f22');
+  ctx.fillStyle = bg2; ctx.fill();
+  // 腰带
+  ctx.strokeStyle = 'rgba(124,233,255,.28)';
+  ctx.lineWidth = 2.2*s; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(-18*s, 98*s); ctx.lineTo(18*s, 98*s); ctx.stroke();
+  // 领口
+  ctx.beginPath();
+  ctx.moveTo(-13*s, 44*s); ctx.lineTo(0, 62*s); ctx.lineTo(13*s, 44*s);
+  ctx.strokeStyle = g.color; ctx.lineWidth = 2.4*s; ctx.stroke();
+  // 项链坠
+  ctx.beginPath(); ctx.arc(0, 64*s, 3.2*s, 0, TAU);
+  ctx.fillStyle = g.color; ctx.fill();
+
+  // 头发后层
+  ctx.beginPath();
+  ctx.ellipse(0, 2*s, 44*s, 46*s, 0, 0, TAU);
+  ctx.fillStyle = g.hair; ctx.fill();
+
+  // 脸
+  ctx.beginPath();
+  ctx.ellipse(0, 6*s, 31*s, 34*s, 0, 0, TAU);
+  ctx.fillStyle = g.skin; ctx.fill();
+
+  // 刘海
+  ctx.beginPath();
+  ctx.moveTo(-44*s, 0);
+  ctx.quadraticCurveTo(-30*s, -34*s, 0, -34*s);
+  ctx.quadraticCurveTo(30*s, -34*s, 44*s, 0);
+  ctx.quadraticCurveTo(22*s, -12*s, 0, -8*s);
+  ctx.quadraticCurveTo(-22*s, -12*s, -44*s, 0);
+  ctx.closePath();
+  ctx.fillStyle = g.hair; ctx.fill();
+
+  // 眼睛
+  const blink = (Math.sin(t*0.9)>0.985) ? 0.12 : 1;
+  ctx.fillStyle = '#2b2140';
+  ctx.save(); ctx.scale(1, blink);
+  ctx.beginPath(); ctx.ellipse(-12*s, 8*s, 3.6*s, 5.6*s, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(12*s, 8*s, 3.6*s, 5.6*s, 0, 0, TAU); ctx.fill();
+  ctx.restore();
+  if(blink === 1){
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath(); ctx.arc(-10.8*s, 6.2*s, 1.3*s, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(13.2*s, 6.2*s, 1.3*s, 0, TAU); ctx.fill();
+    ctx.fillStyle = g.color;
+    ctx.beginPath(); ctx.arc(-12.4*s, 9.4*s, 1.5*s, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(11.6*s, 9.4*s, 1.5*s, 0, TAU); ctx.fill();
+  }
+
+  // 腮红
+  ctx.fillStyle = g.color; ctx.globalAlpha = .30;
+  ctx.beginPath(); ctx.ellipse(-20*s, 18*s, 5.4*s, 3*s, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(20*s, 18*s, 5.4*s, 3*s, 0, 0, TAU); ctx.fill();
+  ctx.globalAlpha = 1;
+
+  // 嘴
+  ctx.strokeStyle = '#c08a9c'; ctx.lineWidth = 2*s; ctx.lineCap = 'round';
+  ctx.beginPath();
+  if(mood === 'happy'){ ctx.arc(0, 20*s, 5*s, 0.15*Math.PI, 0.85*Math.PI); }
+  else { ctx.moveTo(-4*s, 21*s); ctx.quadraticCurveTo(0, 24*s, 4*s, 21*s); }
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+let cafeT = 0, cafeMood = 'normal', cafeRaf = 0;
+function cafeLoop(ts){
+  const t = ts/1000;
+  cafeT = t;
+  cctx.setTransform(cafeDpr,0,0,cafeDpr,0,0);
+  cctx.clearRect(0,0,cafeW,cafeH);
+
+  // 背景星点
+  for(let i=0;i<46;i++){
+    const x = ((i*97.3 + t*6) % cafeW);
+    const y = (i*53.7) % cafeH;
+    const a = 0.10 + 0.22*Math.abs(Math.sin(t*1.3 + i));
+    cctx.fillStyle = `rgba(180,210,255,${a})`;
+    cctx.fillRect(x, y, 1.6, 1.6);
+  }
+  // 地面光
+  const gnd = cctx.createLinearGradient(0, cafeH*0.55, 0, cafeH);
+  gnd.addColorStop(0,'rgba(124,233,255,0)');
+  gnd.addColorStop(1,'rgba(124,233,255,.10)');
+  cctx.fillStyle = gnd;
+  cctx.fillRect(0, cafeH*0.55, cafeW, cafeH*0.45);
+
+  // 远景城市剪影
+  const baseY = cafeH*0.34;
+  cctx.fillStyle = 'rgba(24,19,52,.92)';
+  cctx.beginPath();
+  cctx.moveTo(0, baseY+14);
+  const N = 16;
+  for(let i=0;i<=N;i++){
+    const x = i/N*cafeW;
+    const h = 16 + Math.abs(Math.sin(i*1.7+0.6))*40;
+    cctx.lineTo(x, baseY - h);
+  }
+  cctx.lineTo(cafeW, baseY+14);
+  cctx.closePath();
+  cctx.fill();
+  // 窗灯
+  for(let i=0;i<N;i++){
+    const x = (i+0.5)/N*cafeW;
+    const h = 16 + Math.abs(Math.sin(i*1.7+0.6))*40;
+    for(let k=0;k<3;k++){
+      if((i+k)%3!==0) continue;
+      cctx.fillStyle = (i%2 ? 'rgba(255,212,121,.30)' : 'rgba(124,233,255,.28)');
+      cctx.fillRect(x-2, baseY-h+8+k*9, 3.4, 4);
+    }
+  }
+
+  // 漂浮晶体（背景装饰）
+  for(let i=0;i<5;i++){
+    const side = i%2 ? 0.13 : 0.87;
+    const px = cafeW*side + Math.sin(t*0.6+i*1.7)*12;
+    const py = cafeH*(0.18 + i*0.12) + Math.cos(t*0.45+i)*9;
+    const rr = 4 + (i%3)*2.2;
+    cctx.save();
+    cctx.translate(px, py);
+    cctx.rotate(t*0.3 + i);
+    cctx.globalAlpha = 0.28 + 0.18*Math.sin(t + i);
+    cctx.fillStyle = i%2 ? '#ff7fb2' : '#7ce9ff';
+    cctx.shadowColor = cctx.fillStyle; cctx.shadowBlur = 12;
+    cctx.beginPath();
+    cctx.moveTo(0,-rr); cctx.lineTo(rr*0.66,0); cctx.lineTo(0,rr); cctx.lineTo(-rr*0.66,0);
+    cctx.closePath(); cctx.fill();
+    cctx.restore();
+  }
+  cctx.globalAlpha = 1;
+
+  const g = girlById(save.cur);
+  const scale = Math.min(cafeW/260, cafeH/210);
+  drawGirl(cctx, cafeW/2, cafeH*0.60, scale, g, t, cafeMood);
+
+  // 吧台
+  const barY = cafeH*0.985;
+  const bar = cctx.createLinearGradient(0, barY-14, 0, barY+2);
+  bar.addColorStop(0,'rgba(124,233,255,0)');
+  bar.addColorStop(1,'rgba(124,233,255,.22)');
+  cctx.fillStyle = bar;
+  cctx.fillRect(0, barY-14, cafeW, 16);
+  cctx.fillStyle = 'rgba(180,240,255,.28)';
+  cctx.fillRect(0, barY, cafeW, 1.4);
+
+  cafeRaf = requestAnimationFrame(cafeLoop);
+}
+
+function ensureCafeLoop(){
+  if(!cafeRaf) cafeRaf = requestAnimationFrame(cafeLoop);
+}
+
+/* =========================================================
+   4. 咖啡馆 UI
+   ========================================================= */
+function renderTabs(){
+  const el = $('#tabs');
+  el.innerHTML = '';
+  GIRLS.forEach(g=>{
+    const d = document.createElement('div');
+    d.className = 'tab' + (save.cur===g.id?' on':'');
+    d.innerHTML = `${avatarSVG(g,38)}<span>${g.name}</span>`;
+    d.onclick = ()=>{ if(save.cur===g.id) return; save.cur = g.id; persist(); renderCafe(); SFX.swit(); };
+    el.appendChild(d);
+  });
+}
+
+let lineIdx = 0;
+function renderCafe(){
+  const g = girlById(save.cur);
+  $('#cafeName').innerHTML = `${g.name}<small>${g.en}</small>`;
+  const aff = save.aff[g.id] || 0;
+  $('#affFill').style.width = clamp(aff/100*100,0,100) + '%';
+  $('#affNum').textContent = '好感 ' + aff;
+  $('#coinNum').textContent = save.coins;
+  $('#dayNum').textContent = save.day;
+  const lines = g.line;
+  $('#cafeLine').textContent = lines[(lineIdx++) % lines.length];
+  renderTabs();
+  resizeCafe();
+}
+
+$('#btnGift').onclick = ()=>{
+  const g = girlById(save.cur);
+  if(save.coins < 10){ toast('晶币不够，先去打一场吧'); return; }
+  save.coins -= 10;
+  save.aff[g.id] = clamp((save.aff[g.id]||0) + 3, 0, 100);
+  persist(); renderCafe();
+  cafeMood = 'happy'; setTimeout(()=>cafeMood='normal', 1600);
+  SFX.swit(); beep(1400,.1,'sine',.03);
+};
+
+/* =========================================================
+   5. 战斗引擎
+   ========================================================= */
+const cv = $('#cv');
+const ctx = cv.getContext('2d');
+let DPR = 1, W = 0, H = 0;
+
+function resizeBattle(){
+  const r = cv.getBoundingClientRect();
+  DPR = Math.min(window.devicePixelRatio || 1, 2.5);
+  W = Math.max(1, r.width); H = Math.max(1, r.height);
+  cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
+}
+window.addEventListener('resize', resizeBattle);
+
+const B = {
+  on:false, t:0, last:0, raf:0,
+  score:0, kills:0,
+  player:{ x:0, y:0, r:9, hp:100, maxhp:100, inv:0, aim:0 },
+  pb:[], eb:[], en:[], dr:[], pt:[],
+  boss:null, phase:0, phaseT:0, spawnT:0, spawnN:0,
+  shake:0, toastT:0,
+  squad:['ali','qianxia','ling'], cd:{ali:0,qianxia:0,ling:0}, active:'ali',
+  fireT:0, outcome:null
+};
+
+function resetBattle(){
+  resizeBattle();
+  B.on = true; B.t = 0; B.last = performance.now();
+  B.score = 0; B.kills = 0;
+  B.player.x = W/2; B.player.y = H - 110;
+  B.player.hp = B.player.maxhp = 100;
+  B.player.inv = 0; B.player.r = 9;
+  B.pb = []; B.eb = []; B.en = []; B.dr = []; B.pt = [];
+  B.boss = null; B.phase = 0; B.phaseT = 0; B.spawnT = 0; B.spawnN = 0;
+  B.shake = 0; B.toastT = 0;
+  B.cd = {ali:0,qianxia:0,ling:0};
+  B.active = save.cur;
+  B.fireT = 0; B.outcome = null;
+  document.getElementById('bossBar').classList.remove('on');
+  $('#hpFill').style.width = '100%';
+  $('#scoreNum').textContent = '0';
+  renderSquad();
+  showToast('出 击', 900);
+}
+
+function renderSquad(){
+  const el = $('#squad');
+  el.innerHTML = '';
+  B.squad.forEach(id=>{
+    const g = girlById(id);
+    const d = document.createElement('div');
+    d.className = 'slot' + (B.active===id?' on':'') + (B.cd[id]<=0?' ready':'');
+    d.innerHTML = avatarSVG(g,38) + `<div class="cd">${Math.ceil(B.cd[id])||''}</div>`;
+    d.onclick = ()=> switchTo(id);
+    el.appendChild(d);
+  });
+}
+function updateSquadUI(){
+  const el = $('#squad');
+  [...el.children].forEach((d,i)=>{
+    const id = B.squad[i];
+    d.className = 'slot' + (B.active===id?' on':'') + (B.cd[id]<=0?' ready':'');
+    const cd = d.querySelector('.cd');
+    if(cd) cd.textContent = B.cd[id]>0 ? Math.ceil(B.cd[id]) : '';
+  });
+}
+function switchTo(id){
+  if(!B.on || B.active===id) return;
+  if(B.cd[id] > 0) return;
+  B.cd[id] = 5;
+  B.active = id;
+  B.player.inv = Math.max(B.player.inv, 0.55);
+  SFX.swit();
+  showToast(girlById(id).name + ' · ' + girlById(id).weapon, 800);
+  updateSquadUI();
+}
+
+/* 输入 */
+let dragging = false;
+function setPointer(x,y){
+  if(!B.on) return;
+  B.player.x = clamp(x, 16, W-16);
+  B.player.y = clamp(y, H*0.35, H-40);
+}
+cv.addEventListener('pointerdown', e=>{
+  dragging = true; cv.setPointerCapture(e.pointerId);
+  const r = cv.getBoundingClientRect();
+  setPointer(e.clientX-r.left, e.clientY-r.top);
+});
+cv.addEventListener('pointermove', e=>{
+  if(!dragging) return;
+  const r = cv.getBoundingClientRect();
+  setPointer(e.clientX-r.left, e.clientY-r.top);
+});
+cv.addEventListener('pointerup', ()=>{ dragging=false; });
+cv.addEventListener('pointercancel', ()=>{ dragging=false; });
+
+document.addEventListener('keydown', e=>{
+  if(!B.on) return;
+  const k = e.key;
+  if(k==='1') switchTo('ali');
+  if(k==='2') switchTo('qianxia');
+  if(k==='3') switchTo('ling');
+});
+
+/* 玩家射击 */
+function fire(dt){
+  const p = B.player;
+  B.fireT -= dt;
+  if(B.fireT > 0) return;
+  const g = B.active;
+  if(g==='ali'){
+    B.fireT = 0.11;
+    for(let i=-1;i<=1;i++){
+      B.pb.push({x:p.x+i*7, y:p.y-12, vx:i*150, vy:-760, r:3.2, dmg:5, col:'#ff9ecb', len:13});
+    }
+    SFX.shoot();
+  } else if(g==='qianxia'){
+    B.fireT = 0.13;
+    [-5,5].forEach(off=>{
+      B.pb.push({x:p.x+off, y:p.y-12, vx:0, vy:-980, r:2.6, dmg:7, col:'#9fe7ff', len:18, pierce:1});
+    });
+    SFX.shoot();
+  } else {
+    B.fireT = 0.30;
+    B.pb.push({x:p.x, y:p.y-14, vx:0, vy:-620, r:6.5, dmg:19, col:'#ffd479', len:22, pierce:2});
+    SFX.shoot();
+  }
+}
+
+/* 敌人 */
+function spawnMinion(hp, speed, style){
+  B.en.push({
+    x: rnd(40, W-40), y: -30,
+    vx: rnd(-30,30), vy: speed,
+    hp: hp, maxhp: hp, r: 16,
+    t: 0, style: style||0,
+    fireT: rnd(0.6, 1.6),
+    color: style? '#b98cff' : '#7ce9ff'
+  });
+}
+function spawnBoss(){
+  B.boss = {
+    x: W/2, y: -70, vx: 70, vy: 40,
+    hp: 620, maxhp: 620, r: 44, t: 0,
+    fireT: 1.2, pattern: 0, entered: false
+  };
+  document.getElementById('bossBar').classList.add('on');
+  document.getElementById('bossFill').style.width = '100%';
+  showToast('晶骸 · 母体 出现', 1400);
+}
+
+function enemyShoot(e){
+  const p = B.player;
+  const dx = p.x - e.x, dy = p.y - e.y;
+  const d = Math.hypot(dx,dy) || 1;
+  const a = Math.atan2(dy,dx);
+  const sp = 200;
+  if(e.style===0){
+    B.eb.push({x:e.x,y:e.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:4.5,col:'#7ce9ff'});
+  } else {
+    for(let i=-1;i<=1;i++){
+      const aa = a + i*0.28;
+      B.eb.push({x:e.x,y:e.y,vx:Math.cos(aa)*sp,vy:Math.sin(aa)*sp,r:4.5,col:'#b98cff'});
+    }
+  }
+}
+
+function bossShoot(b){
+  const p = B.player;
+  b.pattern++;
+  if(b.pattern % 3 === 1){
+    // 扇形
+    const a0 = Math.atan2(p.y-b.y, p.x-b.x);
+    for(let i=-5;i<=5;i++){
+      const a = a0 + i*0.16;
+      B.eb.push({x:b.x,y:b.y,vx:Math.cos(a)*185,vy:Math.sin(a)*185,r:5,col:'#ff9bb8'});
+    }
+  } else if(b.pattern % 3 === 2){
+    // 环形
+    for(let i=0;i<14;i++){
+      const a = i/14*TAU + b.t;
+      B.eb.push({x:b.x,y:b.y,vx:Math.cos(a)*150,vy:Math.sin(a)*150,r:4.5,col:'#ffd479'});
+    }
+  } else {
+    // 瞄准三连
+    const a0 = Math.atan2(p.y-b.y, p.x-b.x);
+    for(let i=0;i<3;i++){
+      setTimeout(()=>{
+        if(!B.on||!B.boss) return;
+        B.eb.push({x:B.boss.x,y:B.boss.y,vx:Math.cos(a0)*300,vy:Math.sin(a0)*300,r:5,col:'#ff9bb8'});
+      }, i*110);
+    }
+  }
+}
+
+/* 粒子 */
+function burst(x,y,color,n,power){
+  for(let i=0;i<n;i++){
+    const a = Math.random()*TAU;
+    const sp = rnd(40, power||220);
+    B.pt.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:rnd(.25,.6),max:.6,col:color,r:rnd(1.4,3.4)});
+  }
+}
+
+function showToast(txt, ms){
+  const el = $('#toast');
+  el.textContent = txt;
+  el.style.opacity = 1;
+  B.toastT = (ms||1000)/1000;
+}
+
+/* 伤害玩家 */
+function hurtPlayer(dmg){
+  const p = B.player;
+  if(p.inv > 0) return;
+  p.hp -= dmg;
+  p.inv = 0.9;
+  B.shake = 8;
+  SFX.hit();
+  if(p.hp <= 0){ p.hp = 0; endBattle(false); }
+  $('#hpFill').style.width = clamp(p.hp/p.maxhp*100,0,100) + '%';
+}
+
+function endBattle(win){
+  if(!B.on) return;
+  B.on = false;
+  B.outcome = win;
+  const affGain = win ? 12 + Math.floor(B.kills/2) : Math.floor(B.kills/3);
+  const coinGain = B.score > 0 ? Math.floor(B.score/8) : 0;
+  save.coins += coinGain;
+  const g = girlById(B.active);
+  save.aff[g.id] = clamp((save.aff[g.id]||0) + affGain, 0, 100);
+  save.best = Math.max(save.best, B.score);
+  save.day++;
+  persist();
+
+  $('#resTitle').textContent = win ? '清 扫 完 成' : '同 步 中 断';
+  $('#resTitle').style.color = win ? '#7ce9ff' : '#ff7fb2';
+  $('#resSub').textContent = win ? 'CLEAR' : 'SIGNAL LOST';
+  $('#resScore').textContent = B.score;
+  $('#resKill').textContent = B.kills;
+  $('#resAff').textContent = '+' + affGain;
+
+  win ? SFX.win() : SFX.lose();
+  setTimeout(()=>{ setScreen('result'); }, 520);
+}
+
+/* 主循环 */
+function battleLoop(ts){
+  if(!B.on){ return; }
+  const now = ts/1000;
+  let dt = now - B.last/1000;
+  if(!isFinite(dt)) dt = 0.016;
+  B.last = ts;
+  dt = clamp(dt, 0, 0.05);
+  B.t += dt;
+  B.phaseT += dt;
+
+  updateBattle(dt);
+  drawBattle();
+
+  B.raf = requestAnimationFrame(battleLoop);
+}
+
+function updateBattle(dt){
+  const p = B.player;
+
+  // 冷却
+  Object.keys(B.cd).forEach(k=>{ if(B.cd[k]>0) B.cd[k] = Math.max(0, B.cd[k]-dt); });
+  updateSquadUI();
+
+  if(p.inv>0) p.inv -= dt;
+  if(B.shake>0) B.shake = Math.max(0, B.shake - dt*30);
+  if(B.toastT>0){ B.toastT-=dt; if(B.toastT<=0) $('#toast').style.opacity = 0; }
+
+  // 射击
+  fire(dt);
+
+  // 波次
+  if(!B.boss){
+    B.spawnT -= dt;
+    if(B.phase===0 && B.t < 8){
+      if(B.spawnT<=0){ spawnMinion(22, 52, 0); B.spawnT = 0.75; }
+      if(B.phaseT>8) { B.phase=1; B.phaseT=0; }
+    } else if(B.phase===1){
+      if(B.spawnT<=0){ spawnMinion(B.phaseT>4?42:30, 62, Math.random()<0.4?1:0); B.spawnT = 0.62; }
+      if(B.phaseT>8) { B.phase=2; B.phaseT=0; spawnBoss(); }
+    }
+  }
+
+  // 玩家弹
+  for(let i=B.pb.length-1;i>=0;i--){
+    const b = B.pb[i];
+    b.x += b.vx*dt; b.y += b.vy*dt;
+    if(b.y < -30 || b.x < -30 || b.x > W+30){ B.pb.splice(i,1); continue; }
+    let hitOne = false;
+    // 打小兵
+    for(let j=B.en.length-1;j>=0;j--){
+      const e = B.en[j];
+      if(Math.hypot(b.x-e.x, b.y-e.y) < e.r + b.r){
+        e.hp -= b.dmg;
+        burst(b.x, b.y, b.col, 3, 90);
+        if(e.hp <= 0){
+          B.kills++; B.score += 10;
+          B.dr.push({x:e.x, y:e.y, vy:70, t:0, kind:'coin'});
+          burst(e.x, e.y, e.color, 12, 200);
+          B.en.splice(j,1); SFX.boom(); B.shake = Math.max(B.shake, 3);
+        }
+        hitOne = true;
+        if(b.pierce){ b.pierce--; } else { B.pb.splice(i,1); }
+        break;
+      }
+    }
+    if(hitOne) continue;
+    // 打 boss
+    if(B.boss){
+      const e = B.boss;
+      if(Math.hypot(b.x-e.x, b.y-e.y) < e.r + b.r){
+        e.hp -= b.dmg;
+        burst(b.x, b.y, b.col, 3, 90);
+        B.score += 1;
+        if(e.hp <= 0){ killBoss(); }
+        if(b.pierce){ b.pierce--; } else { B.pb.splice(i,1); }
+      }
+    }
+  }
+
+  // 敌人
+  for(let i=B.en.length-1;i>=0;i--){
+    const e = B.en[i];
+    e.t += dt;
+    e.y += e.vy*dt;
+    e.x += Math.sin(e.t*1.6)*24*dt*20;
+    e.x = clamp(e.x, 24, W-24);
+    if(e.y > H+50){ B.en.splice(i,1); continue; }
+    // 敌方开火
+    e.fireT -= dt;
+    if(e.fireT<=0 && e.y>0 && e.y<H*0.75){
+      e.fireT = rnd(1.4, 2.4);
+      if(distance(e,p) < H*0.9) enemyShoot(e);
+    }
+    // 撞玩家
+    if(distance(e,p) < e.r + p.r){
+      hurtPlayer(14);
+      burst(e.x,e.y,'#ff7fb2',10,180);
+      B.en.splice(i,1);
+    }
+  }
+
+  // boss
+  if(B.boss){
+    const b = B.boss;
+    b.t += dt;
+    if(!b.entered){ b.y += 55*dt; if(b.y > 110){ b.entered = true; } }
+    else {
+      b.x += b.vx*dt;
+      if(b.x < 70){ b.x=70; b.vx*=-1; }
+      if(b.x > W-70){ b.x=W-70; b.vx*=-1; }
+      b.fireT -= dt;
+      if(b.fireT<=0){ b.fireT = 1.5; bossShoot(b); }
+      if(distance(b,p) < b.r + p.r){ hurtPlayer(20); }
+    }
+    document.getElementById('bossFill').style.width = clamp(b.hp/b.maxhp*100,0,100)+'%';
+  }
+
+  // 敌弹
+  for(let i=B.eb.length-1;i>=0;i--){
+    const b = B.eb[i];
+    b.x += b.vx*dt; b.y += b.vy*dt;
+    if(b.y > H+30 || b.y < -60 || b.x < -40 || b.x > W+40){ B.eb.splice(i,1); continue; }
+    if(distance(b,p) < b.r + p.r*0.75){
+      hurtPlayer(12);
+      burst(b.x,b.y,b.col,6,140);
+      B.eb.splice(i,1);
+    }
+  }
+
+  // 掉落
+  for(let i=B.dr.length-1;i>=0;i--){
+    const d = B.dr[i];
+    d.t += dt;
+    const dx = p.x-d.x, dy = p.y-d.y;
+    const dist = Math.hypot(dx,dy);
+    if(dist < 70){ d.x += dx/dist*260*dt; d.y += dy/dist*260*dt; }
+    else { d.y += d.vy*dt; }
+    if(dist < 18){ B.score += 5; B.dr.splice(i,1); beep(1500,.05,'sine',.02); continue; }
+    if(d.y > H+30) B.dr.splice(i,1);
+  }
+
+  // 粒子
+  for(let i=B.pt.length-1;i>=0;i--){
+    const q = B.pt[i];
+    q.x += q.vx*dt; q.y += q.vy*dt;
+    q.vx *= 0.94; q.vy *= 0.94;
+    q.life -= dt;
+    if(q.life<=0) B.pt.splice(i,1);
+  }
+
+  $('#scoreNum').textContent = B.score;
+}
+
+function distance(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
+
+function killBoss(){
+  B.score += 200; B.kills++;
+  burst(B.boss.x, B.boss.y, '#ffd479', 46, 420);
+  burst(B.boss.x, B.boss.y, '#ff7fb2', 30, 300);
+  B.boss = null;
+  B.shake = 20;
+  document.getElementById('bossBar').classList.remove('on');
+  endBattle(true);
+}
+
+/* 绘制 */
+function drawBattle(){
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,W,H);
+
+  // 背景
+  const bg = ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#0a0818');
+  bg.addColorStop(0.55,'#120e2a');
+  bg.addColorStop(1,'#08060f');
+  ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+
+  const shx = B.shake ? rnd(-B.shake,B.shake) : 0;
+  const shy = B.shake ? rnd(-B.shake,B.shake) : 0;
+  ctx.save();
+  ctx.translate(shx, shy);
+
+  // 星流
+  for(let i=0;i<50;i++){
+    const y = ((i*61 + B.t*90) % (H+120)) - 60;
+    const x = (i*137.7) % W;
+    ctx.fillStyle = 'rgba(140,190,255,' + (0.08 + (i%5)*0.03) + ')';
+    ctx.fillRect(x, y, 1.4, 8);
+  }
+
+  // 掉落
+  B.dr.forEach(d=>{
+    ctx.save();
+    ctx.translate(d.x,d.y);
+    ctx.rotate(d.t*3);
+    ctx.fillStyle = '#ffd479';
+    ctx.globalAlpha = .9;
+    ctx.beginPath();
+    ctx.moveTo(0,-6); ctx.lineTo(4,0); ctx.lineTo(0,6); ctx.lineTo(-4,0);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  });
+
+  // 敌人
+  B.en.forEach(e=>{
+    ctx.save();
+    ctx.translate(e.x,e.y);
+    const puls = 1 + Math.sin(e.t*5)*0.06;
+    ctx.scale(puls,puls);
+    ctx.shadowColor = e.color; ctx.shadowBlur = 16;
+    ctx.fillStyle = e.color;
+    ctx.beginPath();
+    ctx.moveTo(0,-e.r); ctx.lineTo(e.r*.78,0); ctx.lineTo(0,e.r); ctx.lineTo(-e.r*.78,0);
+    ctx.closePath(); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(10,8,20,.85)';
+    ctx.beginPath();
+    ctx.moveTo(0,-e.r*.45); ctx.lineTo(e.r*.34,0); ctx.lineTo(0,e.r*.45); ctx.lineTo(-e.r*.34,0);
+    ctx.closePath(); ctx.fill();
+    // 血条
+    if(e.hp < e.maxhp){
+      ctx.fillStyle = 'rgba(255,255,255,.16)';
+      ctx.fillRect(-e.r, -e.r-9, e.r*2, 2.4);
+      ctx.fillStyle = '#ff9bb8';
+      ctx.fillRect(-e.r, -e.r-9, e.r*2*(e.hp/e.maxhp), 2.4);
+    }
+    ctx.restore();
+  });
+
+  // boss
+  if(B.boss){
+    const b = B.boss;
+    ctx.save();
+    ctx.translate(b.x,b.y);
+    ctx.rotate(Math.sin(b.t*0.7)*0.12);
+    ctx.shadowColor = '#ff5f8f'; ctx.shadowBlur = 34;
+    ctx.fillStyle = '#ff8fb6';
+    ctx.beginPath();
+    for(let i=0;i<8;i++){
+      const a = i/8*TAU;
+      const rr = i%2===0 ? b.r : b.r*0.72;
+      const px = Math.cos(a)*rr, py = Math.sin(a)*rr;
+      i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+    }
+    ctx.closePath(); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(20,10,30,.9)';
+    ctx.beginPath(); ctx.arc(0,0,b.r*0.42,0,TAU); ctx.fill();
+    ctx.fillStyle = '#ffd479';
+    ctx.beginPath(); ctx.arc(0,0,b.r*0.2,0,TAU); ctx.fill();
+    ctx.restore();
+  }
+
+  // 玩家弹
+  B.pb.forEach(b=>{
+    ctx.save();
+    ctx.shadowColor = b.col; ctx.shadowBlur = 12;
+    ctx.strokeStyle = b.col; ctx.lineWidth = b.r*1.5; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(b.x, b.y);
+    ctx.lineTo(b.x - b.vx*0.008, b.y - b.len);
+    ctx.stroke();
+    ctx.restore();
+  });
+
+  // 敌弹
+  B.eb.forEach(b=>{
+    ctx.save();
+    ctx.shadowColor = b.col; ctx.shadowBlur = 14;
+    ctx.fillStyle = b.col;
+    ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,TAU); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.85)';
+    ctx.beginPath(); ctx.arc(b.x,b.y,b.r*0.42,0,TAU); ctx.fill();
+    ctx.restore();
+  });
+
+  // 粒子
+  B.pt.forEach(q=>{
+    const a = clamp(q.life/q.max,0,1);
+    ctx.globalAlpha = a;
+    ctx.fillStyle = q.col;
+    ctx.beginPath(); ctx.arc(q.x,q.y,q.r*a,0,TAU); ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+
+  // 玩家
+  drawPlayerShip(ctx);
+
+  ctx.restore();
+}
+
+function drawPlayerShip(ctx){
+  const p = B.player;
+  const g = girlById(B.active);
+  ctx.save();
+  ctx.translate(p.x,p.y);
+
+  const alpha = p.inv>0 ? (Math.sin(B.t*40)>0?0.35:1) : 1;
+
+  // 旋转光环
+  ctx.save();
+  ctx.rotate(B.t*2.2);
+  ctx.globalAlpha = alpha*0.6;
+  ctx.strokeStyle = g.color; ctx.lineWidth = 1.8; ctx.lineCap='round';
+  ctx.beginPath();
+  for(let i=0;i<6;i++){
+    const a = i/6*TAU;
+    ctx.moveTo(Math.cos(a)*19, Math.sin(a)*19);
+    ctx.lineTo(Math.cos(a+0.4)*23, Math.sin(a+0.4)*23);
+  }
+  ctx.stroke();
+  ctx.restore();
+
+  // 光晕
+  const gr = ctx.createRadialGradient(0,0,2,0,0,30);
+  gr.addColorStop(0, g.color+'70');
+  gr.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle = gr;
+  ctx.beginPath(); ctx.arc(0,0,30,0,TAU); ctx.fill();
+
+  ctx.globalAlpha = alpha;
+  // 机体
+  ctx.shadowColor = g.color; ctx.shadowBlur = 16;
+  ctx.fillStyle = '#fbf8ff';
+  ctx.beginPath();
+  ctx.moveTo(0,-15); ctx.lineTo(9,6); ctx.lineTo(0,12); ctx.lineTo(-9,6);
+  ctx.closePath(); ctx.fill();
+  ctx.shadowBlur = 0;
+  // 核心
+  ctx.fillStyle = g.color;
+  ctx.beginPath();
+  ctx.moveTo(0,-8); ctx.lineTo(4.5,4); ctx.lineTo(0,8); ctx.lineTo(-4.5,4);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(0,-1,2.2,0,TAU); ctx.fill();
+
+  // 尾焰
+  ctx.globalAlpha = alpha*0.6;
+  ctx.strokeStyle = g.color; ctx.lineWidth = 2.4; ctx.lineCap='round';
+  ctx.beginPath();
+  ctx.moveTo(-4.5, 10); ctx.lineTo(0, 20 + Math.sin(B.t*22)*4);
+  ctx.moveTo(4.5, 10); ctx.lineTo(0, 20 + Math.cos(B.t*22)*4);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+/* =========================================================
+   6. 屏幕切换
+   ========================================================= */
+function setScreen(name){
+  ['boot','cafe','battle','result'].forEach(n=>{
+    const el = document.getElementById(n);
+    const on = (n===name);
+    el.classList.toggle('on', on);
+  });
+  if(name==='cafe'){ renderCafe(); requestAnimationFrame(()=>{ resizeCafe(); ensureCafeLoop(); }); }
+  if(name==='battle'){ resizeBattle(); }
+}
+
+$('#btnStart').onclick = ()=>{
+  audio(); // 解锁音频
+  setScreen('cafe');
+  if(!save.talked){
+    save.talked = true; persist();
+    setTimeout(()=>{
+      playTalk('艾莉', [
+        '店长，你终于回来了。',
+        '咖啡还温着。今天的晶体浓度有点高……不过不影响营业。',
+        '（她别过脸去，耳朵尖有点红。）',
+        '……别看了。出击之前，先把这杯喝完。'
+      ]);
+    }, 620);
+  }
+};
+
+$('#btnSortie').onclick = ()=>{
+  audio();
+  setScreen('battle');
+  resizeBattle();
+  resetBattle();
+  B.last = performance.now();
+  cancelAnimationFrame(B.raf);
+  B.raf = requestAnimationFrame(battleLoop);
+};
+
+$('#resBack').onclick = ()=>{
+  setScreen('cafe');
+};
+
+/* =========================================================
+   7. 对话（送礼/开场）
+   ========================================================= */
+const talkEl = $('#talk');
+let talkQueue = [], talkIdx = 0;
+function playTalk(who, lines){
+  talkQueue = lines; talkIdx = 0;
+  talkEl.classList.add('on');
+  $('#talkWho').textContent = who;
+  $('#talkTxt').textContent = lines[0];
+}
+talkEl.onclick = ()=>{
+  talkIdx++;
+  if(talkIdx >= talkQueue.length){ talkEl.classList.remove('on'); return; }
+  $('#talkTxt').textContent = talkQueue[talkIdx];
+};
+
+/* =========================================================
+   8. 启动
+   ========================================================= */
+resizeCafe();
+resizeBattle();
+
+// 支持用 #cafe / #battle 直接进（方便调试与分享）
+(function bootByHash(){
+  const h = (location.hash || '').replace('#','').toLowerCase();
+  if(h === 'cafe'){
+    setScreen('cafe');
+  } else if(h === 'battle'){
+    setScreen('battle');
+    resizeBattle();
+    resetBattle();
+    B.last = performance.now();
+    B.raf = requestAnimationFrame(battleLoop);
+  }
+})();
+
+// 首次进入给点引导台词
+if(!localStorage.getItem(SAVE_KEY+'_seen')){
+  setTimeout(()=>{
+    localStorage.setItem(SAVE_KEY+'_seen','1');
+  }, 100);
+}
+
+})();
+</script>
+</body>
+</html>
